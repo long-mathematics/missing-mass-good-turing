@@ -1,0 +1,2074 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{listings}
+\emergencystretch=3em
+
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+\lstset{basicstyle=\scriptsize\ttfamily,breaklines=true,columns=fullflexible,frame=single}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{problem}[theorem]{Problem}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\E}{\mathbb E}
+\newcommand{\Pp}{\mathbb P}
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\ones}{\mathbf 1}
+\newcommand{\fix}{\mathrm{fix}}
+\newcommand{\GT}{\mathrm{GT}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\Ber}{\operatorname{Ber}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\Oh}{O}
+
+\title{Exact Fixed-Count Good--Turing MSE: Pairwise Structure, Comparison Arrows, and Repeated-Block Certificates}
+\author{Working research draft}
+\date{July 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This note records the current state of the exact fixed-count Good--Turing MSE active-uniform program.  The exact risk is a pairwise multinomial polynomial rather than a vector-separable objective.  The pairwise formula gives an exact frozen two-coordinate exchange section
+\[
+  R_{ij}(u)=\widetilde\Phi(u)+\widetilde\Phi(s-u)+C,
+\]
+which is the main structural update in this draft.  It clarifies why literal monotone foliations are too rigid in the presence of non-Dirac local maxima, and it motivates a comparison-arrow program on multiplicity strata instead.  The first serious repeated-repeated obstruction, the $(2,2)$ stratum, remains completely resolved: every point of the curve
+\[
+  (x,x,1/2-x,1/2-x), \qquad 0\le x\le 1/4,
+\]
+is pointwise dominated by Dirac-uniform competitors for every $t\ge2$.  We also record the next repeated-repeated comparison menu for the $(3,2)$ stratum, including exact finite Bernstein certificates and a large-$t$ coefficient audit.  The final sections formulate the resulting conjectural $(m,2)$ comparison menu and the locked-pair drift mechanism for $(m,1,1)$ as the current route toward the full exact active-uniform conjecture.
+\end{abstract}
+
+\tableofcontents
+
+\section{The exact fixed-count risk}
+
+Let $X_1,\ldots,X_t$ be an i.i.d. sample from a law
+$p=(p_1,\ldots,p_n)$ on an alphabet of size at most $n$.  Write
+\[
+  N_i=\#\{j:X_j=i\},
+  \qquad
+  M_0=\sum_i p_i\ones\{N_i=0\},
+  \qquad
+  \widehat M_0=\frac1t\sum_i\ones\{N_i=1\}.
+\]
+The fixed-count risk is
+\[
+  R_{n,t}^{\fix}(p)=\E_p(\widehat M_0-M_0)^2.
+\]
+
+\begin{theorem}[Exact fixed-count pairwise formula]\label{thm:fixed-pairwise}
+For $t\ge2$ and $p\in\Delta_{n-1}$,
+\[
+  R_{n,t}^{\fix}(p)=\sum_{i=1}^n a_t(p_i)
+  +2\sum_{1\le i<j\le n}b_t(p_i,p_j),
+\]
+where
+\[
+  a_t(x)=\frac{x}{t}(1-x)^{t-1}+x^2(1-x)^t,
+\]
+and
+\[
+  b_t(x,y)=xy(1-x-y)^{t-2}\left((x+y)^2-\frac1t\right).
+\]
+\end{theorem}
+
+\begin{proof}
+Set
+\[
+  Y_i=\frac{\ones\{N_i=1\}}{t}-p_i\ones\{N_i=0\}.
+\]
+Then $\widehat M_0-M_0=\sum_iY_i$.  The diagonal contribution is
+\[
+  \E Y_i^2
+  =\frac1{t^2}\Pp(N_i=1)+p_i^2\Pp(N_i=0)
+  =\frac{p_i}{t}(1-p_i)^{t-1}+p_i^2(1-p_i)^t.
+\]
+For $i\ne j$, the multinomial probabilities give
+\begin{align*}
+\E Y_iY_j
+&=\frac1{t^2}\Pp(N_i=1,N_j=1)
+ -\frac{p_j}{t}\Pp(N_i=1,N_j=0) \\
+&\quad -\frac{p_i}{t}\Pp(N_i=0,N_j=1)
+ +p_ip_j\Pp(N_i=0,N_j=0) \\
+&=p_ip_j(1-p_i-p_j)^{t-2}
+  \left((p_i+p_j)^2-\frac1t\right).
+\end{align*}
+Summing diagonal and off-diagonal terms proves the formula.
+\end{proof}
+
+\begin{conjecture}[Exact active-uniform theorem]\label{conj:active-uniform}
+For every $n$ and $t\ge2$, every global maximizer of $R_{n,t}^{\fix}$ on the $n$-simplex is, after deleting zero coordinates and permuting coordinates, of the form
+\[
+  (\underbrace{x,\ldots,x}_{k\text{ times}},1-kx),
+  \qquad 0\le x\le 1/k.
+\]
+\end{conjecture}
+
+\section{Local necessary conditions and the canonical bad system}
+
+The exact risk is pairwise, so local certificates must include both plateau splits and block-mean perturbations.  Let the positive support have distinct levels
+\[
+  \theta_1,\ldots,\theta_s>0
+\]
+with multiplicities
+\[
+  m_1,\ldots,m_s,
+  \qquad
+  \sum_{\alpha=1}^s m_\alpha\theta_\alpha=1.
+\]
+Define the grouped value
+\[
+\begin{aligned}
+\mathcal R_m(\theta)
+={}&\sum_\alpha m_\alpha a_t(\theta_\alpha)
++\sum_\alpha m_\alpha(m_\alpha-1)b_t(\theta_\alpha,\theta_\alpha)\\
+&+2\sum_{\alpha<\beta}m_\alpha m_\beta b_t(\theta_\alpha,\theta_\beta).
+\end{aligned}
+\]
+
+\begin{definition}[Grouped gradients]
+Set
+\[
+  K_\alpha
+  =a_t'(\theta_\alpha)
+  +2(m_\alpha-1)\partial_1b_t(\theta_\alpha,\theta_\alpha)
+  +2\sum_{\beta\ne\alpha}m_\beta\partial_1b_t(\theta_\alpha,\theta_\beta).
+\]
+A regular active-face local maximum satisfies
+\[
+  K_1=\cdots=K_s.
+\]
+\end{definition}
+
+\begin{definition}[Plateau split curvatures]
+For a repeated level $m_\alpha\ge2$, define
+\[
+\begin{aligned}
+Q_\alpha
+={}&a_t''(\theta_\alpha)\\
+&+2\left\{(m_\alpha-1)\partial_{11}b_t(\theta_\alpha,\theta_\alpha)
+-\partial_{12}b_t(\theta_\alpha,\theta_\alpha)
++\sum_{\beta\ne\alpha}m_\beta\partial_{11}b_t(\theta_\alpha,\theta_\beta)\right\}.
+\end{aligned}
+\]
+A local maximum must satisfy
+\[
+  Q_\alpha\le0\qquad(m_\alpha\ge2).
+\]
+\end{definition}
+
+\begin{definition}[Block Hessian]
+Put
+\[
+D_\alpha
+=a_t''(\theta_\alpha)
++2(m_\alpha-1)\partial_{11}b_t(\theta_\alpha,\theta_\alpha)
++2\sum_{\beta\ne\alpha}m_\beta\partial_{11}b_t(\theta_\alpha,\theta_\beta).
+\]
+For a block-mean perturbation $u=(u_1,\ldots,u_s)$ with
+\[
+  \sum_\alpha m_\alpha u_\alpha=0,
+\]
+define
+\[
+\begin{aligned}
+\mathcal H_m[u]
+={}&\frac12\sum_\alpha m_\alpha D_\alpha u_\alpha^2
++\sum_\alpha m_\alpha(m_\alpha-1)\partial_{12}b_t(\theta_\alpha,\theta_\alpha)u_\alpha^2\\
+&+2\sum_{\alpha<\beta}m_\alpha m_\beta\partial_{12}b_t(\theta_\alpha,\theta_\beta)u_\alpha u_\beta.
+\end{aligned}
+\]
+A local maximum must satisfy $\mathcal H_m[u]\le0$ on the weighted tangent hyperplane.
+\end{definition}
+
+\begin{definition}[Dirac envelope]
+For fixed $n,t$, define
+\[
+  \mathfrak D_{n,t}
+  =\max_{1\le k\le n}\max_{0\le x\le1/k}
+  R_{n,t}^{\fix}(\underbrace{x,\ldots,x}_{k\text{ times}},1-kx,0,\ldots,0).
+\]
+\end{definition}
+
+\begin{problem}[Canonical non-Dirac bad-system exclusion]\label{prob:bad-system}
+For every non-Dirac multiplicity vector $m=(m_1,\ldots,m_s)$, prove that there is no $\theta$ satisfying
+\[
+  \theta_\alpha>0,
+  \qquad \theta_\alpha\ne\theta_\beta,
+  \qquad \sum_\alpha m_\alpha\theta_\alpha=1,
+\]
+\[
+  K_1=\cdots=K_s,
+\]
+\[
+  Q_\alpha\le0\qquad(m_\alpha\ge2),
+\]
+\[
+  \mathcal H_m\preceq0
+  \quad\text{on }\sum_\alpha m_\alpha u_\alpha=0,
+\]
+and
+\[
+  \mathcal R_m(\theta)\ge\mathfrak D_{n,t}.
+\]
+If the active support is smaller than $n$, also impose the one-sided inactive-coordinate KKT inequality.
+\end{problem}
+
+\begin{proposition}[Bad-system exclusion implies Conjecture \ref{conj:active-uniform}]
+If Problem \ref{prob:bad-system} is resolved for every non-Dirac multiplicity vector, then the exact active-uniform theorem holds.
+\end{proposition}
+
+\begin{proof}
+Let $p$ be a global maximizer.  Group its positive coordinates as $(\theta_1^{m_1},\ldots,\theta_s^{m_s})$.  Since $p$ is globally maximal, it satisfies active-face KKT, the second-order necessary conditions, any inactive-coordinate KKT inequalities, and $R(p)\ge\mathfrak D_{n,t}$.  Thus if its multiplicity pattern is non-Dirac, it solves the bad system.  By hypothesis this is impossible.  Therefore either $s=1$, or $s=2$ with one singleton level.  In both cases $p$ is Dirac-uniform.
+\end{proof}
+
+
+\section{Frozen exchange sections and comparison arrows}\label{sec:exchange-arrows}
+
+The identity in Theorem~\ref{thm:fixed-pairwise} has more structure than
+mere pairwise additivity.  Write
+\[
+  b_t(x,y)=xy\,\eta_t(x+y),
+  \qquad
+  \eta_t(s)=(1-s)^{t-2}\left(s^2-\frac1t\right).
+\]
+
+\begin{lemma}[Frozen pair-exchange separability]\label{lem:frozen-exchange}
+Fix $p\in\Delta_{n-1}$ and a pair $i<j$.  Put $s=p_i+p_j$ and vary only
+this pair by setting $p_i=u$, $p_j=s-u$.  Then the restricted risk has the
+form
+\[
+  R_{ij}(u)=\widetilde\Phi(u)+\widetilde\Phi(s-u)+C,
+\]
+where $C$ is independent of $u$ and
+\[
+  \widetilde\Phi(z)
+  =a_t(z)+2\sum_{k\ne i,j}b_t(z,p_k)-\eta_t(s)z^2.
+\]
+Consequently the section is symmetric under $u\leftrightarrow s-u$ and is
+also a one-variable polynomial in $u(s-u)$.
+\end{lemma}
+
+\begin{proof}
+The only terms depending on the pair are
+\[
+ a_t(u)+a_t(s-u)+2b_t(u,s-u)
+ +2\sum_{k\ne i,j}\{b_t(u,p_k)+b_t(s-u,p_k)\}.
+\]
+Since
+\[
+  2b_t(u,s-u)=2u(s-u)\eta_t(s)
+  =\eta_t(s)\{s^2-u^2-(s-u)^2\},
+\]
+the term $\eta_t(s)s^2$ is constant and the two quadratic terms are
+absorbed into $\widetilde\Phi(u)+\widetilde\Phi(s-u)$.
+\end{proof}
+
+\begin{remark}[Same-level exchanges and plateau split curvature]\label{rem:Q-exchange}
+For a same-level exchange inside a repeated level $\theta_\alpha$, the
+second derivative of the exchange curve
+\[
+  (\theta_\alpha,\theta_\alpha)
+  \mapsto
+  (\theta_\alpha+\varepsilon,\theta_\alpha-\varepsilon)
+\]
+at $\varepsilon=0$ is $2Q_\alpha$.  Equivalently, in the frozen exchange
+potential of Lemma~\ref{lem:frozen-exchange},
+\[
+  Q_\alpha=\widetilde\Phi''(\theta_\alpha).
+\]
+Thus $Q_\alpha\le0$ is exactly the local nonincrease condition for splitting
+two equal atoms inside the plateau.
+\end{remark}
+
+\begin{remark}[Why comparison arrows replace literal monotone foliations]
+A global monotone foliation of the simplex by paths ending at Dirac-uniform
+points would exclude every non-Dirac strict local maximum, not merely every
+non-Dirac global maximum.  This is stronger than Conjecture~\ref{conj:active-uniform}.
+The robust use of Lemma~\ref{lem:frozen-exchange} is therefore not a literal
+flow theorem, but a comparison-arrow program: for each non-Dirac stratum,
+find a finite menu of simpler target strata whose maximum risk dominates the
+source stratum.
+\end{remark}
+
+\begin{definition}[Dirac comparison families]\label{def:Dk}
+For $k\ge1$, define
+\[
+  \mathsf D_{k,t}(z)
+  =R_{k+1,t}^{\fix}(\underbrace{z,\ldots,z}_{k\text{ times}},1-kz),
+  \qquad 0\le z\le 1/k.
+\]
+Also write
+\[
+  \mathsf U^{(N)}_t=R_{N,t}^{\fix}(1/N,\ldots,1/N)
+\]
+for the $N$-uniform value.
+\end{definition}
+
+\begin{definition}[Comparison arrow]\label{def:comparison-arrow}
+A stratum $\mathcal S$ admits a comparison arrow to a target family
+$\mathcal T$ if for every $p\in\mathcal S$ there exists $q\in\mathcal T$
+with
+\[
+  R^{\fix}(p)\le R^{\fix}(q).
+\]
+The arrow is strict on the genuine open stratum if the inequality is strict
+away from collision and Dirac-uniform boundary points.
+\end{definition}
+
+Theorem~\ref{thm:twotwo} is the first completed comparison-arrow theorem:
+the $(2,2)$ source stratum is dominated by the two-target menu
+\[
+  \{\mathsf U^{(4)}_t,\ \mathsf D_{3,t}(x)\}.
+\]
+
+\section{The $(2,2)$ stratum}
+
+The first serious two-repeated-level obstruction is
+\[
+  p=(x,x,y,y),
+  \qquad x+y=\frac12.
+\]
+By symmetry assume
+\[
+  0\le x\le\frac14,
+  \qquad y=\frac12-x.
+\]
+Define
+\[
+  F_t(x)=R_{4,t}^{\fix}(x,x,y,y),
+\]
+\[
+  U_t=R_{4,t}^{\fix}\left(\frac14,\frac14,\frac14,\frac14\right),
+\]
+and
+\[
+  A_t(x)=R_{4,t}^{\fix}(x,x,x,1-3x).
+\]
+
+\begin{theorem}[$(2,2)$ Dirac domination]\label{thm:twotwo}
+For every $t\ge3$ and every $0\le x\le1/4$,
+\[
+  F_t(x)\le \max\{U_t,A_t(x)\}.
+\]
+For $t=2$,
+\[
+  F_2(x)\le R_{4,2}^{\fix}\left(\frac12,\frac12,0,0\right).
+\]
+Moreover, the domination is strict on the open non-Dirac interval
+$0<x<1/4$ except at Dirac-uniform collision points.  Consequently no
+nonuniform $(2,2)$ stratum point can be a global maximizer of the exact
+fixed-count Good--Turing MSE.
+\end{theorem}
+
+The rest of the section proves the theorem.
+
+\subsection{Reduced gap polynomials}
+
+Put
+\[
+  r=4x\in[0,1].
+\]
+Both gaps $A_t(x)-F_t(x)$ and $U_t-F_t(x)$ vanish quadratically at $x=1/4$, so define
+\[
+  P_t(r)=\frac{A_t(r/4)-F_t(r/4)}{(1-r)^2},
+  \qquad
+  Q_t(r)=\frac{U_t-F_t(r/4)}{(1-r)^2}.
+\]
+For $t\ge11$ define
+\[
+  r_t=\frac{t+6}{2^{t-1}}.
+\]
+It is enough to prove
+\[
+  Q_t(r)\ge0\qquad(0\le r\le r_t)
+\]
+and
+\[
+  P_t(r)\ge0\qquad(r_t\le r\le1).
+\]
+For $3\le t\le10$, the stronger assertion $Q_t(r)\ge0$ on $[0,1]$ is verified by exact Bernstein coefficients in Appendix \ref{app:finite}.
+
+\subsection{The case $t=2$}
+
+Direct expansion gives
+\[
+ R_{4,2}^{\fix}\left(\frac12,\frac12,0,0\right)-F_2(x)
+ =-x(2x-1)(10x^2-5x+3).
+\]
+On $0\le x\le1/4$, the factors satisfy $x\ge0$, $2x-1<0$, and
+\[
+  10x^2-5x+3>0.
+\]
+Hence the displayed difference is nonnegative.
+
+\section{The $Q_t$ side for $t\ge22$}
+
+\begin{proposition}[$Q_t$ side]\label{prop:Qside}
+For every $t\ge22$,
+\[
+  Q_t(r)\ge0\qquad(0\le r\le r_t).
+\]
+Equivalently,
+\[
+  F_t(x)\le U_t
+  \qquad
+  \left(0\le x\le\frac{t+6}{2^{t+1}}\right).
+\]
+\end{proposition}
+
+\begin{proof}
+The uniform value is
+\[
+\begin{aligned}
+U_t
+&=4a_t(1/4)+12b_t(1/4,1/4)\\
+&=\left(\frac34\right)^t\left(\frac14+\frac4{3t}\right)
+  +2^{-t}\left(\frac34-\frac3t\right).
+\end{aligned}
+\]
+For $t\ge22$ the second term is positive; hence
+\[
+  U_t\ge \frac14\left(\frac34\right)^t.
+\]
+Now let
+\[
+  0\le x\le x_t:=\frac{t+6}{2^{t+1}},
+  \qquad y=\frac12-x.
+\]
+Then
+\[
+  F_t(x)=2a_t(x)+2a_t(y)+2b_t(x,x)+2b_t(y,y)+8b_t(x,y).
+\]
+Since $(2x)^2\le1/t$ for $t\ge22$, the term $b_t(x,x)$ is nonpositive and may be discarded in an upper bound.  Also
+\[
+  2a_t(x)\le \frac{t+6}{t2^t}+\frac{(t+6)^2}{2^{2t+1}}\le \frac{25}{11}2^{-t}.
+\]
+For $y=1/2-x$ one has $1-y=1/2+x$.  Since
+\[
+  2tx\le \frac{t(t+6)}{2^t}<\log2
+  \qquad(t\ge22),
+\]
+we get
+\[
+  (1-y)^t=2^{-t}(1+2x)^t\le2^{1-t},
+  \qquad
+  (1-y)^{t-1}\le2^{2-t}.
+\]
+Therefore
+\[
+  2a_t(y)\le\left(1+\frac4t\right)2^{-t}\le\frac{13}{11}2^{-t}.
+\]
+Because $x+y=1/2$,
+\[
+  b_t(x,y)=xy2^{-(t-2)}\left(\frac14-\frac1t\right),
+\]
+so
+\[
+  8b_t(x,y)\le 4x2^{-t}\le2^{-t}.
+\]
+Finally,
+\[
+  b_t(y,y)=y^2(1-2y)^{t-2}\left((2y)^2-\frac1t\right),
+\]
+and $1-2y=2x\le1/2$, $y\le1/2$, so
+\[
+  2b_t(y,y)\le2\cdot2^{-t}.
+\]
+Combining the estimates,
+\[
+  F_t(x)\le \left(\frac{25}{11}+\frac{13}{11}+1+2\right)2^{-t}
+  =\frac{71}{11}2^{-t}.
+\]
+For $t\ge22$,
+\[
+  \frac{71}{11}2^{-t}\le \frac14\left(\frac34\right)^t,
+\]
+because this is equivalent to
+\[
+  \frac{284}{11}\le\left(\frac32\right)^t,
+\]
+which already holds at $t=22$.  Hence $F_t(x)\le U_t$.  Since
+\[
+  Q_t(r)=\frac{U_t-F_t(r/4)}{(1-r)^2}
+\]
+and the denominator is positive on $0\le r\le r_t<1$, the result follows.
+\end{proof}
+
+\section{The $P_t$ side for $t\ge22$}
+
+Write the degree-$t$ Bernstein expansion of $P_t$ on $[0,1]$ as
+\[
+  P_t(r)=\sum_{j=0}^t \pi_{t,j}\binom{t}{j}r^j(1-r)^{t-j}.
+\]
+The first coefficient is negative:
+\[
+  \pi_{t,0}=P_t(0)=-\frac{t+4}{t2^{t+1}}.
+\]
+The tail proof uses a signed Bernstein decomposition of
+\[
+  G_t(r):=A_t(r/4)-F_t(r/4)=(1-r)^2P_t(r).
+\]
+The decomposition is included explicitly here so that the coefficient
+estimates in Theorem \ref{thm:NleL} can be checked from the risk formula
+without consulting the verifier script.
+
+\subsection{Signed Bernstein decomposition}\label{subsec:signed-bernstein}
+
+Let
+\[
+  B_{\ell,d}(r)=\binom d\ell r^\ell(1-r)^{d-\ell}
+\]
+and use the convention that $\binom ab=0$ if $b<0$ or $b>a$.  For a
+linear factor
+\[
+  L_{\alpha,\beta}(r)=\alpha(1-r)+\beta r
+\]
+define the coefficient functional
+\[
+\begin{aligned}
+&\mathfrak C_{t,j}
+\left(p;(e_0,\ldots,e_d);
+(m_1,\alpha_1,\beta_1),\ldots,(m_s,\alpha_s,\beta_s)\right)\\
+&\quad =
+\frac1{\binom tj}
+\sum_{\ell=0}^{d} e_\ell\binom d\ell
+\sum_{i_1=0}^{m_1}\cdots\sum_{i_s=0}^{m_s}
+\left[
+\prod_{\nu=1}^s
+\binom{m_\nu}{i_\nu}
+\alpha_\nu^{m_\nu-i_\nu}
+\beta_\nu^{i_\nu}
+\right]\\
+&\qquad\qquad\qquad\times
+\binom{t+2-p-d-\sum_\nu m_\nu}
+      {j-p-\ell-\sum_\nu i_\nu}.
+\end{aligned}
+\]
+This is the contribution to the degree-$t$ Bernstein coefficient
+$\pi_{t,j}$ of $P_t$ from the term
+\[
+  r^p\left(\sum_{\ell=0}^d e_\ell B_{\ell,d}(r)\right)
+  \prod_{\nu=1}^s L_{\alpha_\nu,\beta_\nu}(r)^{m_\nu}
+\]
+inside $G_t(r)=(1-r)^2P_t(r)$.
+
+Use the abbreviations
+\[
+  Y(r)=\frac12(1-r)+\frac14r,
+  \qquad
+  S(r)=\frac12(1-r)+\frac34r,
+\]
+\[
+  M(r)=(1-r)+\frac12r,
+  \qquad
+  H(r)=(1-r)+\frac14r.
+\]
+Here $Y=y$, $S=1-y$, $M=1-r/2$, and $H=1-3r/4$ after substituting
+$x=r/4$.
+
+The signed expansion of
+\[
+  G_t(r)=a_t(x)+a_t(h)+4b_t(x,x)+6b_t(x,h)-2a_t(y)-2b_t(y,y)-8b_t(x,y)
+\]
+with $h=1-3x$ gives
+\[
+  \pi_{t,j}=P^+_{t,j}-N_{t,j},
+  \qquad
+  N_{t,j}=N^{a_1}_{t,j}+N^{a_2}_{t,j}
+          +N^{xx}_{t,j}+N^{yy}_{t,j}+N^{xy}_{t,j}.
+\]
+The five negative pieces are as follows:
+\[
+  N^{a_1}_{t,j}
+  =
+  \frac2t\,
+  \mathfrak C_{t,j}
+  \left(0;(1);(1,1/2,1/4),(t-1,1/2,3/4)\right),
+\]
+\[
+  N^{a_2}_{t,j}
+  =
+  2\,
+  \mathfrak C_{t,j}
+  \left(0;(1);(2,1/2,1/4),(t,1/2,3/4)\right),
+\]
+\[
+  N^{xx}_{t,j}
+  =
+  \frac14\,
+  \mathfrak C_{t,j}
+  \left(2;(1/t,1/t,0);(t-2,1,1/2)\right),
+\]
+\[
+  N^{yy}_{t,j}
+  =
+  2^{3-t}
+  \mathfrak C_{t,j}
+  \left(t-2;(1-1/t,1/2-1/t,1/4-1/t);(2,1/2,1/4)\right),
+\]
+and
+\[
+  N^{xy}_{t,j}
+  =
+  2^{3-t}\left(\frac14-\frac1t\right)
+  \mathfrak C_{t,j}
+  \left(1;(1);(1,1/2,1/4)\right).
+\]
+The remaining signed pieces are nonnegative for $t\ge11$ and are included
+in $P^+_{t,j}$: the full $a_t(x)$ contribution, the full $a_t(h)$
+contribution, the positive Bernstein part of $4b_t(x,x)$, and the full
+$6b_t(x,h)$ contribution.  In particular, $P^+_{t,j}$ contains the
+explicit positive sub-contribution
+\[
+  L_{t,j}
+  =
+  \frac{j3^{j-1}}{t^2 4^j}
+  +\mathbf 1_{j\ge2}
+   \frac{j(j-1)3^{j-2}}{(t-j+1)(t-j+2)4^j}.
+\]
+Thus
+\[
+  P^+_{t,j}\ge L_{t,j}.
+\]
+The next theorem proves that this smaller contribution already dominates
+all five negative pieces for $t\ge22$.
+
+\begin{theorem}[Coefficient domination]\label{thm:NleL}
+For every $t\ge22$ and $1\le j\le t$,
+\[
+  N_{t,j}\le L_{t,j}.
+\]
+Consequently,
+\[
+  \pi_{t,j}\ge0\qquad(1\le j\le t,\ t\ge22).
+\]
+\end{theorem}
+
+\begin{proof}
+The proof uses the closed decomposition
+\[
+  N_{t,j}=N^{a_1}_{t,j}+N^{a_2}_{t,j}+N^{xx}_{t,j}+N^{yy}_{t,j}+N^{xy}_{t,j}.
+\]
+The case $j=1$ is explicit:
+\[
+  N_{t,1}=2^{-t}\left(\frac34+\frac9{2t}-\frac2{t^2}\right),
+  \qquad L_{t,1}=\frac1{4t^2}.
+\]
+Hence
+\[
+  \frac{N_{t,1}}{L_{t,1}}=\frac{3t^2+18t-8}{2^t}<1
+\]
+for $t\ge22$.
+
+For $j=t$, direct simplification gives
+\[
+  L_{t,t}-N_{t,t}
+  =\frac{24^tA_3(t)-16^tB_3(t)}{108\,2^{5t}t},
+\]
+where
+\[
+  A_3(t)=3t^3-55t^2-198t-164,
+\]
+and
+\[
+  B_3(t)=27t^3-27t^2+432t-1458.
+\]
+Equivalently, we need
+\[
+  D_t:=\left(\frac32\right)^t A_3(t)-B_3(t)\ge0.
+\]
+At $t=22$, $A_3(22)=804$ and
+\[
+  D_{22}=\frac{6011397524385}{1048576}>0.
+\]
+Moreover,
+\[
+D_{t+1}-D_t
+=\left(\frac32\right)^t\frac{3t^3-28t^2-501t-914}{2}
+-27(3t^2+t+16),
+\]
+which is positive for $t\ge22$.  Hence $D_t>0$ for all $t\ge22$.
+
+For $j=t-1$,
+\[
+  L_{t,t-1}-N_{t,t-1}
+  =\frac{48^tA_4(t)-32^tB_4(t)}{972\,2^{6t}t^2},
+\]
+where
+\[
+  A_4(t)=2(9t^4-97t^3-282t^2-176t-264),
+\]
+and
+\[
+  B_4(t)=81(t-2)(t^3+t^2+34t-84).
+\]
+The inequality is equivalent to
+\[
+  \left(\frac32\right)^tA_4(t)\ge B_4(t).
+\]
+It already holds at $t=14$, with margin
+\[
+  \left(\frac32\right)^{14}A_4(14)-B_4(14)=\frac{9583234497}{1024}>0.
+\]
+For the induction step, set
+\[
+  E_t=\left(\frac32\right)^tA_4(t)-B_4(t).
+\]
+Then
+\[
+  E_{t+1}-E_t
+  =\left(\frac32\right)^t
+   \bigl(9t^4+11t^3-993t^2-2633t-1902\bigr)
+   -(324t^3+243t^2+5265t-9720).
+\]
+The quartic factor is positive at $t=14$ and increasing thereafter, and
+at $t=14$ the displayed difference is already positive.  Hence
+$E_t>0$ for every $t\ge14$, in particular for every $t\ge22$.
+
+It remains to treat $2\le j\le t-2$.  Put $m=t-j\ge2$ and
+\[
+  L^{(2)}_{t,j}=\frac{j(j-1)3^{j-2}}{(m+1)(m+2)4^j}.
+\]
+Since $L_{t,j}\ge L^{(2)}_{t,j}$, it is enough to show
+$N_{t,j}<L^{(2)}_{t,j}$.  The five closed-form ratios are
+\[
+\frac{N^{a_2}_{t,j}}{L^{(2)}_{t,j}}
+=2^{-(m+1)}\left[1+\frac{6(m+2)}{j-1}+\frac{9(m+1)(m+2)}{j(j-1)}\right],
+\]
+\[
+\frac{N^{a_1}_{t,j}}{L^{(2)}_{t,j}}
+=\frac{2\bigl(4j^3+24j^2m+36j^2+45jm^2+111jm+50j+27m^3+81m^2+54m\bigr)}{3\,2^m j(j-1)(j+m)^2},
+\]
+\[
+\frac{N^{xx}_{t,j}}{L^{(2)}_{t,j}}
+=9\left(\frac23\right)^j
+\frac{(m+2)(4j+m-7)}{(j+m)^2(j+m-1)},
+\]
+\[
+\frac{N^{xy}_{t,j}}{L^{(2)}_{t,j}}
+=\frac{9(2/3)^j}{2^{m+1}}
+\frac{(j+m-4)(j+2m+3)}{(j-1)(j+m)},
+\]
+and
+\[
+\frac{N^{yy}_{t,j}}{L^{(2)}_{t,j}}
+=\ones_{m=2}\frac{108(2/3)^j}{j(j-1)(j+2)^2}.
+\]
+We bound them one by one.
+
+First, the $a_2$ ratio decreases in $j$ for fixed $m$, since each
+nonconstant summand is a positive multiple of either $(j-1)^{-1}$ or
+$(j(j-1))^{-1}$.  If $m\ge20$, its value at $j=2$ is already less than
+$1/3$.  If $2\le m\le19$, then $j\ge22-m$; direct substitution on this
+finite boundary gives the maximum at $(m,j)=(2,20)$:
+\[
+  2^{-3}\left(1+\frac{24}{19}+\frac{108}{20\cdot19}\right)
+  =\frac{121}{380}<\frac13.
+\]
+
+Second, the $a_1$ ratio decreases in $j$ for fixed $m$ because the
+difference between consecutive values equals
+\[
+\frac{2\Pi(m,j)}{3\,2^m j(j-1)(j+1)(j+m)^2(j+m+1)^2},
+\]
+where
+\begin{align*}
+\Pi(m,j)={}&4j^5+48j^4m+84j^4+179j^3m^2+509j^3m+306j^3\\
+&+288j^2m^3+1044j^2m^2+1068j^2m+276j^2\\
+&+207jm^4+882jm^3+1198jm^2+553jm+50j\\
+&+54m^5+261m^4+432m^3+279m^2+54m,
+\end{align*}
+which has positive coefficients.  For $m\ge20$, the maximum occurs at
+$j=2$ and is bounded by
+\[
+  \frac{9m^2+39m+46}{2^m(m+2)}<\frac7{100}.
+\]
+For $2\le m\le19$, again $j\ge22-m$, and the finite boundary maximum is
+attained at $(m,j)=(2,20)$:
+\[
+  \frac{3137}{45980}<\frac7{100}.
+\]
+
+Third, for the $xx$ ratio, if $j=2$ then the ratio is $4/(m+2)$ and
+$m+2=t\ge22$, so it is at most $2/11$.  If $j\ge8$, then
+\[
+  \frac{(m+2)(4j+m-7)}{(j+m)^2(j+m-1)}\le \frac4{t-1}\le\frac4{21},
+\]
+so
+\[
+  9\left(\frac23\right)^j\frac4{t-1}
+  \le 9\left(\frac23\right)^8\frac4{21}<\frac2{11}.
+\]
+For $3\le j\le7$, the ratio is maximized at the smallest admissible
+$t$, namely $t=22$, and the largest case is $j=3$, giving $16/121<2/11$.
+
+Fourth, for the $xy$ ratio, if $m\ge10$ the elementary bound
+\[
+  \frac{(j+m-4)(j+2m+3)}{(j-1)(j+m)}
+  \le 4(2m+5)
+\]
+gives a value at most $100/2048<1/20$.  If $2\le m\le9$, then
+$j\ge13$ and
+\[
+  \frac{j+2m+3}{j-1}\le\frac{17}{6},
+\]
+so
+\[
+  \frac{N^{xy}_{t,j}}{L^{(2)}_{t,j}}
+  \le 9\left(\frac23\right)^{13}\frac18\frac{17}{6}<\frac1{20}.
+\]
+
+Finally, the $yy$ ratio is present only when $m=2$.  Then $j\ge20$ and
+\[
+  \frac{108(2/3)^j}{j(j-1)(j+2)^2}
+  \le \frac{108(2/3)^{20}}{20\cdot19\cdot22^2}<\frac1{20}.
+\]
+
+Adding the five bounds gives
+\[
+  \frac{N_{t,j}}{L^{(2)}_{t,j}}
+  \le \frac13+\frac7{100}+\frac2{11}+\frac1{20}+\frac1{20}
+  =\frac{2261}{3300}<1.
+\]
+Therefore $N_{t,j}<L^{(2)}_{t,j}\le L_{t,j}$ in the bulk.  All cases are covered.
+\end{proof}
+
+\begin{lemma}[Right-subdivision and the endpoint]\label{lem:endpoint}
+For every $t\ge22$,
+\[
+  P_t(r_t)>0.
+\]
+Consequently,
+\[
+  P_t(r)\ge0\qquad(r_t\le r\le1).
+\]
+\end{lemma}
+
+\begin{proof}
+Direct differentiation gives
+\[
+  \pi_{t,0}=P_t(0)=-\frac{t+4}{t2^{t+1}},
+\]
+and
+\[
+  \pi_{t,1}=\frac{2^t-3t^2-18t+8}{t^2 2^{t+2}}.
+\]
+By Theorem \ref{thm:NleL}, $\pi_{t,j}\ge0$ for $1\le j\le t$.  Hence
+\[
+P_t(r_t)\ge \pi_{t,0}(1-r_t)^t+t\pi_{t,1}r_t(1-r_t)^{t-1}.
+\]
+The bracket in this lower bound is
+\[
+\pi_{t,0}(1-r_t)+t\pi_{t,1}r_t
+=\frac{2^{t+1}-3t^3-34t^2-80t+96}{t2^{2t+1}}.
+\]
+At $t=22$ the numerator is
+\[
+  2^{23}-3\cdot22^3-34\cdot22^2-80\cdot22+96=8{,}338{,}544>0.
+\]
+Let
+\[
+  M(t)=3t^3+34t^2+80t-96.
+\]
+Then
+\[
+  2M(t)-M(t+1)=3t^3+25t^2+3t-213>0
+\]
+for $t\ge22$.  Therefore $M(t)<2^{t+1}$ propagates by induction from $t=22$, proving $P_t(r_t)>0$ for all $t\ge22$.
+
+For the final assertion, subdivide the degree-$t$ Bernstein control net of $P_t$ from $[0,1]$ to $[r_t,1]$.  The first right-subdivision coefficient is $P_t(r_t)$; every later coefficient is a convex combination of $\pi_{t,1},\ldots,\pi_{t,t}$.  All these coefficients are nonnegative, so $P_t\ge0$ on the interval.
+\end{proof}
+
+\section{Finite Bernstein certificates}
+
+The remaining ranges are finite:
+\[
+  3\le t\le10
+\]
+for the full uniform domination $Q_t\ge0$ on $[0,1]$, and
+\[
+  11\le t\le21
+\]
+for the split certificate $Q_t\ge0$ on $[0,r_t]$ and $P_t\ge0$ on $[r_t,1]$.
+The verification is exact rational Bernstein arithmetic; no floating-point root-finding or optimization is used.
+
+\begin{proposition}[Finite exact certificates]\label{prop:finite}
+The following finite assertions hold.
+\begin{enumerate}[label=(\roman*)]
+\item For $3\le t\le10$, every Bernstein coefficient of $Q_t$ on $[0,1]$ is positive.
+\item For $11\le t\le21$, every Bernstein coefficient of $Q_t$ on $[0,r_t]$ and every Bernstein coefficient of $P_t$ on $[r_t,1]$ is positive.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+Appendix \ref{app:finite} gives a short exact verifier.  It constructs $P_t$ and $Q_t$ from Theorem \ref{thm:fixed-pairwise}, transforms each requested interval to $[0,1]$, converts the resulting rational polynomial to Bernstein form, and checks that every rational coefficient is positive.  The script uses only exact rational arithmetic in \texttt{sympy}; the displayed decimal table in the appendix is only for readability.
+\end{proof}
+
+\begin{proof}[Proof of Theorem \ref{thm:twotwo}]
+The case $t=2$ was proved directly.  For $3\le t\le10$, Proposition \ref{prop:finite} gives $Q_t\ge0$ on $[0,1]$, hence $F_t\le U_t$.  For $11\le t\le21$, Proposition \ref{prop:finite} gives $Q_t\ge0$ on $[0,r_t]$ and $P_t\ge0$ on $[r_t,1]$, hence $F_t\le\max\{U_t,A_t\}$.  For $t\ge22$, Proposition \ref{prop:Qside} proves the $Q_t$ side and Lemma \ref{lem:endpoint} proves the $P_t$ side.  Thus the pointwise domination holds for all $t\ge3$.  Since $U_t$, $A_t(x)$, and $R_{4,2}^{\fix}(1/2,1/2,0,0)$ are Dirac-uniform values, the $(2,2)$ stratum is never a nonuniform global maximizer.
+\end{proof}
+
+
+\begin{corollary}[Strict open-stratum exclusion and ambient alphabets]\label{cor:ambient-twotwo}
+Let $n\ge4$ and let
+\[
+  p=(x,x,1/2-x,1/2-x,0,\ldots,0),
+  \qquad 0\le x\le1/4.
+\]
+Then $p$ is dominated by a Dirac--uniform competitor in the $n$-simplex.
+The domination is strict whenever the positive coordinates form a genuine
+non-Dirac $(2,2)$ point.  Hence no such point can be a global maximizer
+for any ambient alphabet size $n\ge4$.
+\end{corollary}
+
+\begin{proof}
+The identities $a_t(0)=0$ and $b_t(0,u)=0$ imply that adding zero
+coordinates does not change the risk.  The competitors used in Theorem
+\ref{thm:twotwo} are all Dirac--uniform laws supported on at most four
+symbols, so they are admissible in every $n$-simplex with $n\ge4$.  The
+finite Bernstein coefficients in Proposition \ref{prop:finite} are
+strictly positive on the open certified intervals, and the tail inequalities
+in Propositions \ref{prop:Qside} and \ref{thm:NleL} are strict away from
+Dirac collision boundaries.  This gives strict domination for genuine
+open $(2,2)$ points.
+\end{proof}
+
+
+
+\section{The $(3,2)$ stratum}\label{sec:threetwo}
+
+The next repeated-repeated test case is
+\[
+  p=(x,x,x,y,y),
+  \qquad 3x+2y=1,
+  \qquad 0\le x\le\frac13,
+\]
+where
+\[
+  y=\frac{1-3x}{2}.
+\]
+The collision point is $x=y=1/5$.  Define
+\[
+  F^{(3,2)}_t(x)=R_{5,t}^{\fix}(x,x,x,y,y).
+\]
+By Theorem~\ref{thm:fixed-pairwise},
+\[
+\begin{aligned}
+F^{(3,2)}_t(x)
+={}&3a_t(x)+2a_t(y)+6b_t(x,x)+2b_t(y,y)+12b_t(x,y).
+\end{aligned}
+\]
+The natural comparison menu is
+\[
+  \mathsf U^{(5)}_t,
+  \qquad \mathsf D_{3,t}(x),
+  \qquad \mathsf D_{4,t}(x),
+  \qquad \mathsf D_{4,t}(y).
+\]
+This menu is a genuine multiplicity-transplant menu.  On the right-light
+segment, for example, the endpoint merge $\mathsf D_{3,t}(x)$ does not
+pointwise dominate the stratum through the whole light bulk; the competitor
+$\mathsf D_{4,t}(y)$ is needed.
+
+\begin{theorem}[$(3,2)$ comparison certificate]\label{thm:threetwo}
+For $0\le x\le1/3$ and $y=(1-3x)/2$, the following assertions hold.
+For $t=2$,
+\[
+  F^{(3,2)}_2(x)
+  \le R_{2,2}^{\fix}\left(\frac12,\frac12\right).
+\]
+For $t=3$,
+\[
+  F^{(3,2)}_3(x)
+  \le \max\{\mathsf D_{2,3}(y),\mathsf D_{3,3}(x)\}.
+\]
+For $t\ge4$,
+\[
+  F^{(3,2)}_t(x)
+  \le
+  \max\{\mathsf U^{(5)}_t,\mathsf D_{3,t}(x),
+          \mathsf D_{4,t}(x),\mathsf D_{4,t}(y)\}.
+\]
+Consequently no genuine non-Dirac $(3,2)$ point can be a global maximizer.
+\end{theorem}
+
+\begin{proof}[Proof structure]
+The cases $t=2$ and $t=3$ are direct.  One computes
+\[
+  R_{2,2}^{\fix}\left(\frac12,\frac12\right)-F^{(3,2)}_2(x)
+  =-\frac98 x(65x^3-44x^2+18x-4),
+\]
+and the cubic factor is negative on $[0,1/3]$.  For $t=3$,
+\[
+  \mathsf D_{2,3}(y)-F^{(3,2)}_3(x)
+  =-x^2(129x^3-207x^2+95x-11),
+\]
+and
+\[
+  \mathsf D_{3,3}(x)-F^{(3,2)}_3(x)
+  =-\frac{(3x-1)^2}{48}(189x^3-855x^2+99x+7).
+\]
+A rational split at $x=7/40$ gives the two inequalities on the intervals
+$[0,7/40]$ and $[7/40,1/3]$, respectively.
+
+For $4\le t\le40$ the proof is by exact rational Bernstein arithmetic, as
+recorded in Appendix~\ref{app:finite-32}.  For $t\ge41$ split the left
+segment by $r=5x$ and the right segment by $\rho=5y$.  The four reduced gaps
+are
+\[
+  Q^L_t(r)=\frac{\mathsf U^{(5)}_t-F^{(3,2)}_t(r/5)}{(1-r)^2},
+  \qquad
+  P^L_t(r)=\frac{\mathsf D_{4,t}(r/5)-F^{(3,2)}_t(r/5)}{(1-r)^2},
+\]
+and
+\[
+  Q^R_t(\rho)=\frac{\mathsf D_{3,t}(x)-F^{(3,2)}_t(x)}{y^2},
+  \qquad
+  P^R_t(\rho)=\frac{\mathsf D_{4,t}(y)-F^{(3,2)}_t(x)}{(1-\rho)^2},
+\]
+where $y=\rho/5$ and $x=(5-2\rho)/15$.  Lemmas~\ref{lem:32-left-layer}
+and~\ref{lem:32-right-layer} prove the two boundary layers
+\[
+  Q^L_t\ge0\quad(0\le r\le(4/5)^t),
+  \qquad
+  Q^R_t\ge0\quad(0\le\rho\le5/t^2),
+\]
+and Theorem~\ref{thm:32-bulk-audit} proves the two bulk intervals by
+Bernstein coefficient domination and right subdivision.
+\end{proof}
+
+\begin{lemma}[Left $(3,2)$ boundary layer]\label{lem:32-left-layer}
+For $t\ge41$,
+\[
+  \mathsf U^{(5)}_t\ge F^{(3,2)}_t(r/5)
+  \qquad
+  0\le r\le\left(\frac45\right)^t.
+\]
+\end{lemma}
+
+\begin{proof}
+Put $\alpha=(4/5)^t$ and $x=r/5\le\alpha/5$.  For $t\ge41$,
+$\mathsf U^{(5)}_t\ge \alpha/5$.  In the expression for $F^{(3,2)}_t$ the
+term $6b_t(x,x)$ is nonpositive, hence may be discarded in an upper bound.
+The remaining terms satisfy the crude estimates
+\[
+  3a_t(x)\le \frac{3\alpha}{5t}+\frac{3\alpha^2}{25},
+  \qquad
+  2a_t(y)\le 3\cdot2^{-t},
+\]
+\[
+  2b_t(y,y)\le2\left(\frac{3\alpha}{5}\right)^{t-2},
+  \qquad
+  12b_t(x,y)\le4\alpha2^{-t}.
+\]
+The sum is $<\alpha/10$ for $t\ge41$, and therefore is below
+$\mathsf U^{(5)}_t$.
+\end{proof}
+
+\begin{lemma}[Right $(3,2)$ boundary layer]\label{lem:32-right-layer}
+For $t\ge41$,
+\[
+  \mathsf D_{3,t}(x)\ge F^{(3,2)}_t(x)
+  \qquad
+  0\le y\le\frac1{t^2},
+  \quad x=\frac{1-2y}{3}.
+\]
+The inequality is strict for $0<y\le t^{-2}$.
+\end{lemma}
+
+\begin{proof}
+The gap is
+\[
+\begin{aligned}
+\mathsf D_{3,t}(x)-F^{(3,2)}_t(x)
+={}&a_t(2y)-2a_t(y)+6b_t(x,2y)-12b_t(x,y)-2b_t(y,y).
+\end{aligned}
+\]
+Write
+\[
+  N_t(y)=a_t(2y)-2a_t(y)-2b_t(y,y),
+  \qquad
+  C_t(y)=6b_t(x,2y)-12b_t(x,y).
+\]
+We first prove the corrected non-cross estimate
+\[
+  N_t(y)\ge \frac34\frac{y^2}{t}
+  \qquad(0\le y\le t^{-2},\ t\ge41).
+\]
+The case $y=0$ is immediate, so assume $y>0$.  Put
+$S_t(y)=a_t(2y)-2a_t(y)$ and $s=t^2y\in[0,1]$.  We use the elementary Taylor
+bounds, valid for $m\ge0$ and $0\le z\le1$,
+\[
+  (1-z)^m\le 1-mz+\binom m2z^2,
+  \qquad
+  (1-z)^m\ge 1-mz+\binom m2z^2-\binom m3z^3.
+\]
+Applying the lower bound to the positive bases and the upper bound to the
+negative bases gives
+\[
+\begin{aligned}
+S_t(y)
+\ge{}&\frac{2y}{t}\left[-(t-1)y+3\binom{t-1}{2}y^2
+       -8\binom{t-1}{3}y^3\right] \\
+&+y^2\left[2-6ty+14\binom t2y^2-32\binom t3y^3\right].
+\end{aligned}
+\]
+Equivalently,
+\[
+  \frac{tS_t(y)}{y^2}\ge H_t(s),
+\]
+where
+\[
+\begin{aligned}
+H_t(s)={}&2-\left(3+\frac9t-\frac6{t^2}\right)s
++\frac{(t-1)(13t^2+40t-48)}{3t^4}s^2
+-\frac{16(t-1)(t-2)}{3t^4}s^3.
+\end{aligned}
+\]
+For $t\ge41$, $H_t'(s)<0$ on $[0,1]$; for instance the positive quadratic
+part of $H_t'$ is at most
+\[
+  \frac{2(t-1)(13t^2+40t-48)}{3t^4}<3
+\]
+while the negative linear coefficient is larger than $3$.  Hence
+$H_t(s)\ge H_t(1)$, and
+\[
+  H_t(1)+\frac{23}{20}
+  =\frac{9t^4-280t^3+580t^2-800t+320}{60t^4}>0
+  \qquad(t\ge41).
+\]
+Thus
+\[
+  S_t(y)\ge -\frac{23}{20}\frac{y^2}{t}.
+\]
+On the other hand,
+\[
+  -2b_t(y,y)=2y^2(1-2y)^{t-2}\left(\frac1t-4y^2\right).
+\]
+Since $y\le t^{-2}$,
+\[
+  (1-2y)^{t-2}\ge 1-2(t-2)y\ge1-\frac2t,
+  \qquad
+  \frac1t-4y^2\ge\frac1t\left(1-\frac4{t^3}\right),
+\]
+and therefore
+\[
+  -2b_t(y,y)
+  \ge \frac{2y^2}{t}\left(1-\frac2t\right)
+       \left(1-\frac4{t^3}\right)
+  \ge \frac{19}{10}\frac{y^2}{t}
+  \qquad(t\ge41).
+\]
+Combining the last two estimates gives
+\[
+  N_t(y)\ge\left(\frac{19}{10}-\frac{23}{20}\right)\frac{y^2}{t}
+  =\frac34\frac{y^2}{t}.
+\]
+
+It remains to bound the cross difference explicitly.  Let
+\[
+  \eta_t(u)=(1-u)^{t-2}\left(u^2-\frac1t\right),
+  \qquad b_t(u,v)=uv\eta_t(u+v).
+\]
+Then
+\[
+  C_t(y)=12xy\{\eta_t(x+2y)-\eta_t(x+y)\}.
+\]
+The two arguments lie in $[1/3,1/2]$ and differ by $y$.  On this interval,
+\[
+  |\eta_t'(u)|
+  \le (t-2)\left(\frac23\right)^{t-3}
+      +\left(\frac23\right)^{t-2}
+  < t\left(\frac23\right)^{t-3}.
+\]
+Thus, using $x\le1/3$,
+\[
+  |C_t(y)|
+  \le 12xy^2 t\left(\frac23\right)^{t-3}
+  \le \frac{27}{2}t y^2\left(\frac23\right)^t
+  \le \frac1{100}\frac{y^2}{t}
+  \qquad(t\ge41),
+\]
+because $(3/2)^t/t^2$ is increasing for $t\ge5$ and the final inequality
+already holds at $t=41$.
+Consequently
+\[
+\mathsf D_{3,t}(x)-F^{(3,2)}_t(x)
+=N_t(y)+C_t(y)
+\ge\left(\frac34-\frac1{100}\right)\frac{y^2}{t}
+=\frac{37}{50}\frac{y^2}{t}\ge0.
+\]
+This proves the boundary-layer domination, with strict inequality when
+$y>0$.
+\end{proof}
+
+\begin{theorem}[Bulk coefficient audit for $(3,2)$]\label{thm:32-bulk-audit}
+For $t\ge41$, write
+\[
+  P^L_t(r)=\sum_{j=0}^t\pi^L_{t,j}\binom tj r^j(1-r)^{t-j}
+\]
+and
+\[
+  P^R_t(\rho)=\sum_{j=0}^t\pi^R_{t,j}\binom tj \rho^j(1-\rho)^{t-j}.
+\]
+Then
+\[
+  \pi^L_{t,j}>0,
+  \qquad
+  \pi^R_{t,j}>0
+  \qquad(1\le j\le t),
+\]
+while
+\[
+  \pi^L_{t,0}=-\frac{t+4}{t2^{t+1}},
+  \qquad
+  \pi^R_{t,0}=-\mathsf U^{(3)}_t.
+\]
+Consequently
+\[
+  P^L_t(r)\ge0
+  \quad\left(\left(\frac45\right)^t\le r\le1\right),
+  \qquad
+  P^R_t(\rho)\ge0
+  \quad\left(\frac5{t^2}\le\rho\le1\right).
+\]
+\end{theorem}
+
+\begin{proof}
+The positivity of the nonzero Bernstein coefficients is the coefficient
+audit in Appendix~\ref{app:32-coeff-audit}.  For the endpoint subdivision,
+use the explicit first-coefficient formulas
+\[
+  \pi^L_{t,1}
+  =\frac{2^t-4t^2-24t+16}{5\cdot 2^t t^2},
+\]
+\[
+  \pi^R_{t,1}
+  =\frac{4\cdot9^t-(48t^2-140t+24)3^t
+          -(4t^2+24t+3)6^t}{10\cdot9^t t^2}.
+\]
+They imply
+\[
+  \pi^L_{t,1}\ge\frac1{10t^2},
+  \qquad
+  \pi^R_{t,1}\ge\frac1{5t^2}
+  \qquad(t\ge41),
+\]
+because
+\[
+  2^t\ge8t^2+48t-32
+\]
+for the left coefficient, and
+\[
+  \frac{48t^2-140t+24}{3^t}
+  +\frac{4t^2+24t+3}{(3/2)^t}\le2
+\]
+for the right coefficient.  Both scalar inequalities hold at $t=41$ and
+then propagate since the exponential side grows faster than the polynomial
+side.
+At $\alpha_t=(4/5)^t$,
+\[
+P^L_t(\alpha_t)
+\ge(1-\alpha_t)^{t-1}
+\left[\pi^L_{t,0}(1-\alpha_t)+t\pi^L_{t,1}\alpha_t\right]>0,
+\]
+because $(8/5)^t>5(t+4)$ for $t\ge41$.  At $\beta_t=5/t^2$,
+\[
+P^R_t(\beta_t)
+\ge(1-\beta_t)^{t-1}
+\left[\pi^R_{t,0}(1-\beta_t)+t\pi^R_{t,1}\beta_t\right]>0,
+\]
+because $t^{-3}>3(2/3)^t\ge \mathsf U^{(3)}_t$ for $t\ge41$ after the
+crude uniform-value bound.  Right subdivision of the Bernstein control nets
+then gives nonnegativity on both bulk intervals.
+\end{proof}
+
+\section{Toward the repeated--double family $(m,2)$}\label{sec:m2}
+
+The $(2,2)$ and $(3,2)$ certificates suggest a uniform comparison menu for
+all repeated-double strata.  Let
+\[
+  p=(x^m,y,y),
+  \qquad mx+2y=1,
+  \qquad N=m+2.
+\]
+The collision point is $x=y=1/N$.
+
+\begin{conjecture}[$(m,2)$ comparison menu]\label{conj:m2-menu}
+For every $m\ge2$ and $t\ge2$,
+\[
+  R^{\fix}_{N,t}(x^m,y,y)
+  \le
+  \max\{\mathsf U^{(N)}_t,
+          \mathsf D_{N-1,t}(x),
+          \mathsf D_{m,t}(x),
+          \mathsf D_{N-1,t}(y)\}.
+\]
+\end{conjecture}
+
+The intended roles are as follows.  On the left segment $x\le1/N$, the
+uniform value $\mathsf U^{(N)}_t$ handles the exponentially small $x$-layer,
+and $\mathsf D_{N-1,t}(x)$ handles the bulk through collision.  On the right
+segment $y\le1/N$, the merge competitor $\mathsf D_{m,t}(x)$ handles the
+polynomially small $y$-layer, and the collision-transplant competitor
+$\mathsf D_{N-1,t}(y)$ handles the bulk through collision.
+
+\begin{remark}[Universal right-light scale]
+With $x=(1-2y)/m$ and $y\to0$, the formal expansion is
+\[
+\mathsf D_{m,t}(x)-R^{\fix}_{m+2,t}(x^m,y,y)
+= y^2\left(\frac4t-3ty+\Oh(y)+\Oh(t^2y^2)
++\Oh\left(t^2\left(\frac{m-1}{m}\right)^t\right)\right).
+\]
+Thus the right-light boundary layer has the universal scale $y\asymp t^{-2}$,
+independent of $m$ at the leading order.
+\end{remark}
+
+There is also a local alternative to the pointwise comparison menu.  Let
+$F_{m,t}(x)=R^{\fix}_{m+2,t}(x^m,y,y)$ with $mx+2y=1$.  A nonuniform
+active-face local maximum of type $(m,2)$ must satisfy $F'_{m,t}(x)=0$ and
+both split inequalities $Q_x,Q_y\le0$.
+
+\begin{problem}[Split-opposition for $(m,2)$]\label{prob:m2-split}
+Prove that every nonuniform active-face KKT point of type $(m,2)$ has
+opposite split curvatures,
+\[
+  Q_xQ_y<0.
+\]
+This would exclude the entire $(m,2)$ family by second-order instability.
+\end{problem}
+
+Exact symbolic checks prove the split-opposition conclusion for every
+$m\ge2$ when $2\le t\le4$; the comparison menu above appears to be the more
+robust all-$t$ route.
+
+\section{Locked-pair drift and the $(m,1,1)$ family}\label{sec:m11}
+
+The natural local model for one plateau plus two residual candidates is
+\[
+  p=(x^m,y,z),
+  \qquad mx+y+z=1.
+\]
+Write
+\[
+  y=\frac{1-mx+d}{2},
+  \qquad
+  z=\frac{1-mx-d}{2},
+  \qquad
+  w=d^2,
+\]
+and define
+\[
+  \Phi_{m,t}(x,d)
+  =R^{\fix}_{m+2,t}\left(x^m,\frac{1-mx+d}{2},\frac{1-mx-d}{2}\right).
+\]
+
+\begin{lemma}[Locked-pair drift identity]\label{lem:locked-drift}
+There are polynomials $E_{m,t}(x,w)$ and $J_{m,t}(x,w)$ such that
+\[
+  \partial_d\Phi_{m,t}(x,d)=\frac d2 E_{m,t}(x,w),
+\]
+and, on the singleton-stationary branch $E_{m,t}=0$,
+\[
+  \partial_x\Phi_{m,t}
+  =m\left((1-(m+2)x)^2-w\right)J_{m,t}(x,w).
+\]
+Equivalently,
+\[
+  \partial_x\Phi_{m,t}=4m(y-x)(z-x)J_{m,t}(x,w)
+  \qquad(E_{m,t}=0).
+\]
+\end{lemma}
+
+\begin{proof}
+The first identity follows from the symmetry $d\leftrightarrow-d$.  For the
+second, subtract the multiple of $E_{m,t}$ that makes the expression vanish
+on the collision locus $y=x$ or $z=x$, equivalently
+$w=(1-(m+2)x)^2$.  The remaining factor is therefore divisible by
+$(1-(m+2)x)^2-w=4(y-x)(z-x)$.
+\end{proof}
+
+\begin{problem}[Locked-pair drift positivity]\label{prob:locked-positivity}
+Prove that in the feasible strip,
+\[
+  E_{m,t}=0,
+  \qquad
+  \partial_wE_{m,t}\le0
+  \quad\Longrightarrow\quad
+  J_{m,t}>0.
+\]
+Then a stable unequal singleton lock forces nonzero drift toward collision
+with the plateau, unless the point is already on a collision boundary.
+\end{problem}
+
+For every $m\ge1$ and $2\le t\le4$, exact symbolic calculations show that
+no genuine open $(m,1,1)$ point is pairwise-exchange stable.  The identity
+above is the structural mechanism behind those low-count exclusions.
+
+\section{Positioning and two structural tools}\label{sec:positioning}
+
+The exact finite-count statement studied here should be distinguished from
+existing asymptotic or Poissonized results.  Skorski's maximal MSE theorem
+characterizes the Good--Turing risk at the relevant asymptotic scale
+\cite{Skorski2021}; the exact finite-$t$ active-uniform conjecture asks for
+a stronger structural statement about the exact pairwise multinomial risk.
+For comparison, Rajaraman--Thangaraj--Suresh prove that the worst-case risk
+of the Good--Turing estimator for missing mass lies between $0.6080/n$ and
+$0.6179/n$ \cite{RajaramanThangarajSuresh2017}.  The Dirac--uniform family
+appearing in Conjecture \ref{conj:active-uniform} is consistent with the
+asymptotic light-atom plus reservoir picture, but the present problem is an
+exact finite-count maximizer problem.
+
+Two general tools may reduce the remaining stratum enumeration.
+
+\paragraph{Fixed-$t$ half-degree certification.}
+Timofte's degree principle and Riener's half-degree principle imply that
+symmetric polynomial inequalities on the nonnegative orthant can be checked
+on points with boundedly many distinct coordinates, depending on the degree
+\cite{Timofte2003,Riener2012}.  After homogenizing the fixed-count gap
+\[
+  R_{n,t}^{\fix}(p)-c\left(\sum_i p_i\right)^{t+2}
+\]
+to degree $t+2$, this gives a fixed-$t$ certification route: once a Dirac
+envelope value $c$ is certified, it suffices to test a finite number of
+level patterns bounded by the half-degree principle.  This does not by
+itself solve the all-$t$ problem, since the degree grows with $t$, but it is
+a powerful way to turn each fixed-$t$ residue into finitely many
+semialgebraic checks.
+
+\paragraph{Exact frozen-marginal tangency.}
+For a grouped configuration
+$(\theta_1^{m_1},\ldots,\theta_s^{m_s})$, define the exact frozen marginal
+\[
+  \Psi(v)=a_t'(v)+2\sum_{\beta=1}^s m_\beta\partial_1 b_t(v,\theta_\beta)
+          -2\partial_1b_t(v,v).
+\]
+Every active level solves one scalar equation
+\[
+  \Psi(\theta_\alpha)=\lambda.
+\]
+Thus a root-count or tangency theorem for $\Psi$ would bound the number of
+active levels directly.  In the Poissonized and Skorski-scale problems this
+is the one-valley mechanism; in the exact fixed-count problem the challenge
+is that the bases $(1-v-\theta_\beta)^{t-2}$ depend on the surrounding
+configuration.  A quantitative tangency theorem after localizing active
+levels to the light-atom regime would complement the value-domination
+certificates proved here.
+
+
+\section{Consequences and remaining strategy}\label{sec:remaining-strategy}
+
+The resolved $(2,2)$ certificate and the $(3,2)$ comparison certificate are
+the first two repeated-repeated arrows in the fixed-count active-uniform
+program.  Their common structure is now clear:
+\[
+  \text{source stratum}
+  \quad\longrightarrow\quad
+  \text{finite Dirac-uniform comparison menu}.
+\]
+The proof is not a monotone foliation argument.  It is a pointwise value
+comparison against a small set of simpler multiplicity patterns, followed by
+Bernstein coefficient domination on reduced one-variable gaps.
+
+The current route to Conjecture~\ref{conj:active-uniform} is therefore as
+follows.
+\begin{enumerate}[label=\textbf{Step \arabic*.}]
+\item Prove the repeated-double menu in Conjecture~\ref{conj:m2-menu}.  The
+$(2,2)$ and $(3,2)$ certificates are the first two completed cases.
+\item Extend the collision-transplant menu from $(m,2)$ to general
+$(m,r)$ with $m,r\ge2$.  The bulk competitor should be the Dirac family
+with one fewer active light atom, passing through the collision point.
+\item Treat $(m,1,1)$ through the locked-pair drift identity and, where
+necessary, value comparison against the same Dirac menus.
+\item Assemble these arrows with the canonical bad-system conditions of
+Problem~\ref{prob:bad-system}.  A global maximizer must satisfy KKT,
+second-order local stability, boundary KKT, and value dominance over the
+Dirac envelope; comparison arrows rule out any non-Dirac point that survives
+those local tests.
+\end{enumerate}
+
+\begin{center}
+\begin{tabular}{c|c|c}
+\toprule
+Stratum & Current status & Main method\\
+\midrule
+$(2,2)$ & proved all $t$ & pointwise comparison menu\\
+$(3,2)$ & certificate recorded here & comparison menu plus Bernstein audit\\
+$(m,2)$ & conjectural all $m,t$ & collision-transplant menu\\
+$(m,1,1)$ & structural/low-$t$ progress & locked-pair drift\\
+general $(m,r)$ & open & comparison-arrow poset\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{remark}[Audit warning]
+Earlier shortcut certificates failed when they checked only stationarity, or
+only one plateau split, or only one activation comparison.  The master system
+in Problem~\ref{prob:bad-system} deliberately includes all necessary
+conditions for a global maximizer.  The comparison-arrow certificates are
+stronger when they prove pointwise domination of an entire stratum, as in the
+$(2,2)$ and $(3,2)$ cases.
+\end{remark}
+
+\appendix
+\section{Exact finite Bernstein verifier}\label{app:finite}
+
+For a rational polynomial
+\[
+  f(u)=\sum_{k=0}^d c_k u^k,
+\]
+the degree-$d$ Bernstein coefficient $b_i$ on $[0,1]$ is
+\[
+  b_i=\sum_{k=0}^i c_k\frac{\binom{i}{k}}{\binom{d}{k}}.
+\]
+If all $b_i\ge0$, then $f(u)\ge0$ on $[0,1]$.
+
+The following exact script verifies Proposition \ref{prop:finite}.
+
+\begin{lstlisting}[language=Python]
+import sympy as sp
+from math import comb
+
+x, r, u = sp.symbols("x r u")
+
+def a(t, z):
+    return z/sp.Integer(t)*(1-z)**(t-1) + z**2*(1-z)**t
+
+def b(t, z, w):
+    return z*w*(1-z-w)**(t-2)*((z+w)**2 - sp.Rational(1,t))
+
+def F(t):
+    y = sp.Rational(1,2) - x
+    return (2*a(t,x) + 2*a(t,y)
+            + 2*b(t,x,x) + 2*b(t,y,y) + 8*b(t,x,y))
+
+def A(t):
+    h = 1 - 3*x
+    return 3*a(t,x) + a(t,h) + 6*b(t,x,x) + 6*b(t,x,h)
+
+def U(t):
+    q = sp.Rational(1,4)
+    return 4*a(t,q) + 12*b(t,q,q)
+
+def P_poly(t):
+    gap = sp.cancel(A(t) - F(t))
+    return sp.Poly(sp.cancel(gap.subs(x, r/4)/(1-r)**2), r, domain=sp.QQ)
+
+def Q_poly(t):
+    gap = sp.cancel(U(t) - F(t))
+    return sp.Poly(sp.cancel(gap.subs(x, r/4)/(1-r)**2), r, domain=sp.QQ)
+
+def bernstein_coeffs(poly_expr, var):
+    poly = sp.Poly(poly_expr, var, domain=sp.QQ)
+    d = poly.degree()
+    coeffs = []
+    for i in range(d+1):
+        s = sp.Rational(0)
+        for k in range(i+1):
+            s += poly.nth(k) * sp.Rational(comb(i,k), comb(d,k))
+        coeffs.append(sp.factor(s))
+    return coeffs
+
+def bernstein_on_interval(poly, left, right):
+    expr = sp.expand(poly.as_expr().subs(r, left + (right-left)*u))
+    return bernstein_coeffs(expr, u)
+
+# 3 <= t <= 10: Q_t is positive on [0,1]
+for t in range(3, 11):
+    Q_coeffs = bernstein_coeffs(Q_poly(t).as_expr(), r)
+    assert all(c > 0 for c in Q_coeffs)
+
+# 11 <= t <= 21: split certificate
+for t in range(11, 22):
+    rt = sp.Rational(t+6, 2**(t-1))
+    P_coeffs = bernstein_on_interval(P_poly(t), rt, sp.Rational(1))
+    Q_coeffs = bernstein_on_interval(Q_poly(t), sp.Rational(0), rt)
+    assert all(c > 0 for c in P_coeffs)
+    assert all(c > 0 for c in Q_coeffs)
+\end{lstlisting}
+
+The smallest coefficients observed in the finite split range are as follows.  These decimals are not used as proof; the proof uses the exact rational inequalities in the script.
+
+\begin{center}
+\begin{tabular}{c|cc}
+\toprule
+$t$ & $\min \Ber(P_t;[r_t,1])$ & $\min \Ber(Q_t;[0,r_t])$ \\
+\midrule
+11 & $9.18\cdot10^{-6}$ & $1.53\cdot10^{-2}$ \\
+12 & $1.06\cdot10^{-5}$ & $1.12\cdot10^{-2}$ \\
+13 & $6.69\cdot10^{-6}$ & $8.26\cdot10^{-3}$ \\
+14 & $3.61\cdot10^{-6}$ & $6.09\cdot10^{-3}$ \\
+15 & $1.83\cdot10^{-6}$ & $4.49\cdot10^{-3}$ \\
+16 & $8.97\cdot10^{-7}$ & $3.32\cdot10^{-3}$ \\
+17 & $4.33\cdot10^{-7}$ & $2.46\cdot10^{-3}$ \\
+18 & $2.08\cdot10^{-7}$ & $1.82\cdot10^{-3}$ \\
+19 & $9.92\cdot10^{-8}$ & $1.35\cdot10^{-3}$ \\
+20 & $4.74\cdot10^{-8}$ & $1.00\cdot10^{-3}$ \\
+21 & $2.26\cdot10^{-8}$ & $7.45\cdot10^{-4}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+
+\section{Exact finite Bernstein verifier for $(3,2)$}\label{app:finite-32}
+
+The following exact verifier constructs the finite $(3,2)$ certificates used
+in Theorem~\ref{thm:threetwo}.  The script is meant to be run with exact
+rational arithmetic; decimal sampling is not used as proof.
+
+\begin{lstlisting}[language=Python]
+import sympy as sp
+from math import comb
+
+x, r, rho, u = sp.symbols("x r rho u")
+
+def a(t, z):
+    return z/sp.Integer(t)*(1-z)**(t-1) + z**2*(1-z)**t
+
+def b(t, z, w):
+    return z*w*(1-z-w)**(t-2)*((z+w)**2 - sp.Rational(1,t))
+
+def D(t, k, z):
+    h = 1 - k*z
+    return k*a(t,z) + a(t,h) + k*(k-1)*b(t,z,z) + 2*k*b(t,z,h)
+
+def U(t, N):
+    q = sp.Rational(1,N)
+    return N*a(t,q) + N*(N-1)*b(t,q,q)
+
+def F32(t):
+    y = (1 - 3*x)/2
+    return (3*a(t,x) + 2*a(t,y) + 6*b(t,x,x)
+            + 2*b(t,y,y) + 12*b(t,x,y))
+
+def bernstein_coeffs(poly_expr, var):
+    poly = sp.Poly(sp.expand(poly_expr), var, domain=sp.QQ)
+    d = poly.degree()
+    coeffs = []
+    for i in range(d+1):
+        s = sp.Rational(0)
+        for k in range(i+1):
+            s += poly.nth(k) * sp.Rational(comb(i,k), comb(d,k))
+        coeffs.append(sp.factor(s))
+    return coeffs
+
+def bernstein_on_interval(expr, var, left, right):
+    return bernstein_coeffs(sp.expand(expr.subs(var, left + (right-left)*u)), u)
+
+# 4 <= t <= 13: U5 dominates on both sides of the collision.
+for t in range(4, 14):
+    gap = sp.cancel((U(t,5) - F32(t))/(5*x-1)**2)
+    assert all(c >= 0 for c in bernstein_on_interval(gap, x, sp.Rational(0), sp.Rational(1,5)))
+    assert all(c >= 0 for c in bernstein_on_interval(gap, x, sp.Rational(1,5), sp.Rational(1,3)))
+
+# 14 <= t <= 17: transition certificates.
+ct = {14: sp.Rational(1,10), 15: sp.Rational(1,15),
+      16: sp.Rational(1,20), 17: sp.Rational(1,20)}
+for t in range(14, 18):
+    # left segment, r = 5x
+    FL = F32(t).subs(x, r/5)
+    alpha = sp.Rational(4,5)**t
+    QL = sp.cancel((U(t,5) - FL)/(1-r)**2)
+    PL = sp.cancel((D(t,4,r/5) - FL)/(1-r)**2)
+    assert all(c >= 0 for c in bernstein_on_interval(QL, r, sp.Rational(0), alpha))
+    assert all(c >= 0 for c in bernstein_on_interval(PL, r, alpha, sp.Rational(1)))
+    # right segment, rho = 5y
+    yv = rho/5
+    xv = (1 - 2*yv)/3
+    FR = F32(t).subs(x, xv)
+    QR = U(t,5) - FR
+    PR = sp.cancel((D(t,4,yv) - FR)/(1-rho)**2)
+    assert all(c >= 0 for c in bernstein_on_interval(QR, rho, sp.Rational(0), ct[t]))
+    assert all(c >= 0 for c in bernstein_on_interval(PR, rho, ct[t], sp.Rational(1)))
+
+# 18 <= t <= 40: clean four-piece certificate.
+for t in range(18, 41):
+    FL = F32(t).subs(x, r/5)
+    alpha = sp.Rational(4,5)**t
+    QL = sp.cancel((U(t,5) - FL)/(1-r)**2)
+    PL = sp.cancel((D(t,4,r/5) - FL)/(1-r)**2)
+    assert all(c >= 0 for c in bernstein_on_interval(QL, r, sp.Rational(0), alpha))
+    assert all(c >= 0 for c in bernstein_on_interval(PL, r, alpha, sp.Rational(1)))
+
+    yv = rho/5
+    xv = (1 - 2*yv)/3
+    FR = F32(t).subs(x, xv)
+    beta = sp.Rational(5, t*t)
+    QR = sp.cancel((D(t,3,xv) - FR)/yv**2)
+    PR = sp.cancel((D(t,4,yv) - FR)/(1-rho)**2)
+    assert all(c >= 0 for c in bernstein_on_interval(QR, rho, sp.Rational(0), beta))
+    assert all(c >= 0 for c in bernstein_on_interval(PR, rho, beta, sp.Rational(1)))
+\end{lstlisting}
+
+\section{Coefficient audit for the $(3,2)$ bulk gaps}\label{app:32-coeff-audit}
+
+This appendix records the large-$t$ coefficient audit used in
+Theorem~\ref{thm:32-bulk-audit}.  Work with the undivided gaps
+\[
+  G^L_t(r)=\mathsf D_{4,t}(r/5)-F^{(3,2)}_t(r/5)
+  =(1-r)^2P^L_t(r),
+\]
+and
+\[
+  G^R_t(\rho)=\mathsf D_{4,t}(\rho/5)-F^{(3,2)}_t((5-2\rho)/15)
+  =(1-\rho)^2P^R_t(\rho).
+\]
+Let $\gamma^L_{t,j}$ and $\gamma^R_{t,j}$ denote the degree-$(t+2)$
+Bernstein coefficients of $G^L_t$ and $G^R_t$.  Since multiplication by
+$(1-u)^2$ only rescales the first $t+1$ Bernstein coefficients,
+$\gamma_{t,j}$ and $\pi_{t,j}$ have the same sign for $0\le j\le t$.
+
+For a term
+\[
+  c u^p\prod_{\nu=1}^s\{\alpha_\nu(1-u)+\beta_\nu u\}^{m_\nu},
+\]
+the degree-$(t+2)$ Bernstein coefficient is
+\[
+\frac{c}{\binom{t+2}{j}}
+\sum_{i_1=0}^{m_1}\cdots\sum_{i_s=0}^{m_s}
+\left[\prod_{\nu=1}^s\binom{m_\nu}{i_\nu}
+\alpha_\nu^{m_\nu-i_\nu}\beta_\nu^{i_\nu}\right]
+\binom{t+2-p-\sum_\nu m_\nu}{j-p-\sum_\nu i_\nu}.
+\]
+Illegal binomial coefficients are interpreted as zero.
+
+\paragraph{Left bulk.}
+The dominant positive contribution is the extra $a_t(x)$ term in
+$\mathsf D_{4,t}(x)$, with $x=r/5$.  Its coefficient is
+\[
+A^L_{t,j}
+=
+\left(\frac45\right)^{j-3}
+\frac{j\{j^2+(4t^2+8t-3)j+12t^2+8t+2\}}
+{125t^2(t+1)(t+2)}.
+\]
+The negative pieces are bounded by
+\[
+  Y^L_{t,j}\le\frac{71}{100}A^L_{t,j},
+  \qquad
+  X^L_{t,j}\le\frac2tA^L_{t,j},
+  \qquad
+  S^L_{t,j}\le\frac1{1000}A^L_{t,j}.
+\]
+Here $Y^L$ is the contribution of $-2a_t(y)$, $X^L$ is the negative part of
+$6b_t(x,x)$, and $S^L$ contains $-2b_t(y,y)-12b_t(x,y)$.  The first ratio
+simplifies, with $m=t-j$, to
+\[
+\frac{Y^L_{t,j}}{A^L_{t,j}}
+=2^{-m-1}\frac{P^L_Y(m,t)}{(t-m)Q(m,t)},
+\]
+where
+\[
+\begin{aligned}
+P^L_Y(m,t)={}&27m^3+(36t^2+99t+81)m^2\\
+&+(24t^3+237t^2+402t+54)m
++4t^4+85t^3+413t^2+458t,
+\end{aligned}
+\]
+and
+\[
+Q(m,t)=m^2-(4t^2+10t-3)m+4t^3+21t^2+5t+2.
+\]
+The ratio is maximized at $m=0$, where the bound $71/100$ follows from
+\[
+84t^3-2759t^2-20295t-22758\ge0\qquad(t\ge41).
+\]
+The $X^L$ ratio is
+\[
+\left(\frac34\right)^j
+\frac{128(j-1)(4j^2+12jt-32j+9t^2-33t+48)}
+{27(t-1)(j^2+(4t^2+8t-3)j+12t^2+8t+2)}
+\le\frac2t.
+\]
+The remaining ratio $S^L/A^L\le10^{-3}$ is obtained by the same coefficient
+formula and is worst at the endpoint $t=41,j=t$.  Hence
+\[
+\gamma^L_{t,j}\ge A^L_{t,j}\left(1-\frac{71}{100}-\frac2t-\frac1{1000}\right)>0
+\]
+for $t\ge41$ and $1\le j\le t$.
+
+\paragraph{Right bulk.}
+The dominant positive contribution is $2a_t(y)$ with $y=\rho/5$, so
+$A^R_{t,j}=2A^L_{t,j}$.  The negative pieces satisfy
+\[
+  Y^R_{t,j}\le\frac45A^R_{t,j},
+  \qquad
+  X^R_{t,j}\le\frac2tA^R_{t,j},
+  \qquad
+  S^R_{t,j}\le\frac1{1000}A^R_{t,j}.
+\]
+The main ratio is
+\[
+\frac{Y^R_{t,j}}{A^R_{t,j}}
+=\frac23\left(\frac23\right)^m
+\frac{P^R_Y(m,t)}{(t-m)Q(m,t)},
+\]
+where $m=t-j$, $Q$ is as above, and
+\[
+\begin{aligned}
+P^R_Y(m,t)={}&m^3+(4t^2+11t+3)m^2\\
+&+(8t^3+55t^2+68t+2)m
++4t^4+53t^3+177t^2+142t.
+\end{aligned}
+\]
+The ratio is maximized at $m=0$, and the bound $4/5$ follows from
+\[
+4t^3-139t^2-855t-698\ge0\qquad(t\ge41).
+\]
+The negative part of $10b_t(y,y)$ has ratio
+\[
+\left(\frac34\right)^j
+\frac{320(j-1)(4j^2+12jt-32j+9t^2-33t+48)}
+{81(t-1)(j^2+(4t^2+8t-3)j+12t^2+8t+2)}
+\le\frac2t.
+\]
+The remaining cross and heavy-block terms contribute at most $10^{-3}A^R$.
+Therefore
+\[
+\gamma^R_{t,j}\ge A^R_{t,j}\left(1-\frac45-\frac2t-\frac1{1000}\right)>0
+\]
+for $t\ge41$ and $1\le j\le t$.
+
+\begin{proposition}[Exact large-$t$ coefficient certificates]
+\label{prop:32-large-coeff-cert}
+For every $t\ge41$ and every $1\le j\le t$, the coefficient bounds displayed in
+this appendix hold:
+\[
+  Y^L_{t,j}\le\frac{71}{100}A^L_{t,j},\qquad
+  X^L_{t,j}\le\frac2tA^L_{t,j},\qquad
+  S^L_{t,j}\le\frac1{1000}A^L_{t,j},
+\]
+\[
+  Y^R_{t,j}\le\frac45A^R_{t,j},\qquad
+  X^R_{t,j}\le\frac2tA^R_{t,j},\qquad
+  S^R_{t,j}\le\frac1{1000}A^R_{t,j}.
+\]
+Consequently all nonzero Bernstein coefficients of $P^L_t$ and $P^R_t$ are
+strictly positive for $t\ge41$.
+\end{proposition}
+
+\begin{proof}
+The following exact certificate verifies the displayed inequalities.  The
+variables are $m=t-j$ and $j$, so the domain is
+\[
+  m\ge0,\qquad j\ge1,\qquad m+j\ge41.
+\]
+Every assertion is reduced to one of three exact checks: a cleared numerator
+with nonnegative coefficients after a translation of the quadrant; a finite
+exact rational check; or one of the elementary exponential lower bounds
+\[
+  2^m\ge m^8\ (m\ge44),\qquad
+  (3/2)^m\ge m^8\ (m\ge89),\qquad
+  (4/3)^j\ge j^2\ (j\ge22),\qquad
+  (4/3)^j\ge j^3\ (j\ge38),
+\]
+together with $3^m\ge m^5$ for $m\ge11$.  These scalar exponential
+bounds are checked at the stated initial values and then propagate by
+monotonicity of the exponential-to-polynomial ratios.  No floating-point
+sampling or root-finding is used.
+
+\begin{lstlisting}[language=Python]
+import sympy as sp
+
+m, j, k, ell, T = sp.symbols("m j k ell T", integer=True, nonnegative=True)
+t = m + j
+
+# Common denominator polynomial in the A-coefficient ratios.
+Q = 4*j**3 + 8*j**2*m + 21*j**2 + 4*j*m**2 + 32*j*m + 5*j + 12*m**2 + 8*m + 2
+Aden = j * Q
+
+
+def assert_shifted_num_nonnegative(expr, substitutions, variables):
+    """Exact quadrant certificate: numerator has nonnegative coefficients after a shift."""
+    num, den = sp.fraction(sp.together(expr))
+    shifted = sp.expand(num.subs(substitutions))
+    P = sp.Poly(shifted, *variables, domain=sp.QQ)
+    assert all(c >= 0 for c in P.coeffs()), (expr, substitutions, P)
+
+
+def assert_rational_positive(expr):
+    expr = sp.factor(sp.together(expr))
+    assert expr > 0, expr
+
+# ------------------------------------------------------------------
+# Main Y-ratios.
+# ------------------------------------------------------------------
+PLY = (64*m**4 + 160*m**3*j + 448*m**3 + 132*m**2*j**2
+       + 828*m**2*j + 896*m**2 + 40*m*j**3 + 492*m*j**2
+       + 1228*m*j + 512*m + 4*j**4 + 85*j**3 + 413*j**2 + 458*j)
+PRY = (m**3 + (4*t**2 + 11*t + 3)*m**2
+       + (8*t**3 + 55*t**2 + 68*t + 2)*m
+       + 4*t**4 + 53*t**3 + 177*t**2 + 142*t)
+P0L = 4*t**4 + 85*t**3 + 413*t**2 + 458*t
+P0R = 4*t**4 + 53*t**3 + 177*t**2 + 142*t
+Q0 = 4*t**3 + 21*t**2 + 5*t + 2
+
+# Y^L: R(m,j) <= R(0,t).  For 0<=m<=43 this is a shifted
+# one-variable polynomial in j; for m>=44 use 2^m >= m^8.
+for M in range(44):
+    lower_j = max(1, 41 - M)
+    tt = M + j
+    QQ = Q.subs(m, M)
+    DD = 2**M * j * QQ * P0L.subs(m, M) - tt * Q0.subs(m, M) * PLY.subs(m, M)
+    assert_shifted_num_nonnegative(DD, {j: ell + lower_j}, [ell])
+assert_shifted_num_nonnegative(m**8 * j * Q * P0L - t * Q0 * PLY,
+                               {m: k + 44, j: ell + 1}, [k, ell])
+# Endpoint bound R(0,t) <= 71/100.
+TT = sp.symbols("TT", integer=True, nonnegative=True)
+expr = sp.Rational(71,100) - (4*TT**4 + 85*TT**3 + 413*TT**2 + 458*TT)/(2*TT*(4*TT**3 + 21*TT**2 + 5*TT + 2))
+assert_shifted_num_nonnegative(expr, {TT: T + 41}, [T])
+
+# Y^R: R(m,j) <= R(0,t).  For 0<=m<=88 this is finite in m;
+# for m>=89 use (3/2)^m >= m^8.
+for M in range(89):
+    lower_j = max(1, 41 - M)
+    tt = M + j
+    QQ = Q.subs(m, M)
+    DD = 3**M * j * QQ * P0R.subs(m, M) - 2**M * tt * Q0.subs(m, M) * PRY.subs(m, M)
+    assert_shifted_num_nonnegative(DD, {j: ell + lower_j}, [ell])
+assert_shifted_num_nonnegative(m**8 * j * Q * P0R - t * Q0 * PRY,
+                               {m: k + 89, j: ell + 1}, [k, ell])
+# Endpoint bound R(0,t) <= 4/5.
+expr = sp.Rational(4,5) - sp.Rational(2,3)*(4*TT**4 + 53*TT**3 + 177*TT**2 + 142*TT)/(TT*(4*TT**3 + 21*TT**2 + 5*TT + 2))
+assert_shifted_num_nonnegative(expr, {TT: T + 41}, [T])
+
+# ------------------------------------------------------------------
+# X-ratios.  Use (4/3)^j >= j^2 for j>=22.
+# ------------------------------------------------------------------
+D = j**2 + (4*t**2 + 8*t - 3)*j + 12*t**2 + 8*t + 2
+Mpoly = 4*j**2 + 12*j*t - 32*j + 9*t**2 - 33*t + 48
+
+# Left X-ratio.
+for J in range(2, 22):
+    tt = J + m
+    DD = 4**J * 54*(tt - 1)*(J**2 + (4*tt**2 + 8*tt - 3)*J + 12*tt**2 + 8*tt + 2)
+    DD -= 3**J * 128*(J - 1)*(4*J**2 + 12*J*tt - 32*J + 9*tt**2 - 33*tt + 48)*tt
+    assert_shifted_num_nonnegative(DD, {m: k + max(0, 41 - J)}, [k])
+assert_shifted_num_nonnegative(j**2 * 54*(t - 1)*D - 128*(j - 1)*Mpoly*t,
+                               {j: ell + 22}, [ell, m])
+
+# Right X-ratio.
+for J in range(2, 22):
+    tt = J + m
+    DD = 4**J * 162*(tt - 1)*(J**2 + (4*tt**2 + 8*tt - 3)*J + 12*tt**2 + 8*tt + 2)
+    DD -= 3**J * 320*(J - 1)*(4*J**2 + 12*J*tt - 32*J + 9*tt**2 - 33*tt + 48)*tt
+    assert_shifted_num_nonnegative(DD, {m: k + max(0, 41 - J)}, [k])
+assert_shifted_num_nonnegative(j**2 * 162*(t - 1)*D - 320*(j - 1)*Mpoly*t,
+                               {j: ell + 22}, [ell, m])
+
+# ------------------------------------------------------------------
+# Residual S-ratios.  These are checked term-by-term with a half-budget
+# 1/2000 + 1/2000 = 1/1000.
+# ------------------------------------------------------------------
+# Left yy term: nonzero only for j=t,t-1,t-2; exact closed ratios.
+TT = sp.symbols("TT", integer=True, positive=True)
+ratios_yy_L = [
+    2**(6 - 2*TT)*3**(TT - 1)*(8*TT - 23)/(4*TT**3 + 21*TT**2 + 5*TT + 2),
+    2**(9 - 2*TT)*3**(TT - 1)*(4*TT - 7)/((TT - 1)*(4*TT**3 + 17*TT**2 - 5*TT + 6)),
+    2**(12 - 2*TT)*3**(TT - 1)/((TT - 2)*(4*TT**3 + 13*TT**2 - 15*TT + 12)),
+]
+for R in ratios_yy_L:
+    for n in range(41, 56):
+        assert_rational_positive(sp.Rational(1,2000) - R.subs(TT, n))
+# For TT>=56, use (3/4)^TT <= TT^{-4}; the following are the
+# resulting rational upper-bound certificates after clearing powers.
+upper_yy_L = [
+    sp.Rational(64,3)*(8*TT-23)/(TT**4*(4*TT**3 + 21*TT**2 + 5*TT + 2)),
+    sp.Rational(512,3)*(4*TT-7)/(TT**4*(TT-1)*(4*TT**3 + 17*TT**2 - 5*TT + 6)),
+    sp.Rational(4096,3)/(TT**4*(TT-2)*(4*TT**3 + 13*TT**2 - 15*TT + 12)),
+]
+for U in upper_yy_L:
+    assert_shifted_num_nonnegative(sp.Rational(1,2000) - U, {TT: T + 56}, [T])
+
+# Left xy term.  After multiplying by (4/3)^j 2^m, the ratio is RxyL.
+RxyL = 64*(4*j**3 + 24*j**2*m + 3*j**2 + 45*j*m**2 - 27*j*m - 127*j
+           + 27*m**3 - 45*m**2 - 186*m - 42)/(27*Q)
+assert_shifted_num_nonnegative(m**8 - 2000*RxyL, {m: k + 44}, [k, j])
+for M in range(44):
+    lower_j = max(1, 41 - M)
+    assert_shifted_num_nonnegative(j**3 * 2**M - 2000*RxyL.subs(m, M),
+                                   {j: ell + max(lower_j, 38)}, [ell])
+    for J in range(lower_j, 38):
+        assert_rational_positive((sp.Rational(4,3))**J * 2**M - 2000*RxyL.subs({m: M, j: J}))
+
+# Right xx term.  After multiplying by (4/3)^j 3^m, the ratio is RxxR.
+RxxR = 64*(4*j**4 + 48*j**3*m + 51*j**3 + 216*j**2*m**2 + 333*j**2*m
+           - 91*j**2 + 432*j*m**3 + 621*j*m**2 - 894*j*m - 882*j
+           + 324*m**4 + 243*m**3 - 1539*m**2 - 1458*m)/(243*j*Q)
+assert_shifted_num_nonnegative(j**3*m**5 - 2000*RxxR,
+                               {j: ell + 38, m: k + 11}, [ell, k])
+for M in range(11):
+    lower_j = max(1, 41 - M)
+    assert_shifted_num_nonnegative(j**3 * 3**M - 2000*RxxR.subs(m, M),
+                                   {j: ell + max(lower_j, 38)}, [ell])
+    for J in range(lower_j, 38):
+        assert_rational_positive((sp.Rational(4,3))**J * 3**M - 2000*RxxR.subs({m: M, j: J}))
+for J in range(1, 38):
+    lower_m = max(11, 41 - J)
+    assert_shifted_num_nonnegative((sp.Rational(4,3))**J * m**5 - 2000*RxxR.subs(j, J),
+                                   {m: k + lower_m}, [k])
+
+# Right xy term.  After multiplying by (4/3)^j (3/2)^m, the ratio is RxyR.
+RxyR = 64*(32*j**3 + 96*j**2*m - 168*j**2 + 90*j*m**2 - 414*j*m
+           - 332*j + 27*m**3 - 225*m**2 - 276*m + 36)/(243*Q)
+assert_shifted_num_nonnegative(m**8 - 2000*RxyR, {m: k + 89}, [k, j])
+for M in range(89):
+    lower_j = max(1, 41 - M)
+    assert_shifted_num_nonnegative(j**3 * sp.Rational(3,2)**M - 2000*RxyR.subs(m, M),
+                                   {j: ell + max(lower_j, 38)}, [ell])
+    for J in range(lower_j, 38):
+        assert_rational_positive((sp.Rational(4,3))**J * sp.Rational(3,2)**M - 2000*RxyR.subs({m: M, j: J}))
+
+print("all large-t (3,2) coefficient certificates passed")
+\end{lstlisting}
+\end{proof}
+
+
+\begin{thebibliography}{99}
+\bibitem{Good1953}
+I. J. Good.
+\newblock The population frequencies of species and the estimation of population parameters.
+\newblock \emph{Biometrika}, 40(3--4):237--264, 1953.
+
+\bibitem{Skorski2021}
+M. Skorski.
+\newblock Mean-squared accuracy of Good--Turing estimator.
+\newblock In \emph{IEEE International Symposium on Information Theory (ISIT)},
+  pages 2846--2851, 2021.  Also arXiv:2104.07029.
+
+\bibitem{RajaramanThangarajSuresh2017}
+N. Rajaraman, A. Thangaraj, and A. T. Suresh.
+\newblock Minimax risk for missing mass estimation.
+\newblock In \emph{IEEE International Symposium on Information Theory (ISIT)},
+  2017.  arXiv:1705.05006.
+
+\bibitem{Timofte2003}
+V. Timofte.
+\newblock On the positivity of symmetric polynomial functions. Part I: General results.
+\newblock \emph{Journal of Mathematical Analysis and Applications},
+  284(1):174--190, 2003.
+
+\bibitem{Riener2012}
+C. Riener.
+\newblock On the degree and half-degree principle for symmetric polynomials.
+\newblock \emph{Journal of Pure and Applied Algebra}, 216(4):850--856, 2012.
+\end{thebibliography}
+
+\end{document}

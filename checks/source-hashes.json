@@ -1,0 +1,22 @@
+[
+  {
+    "file": "archive/active-uniform-v13-unverified.tex",
+    "sha256": "9ad98243f4d790332e4f17bb1a921f226ba1e30c4b45bc0f1be6da1f6d0f5799",
+    "bytes": 104909
+  },
+  {
+    "file": "archive/canonical-good-turing-original.tex",
+    "sha256": "778d917e2731258ce04873c8757d7e7e3e57044e27616208884b88696258a73e",
+    "bytes": 27905
+  },
+  {
+    "file": "archive/fixed-count-good-turing-unverified.tex",
+    "sha256": "41eb4fe1666448c806fccdfd0778c48ed1871d8670139f6c46cd61401f17873f",
+    "bytes": 63542
+  },
+  {
+    "file": "archive/july15-original.tex",
+    "sha256": "b615b9801d446437e9195396d98624b0e5784709e5ed5b54a81cd5a893134198",
+    "bytes": 83486
+  }
+]

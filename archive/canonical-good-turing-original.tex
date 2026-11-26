@@ -1,0 +1,569 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage[nameinlink,capitalize]{cleveref}
+\usepackage{microtype}
+
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+\emergencystretch=3em
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{problem}[theorem]{Problem}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{audit}[theorem]{Audit note}
+
+\newcommand{\E}{\mathbb E}
+\newcommand{\Pp}{\mathbb P}
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\one}{\mathbf 1}
+\newcommand{\Pois}{\operatorname{Pois}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\DeltaN}{\Delta_{n-1}}
+\newcommand{\GT}{\operatorname{GT}}
+\newcommand{\diag}{\operatorname{diag}}
+
+\title{Conjecture R2 for Poissonized Generalized Good--Turing Risk\\
+\large Active-uniform and Dirac--uniform least-favorable laws}
+\author{Working research draft}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We audit and prove a precise version of Conjecture R2.  Under Poissonization, for the canonical order-$r$ Good--Turing estimator of the order-$r$ occupancy mass, the squared risk is a separable simplex objective.  After the scaling $z_i=t p_i$, its coordinate kernel is
+\[
+  \varphi_\theta(z)=z^\theta(z+\theta)e^{-z},
+  \qquad \theta=r+1.
+\]
+We prove that every finite-alphabet least-favorable distribution is uniform on its active support or Dirac--uniform, i.e. it has at most one exceptional positive atom and all other positive atoms are equal.  The proof is a crossing-plus-structured-perturbation argument: the marginal equation $\varphi_\theta'(z)=\lambda$ has at most two positive roots, and any root in a convex branch can occur with multiplicity at most one.  This gives the desired active-uniform structure for every order $r\ge0$.  The audit identifies two necessary wording corrections.  First, for $r\ge1$ the exceptional atom can be light as well as heavy, so the invariant statement is one-exceptional or Dirac--uniform, not literally one-heavy.  Second, for $r\ge1$ boundary zeros are allowed by the KKT inequalities and should be interpreted as reducing the active support.  We also record the exact finite-dimensional reduction, links with the active-uniform program for missing-mass functionals, and a set of related open problems for phase diagrams, de-Poissonization, biased generalized Good--Turing estimators, and countable alphabets.
+\end{abstract}
+
+\tableofcontents
+
+\section{Precise statement of R2}
+
+Let $p=(p_1,\ldots,p_n)$ be a distribution on a finite alphabet, and let
+\[
+  N_i\sim\Pois(t p_i),\qquad i=1,\ldots,n,
+\]
+independently.  Here $t>0$ is the Poisson sampling intensity.  For an integer $r\ge0$, define the order-$r$ occupancy mass
+\[
+  M_r=\sum_{i=1}^n p_i\one\{N_i=r\}
+\]
+and the canonical Poissonized Good--Turing estimator
+\[
+  \widehat M_r=\frac{r+1}{t}\sum_{i=1}^n \one\{N_i=r+1\}.
+\]
+This is the Poissonized analogue of estimating the total probability mass of symbols observed exactly $r$ times.  The case $r=0$ is the usual missing-mass Good--Turing estimator.
+
+\begin{definition}[Active-uniform and Dirac--uniform laws]
+A distribution $p\in\Delta_{n-1}$ is \emph{active-uniform} if, after deleting zero coordinates, all remaining coordinates are equal.  It is \emph{Dirac--uniform} or \emph{one-exceptional} if, after a permutation,
+\[
+  p=(\underbrace{a,\ldots,a}_{k-1\text{ times}},b,0,\ldots,0)
+\]
+for some $1\le k\le n$, $a>0$, and $b\ge0$, with the convention that $k=1$ is a Dirac mass and $b=a$ is the active-uniform case.  If $b>a$ we call the exceptional atom heavy; if $0<b<a$ we call it light.
+\end{definition}
+
+The audited version of Conjecture R2 is the following theorem.
+
+\begin{theorem}[Conjecture R2, canonical Poissonized form]\label{thm:R2}
+Fix $n\ge1$, $t>0$, and $r\in\{0,1,2,\ldots\}$.  Every maximizer over $\Delta_{n-1}$ of the Poissonized squared risk
+\[
+  R_{r,t}(p)=\E_p\bigl(\widehat M_r-M_r\bigr)^2
+\]
+is active-uniform or Dirac--uniform.  Equivalently, every least-favorable finite-alphabet distribution has, after a permutation, the form
+\[
+  (\underbrace{a,\ldots,a}_{k-1\text{ times}},b,0,
+  \ldots,0).
+\]
+For $r=0$, a nonuniform full-support maximizer has one heavy coordinate.  For $r\ge1$, the exceptional coordinate need not be heavy; light-exceptional local maxima are not excluded by the structural theorem.
+\end{theorem}
+
+\begin{audit}[Scope of the theorem]
+The theorem proves R2 for the \emph{canonical unbiased order-$r$ Good--Turing family}.  The phrase ``generalized Good--Turing'' is also used in the literature for biased or two-frequency estimators of missing mass, for instance estimators involving both $\Phi_1$ and $\Phi_2$.  Those risks generally have a vector-separable form, with a squared bias term, rather than the purely separable kernel treated here.  The same frozen-kernel method gives finite-level criteria for such estimators, but the Dirac--uniform conclusion requires additional one-valley or root-count hypotheses.  See \cref{sec:biased-generalized}.
+\end{audit}
+
+\section{Poissonized risk reduction}
+
+The key simplification is coordinatewise unbiasedness under Poissonization.
+
+\begin{lemma}[Coordinatewise unbiasedness and separability]\label{lem:risk-separable}
+For each coordinate $i$,
+\[
+  \E\left[\frac{r+1}{t}\one\{N_i=r+1\}\right]
+  =\E\left[p_i\one\{N_i=r\}\right].
+\]
+Consequently,
+\[
+  R_{r,t}(p)
+  =\sum_{i=1}^n
+  \left[
+  p_i^2 e^{-t p_i}\frac{(t p_i)^r}{r!}
+  +\left(\frac{r+1}{t}\right)^2
+  e^{-t p_i}\frac{(t p_i)^{r+1}}{(r+1)!}
+  \right].
+\]
+Equivalently, with
+\[
+  z_i=t p_i,
+  \qquad \theta=r+1,
+\]
+we have
+\[
+  R_{r,t}(p)=\frac{1}{t^2 r!}
+  \sum_{i=1}^n \varphi_\theta(z_i),
+  \qquad
+  \varphi_\theta(z)=z^\theta(z+\theta)e^{-z},
+\]
+under the simplex constraint
+\[
+  z_i\ge0,
+  \qquad \sum_{i=1}^n z_i=t.
+\]
+\end{lemma}
+
+\begin{proof}
+Since $N_i\sim\Pois(t p_i)$,
+\[
+  \E\left[\frac{r+1}{t}\one\{N_i=r+1\}\right]
+  =\frac{r+1}{t}e^{-t p_i}\frac{(t p_i)^{r+1}}{(r+1)!}
+  =p_i e^{-t p_i}\frac{(t p_i)^r}{r!}
+  =\E\left[p_i\one\{N_i=r\}\right].
+\]
+The coordinate errors are independent and have mean zero.  Moreover, the events $\{N_i=r\}$ and $\{N_i=r+1\}$ are disjoint, so the coordinate squared error is
+\[
+  p_i^2\one\{N_i=r\}
+  +\left(\frac{r+1}{t}\right)^2\one\{N_i=r+1\}.
+\]
+Taking expectations and summing gives the displayed expression.  The change of variables $z_i=t p_i$ gives
+\[
+  p_i^2\frac{(t p_i)^r}{r!}
+  +\left(\frac{r+1}{t}\right)^2\frac{(t p_i)^{r+1}}{(r+1)!}
+  =\frac{1}{t^2r!}\bigl(z_i^{r+2}+(r+1)z_i^{r+1}\bigr),
+\]
+which is the claimed kernel with $\theta=r+1$.
+\end{proof}
+
+Thus the structural problem is independent of the prefactor $1/(t^2r!)$.
+
+\begin{definition}[Scaled risk problem]\label{def:scaled}
+For $\theta\ge1$ define
+\[
+  \mathcal R_{\theta,t,n}(z)=\sum_{i=1}^n\varphi_\theta(z_i),
+  \qquad
+  \varphi_\theta(z)=z^\theta(z+\theta)e^{-z},
+\]
+on the compact simplex
+\[
+  \Sigma_{n,t}=\{z\in[0,\infty)^n:\sum_i z_i=t\}.
+\]
+A maximizer of $\mathcal R_{\theta,t,n}$ corresponds exactly to a least-favorable distribution for order $r=\theta-1$ by $p_i=z_i/t$.
+\end{definition}
+
+\section{The marginal curve and its root count}\label{sec:marginal}
+
+The proof of R2 rests on a complete qualitative description of
+\[
+  q_\theta(z):=\varphi_\theta'(z).
+\]
+
+\begin{lemma}[First and second derivatives]\label{lem:derivatives}
+For $\theta\ge1$ and $z>0$,
+\[
+  \varphi_\theta'(z)=z^{\theta-1}e^{-z}(\theta^2+z-z^2),
+\]
+and
+\[
+  \varphi_\theta''(z)=z^{\theta-2}e^{-z}P_\theta(z),
+\]
+where
+\[
+  P_\theta(z)=z^3-(\theta+2)z^2-\theta(\theta-1)z+\theta^2(\theta-1).
+\]
+The unique positive zero of $\theta^2+z-z^2$ is
+\[
+  \rho_\theta=\frac{1+\sqrt{1+4\theta^2}}{2}.
+\]
+Thus $q_\theta(z)>0$ on $(0,\rho_\theta)$ and $q_\theta(z)<0$ on $(\rho_\theta,\infty)$.
+\end{lemma}
+
+\begin{proof}
+Differentiate
+\[
+  \varphi_\theta(z)=z^{\theta+1}e^{-z}+\theta z^\theta e^{-z}.
+\]
+The displayed formulae follow by collecting powers of $z$.  The quadratic $\theta^2+z-z^2$ has exactly one positive zero, namely $\rho_\theta$, and its sign gives the sign of $q_\theta$ because $z^{\theta-1}e^{-z}>0$.
+\end{proof}
+
+\begin{lemma}[Curvature sign pattern]\label{lem:curvature}
+For $\theta=1$,
+\[
+  \varphi_1''(z)=z(z-3)e^{-z};
+\]
+hence $q_1$ is strictly decreasing on $(0,3)$ and strictly increasing on $(3,\infty)$.
+
+For every $\theta>1$, the polynomial $P_\theta$ has exactly two positive zeros
+\[
+  0<\alpha_\theta<\rho_\theta<\beta_\theta,
+\]
+and
+\[
+  \varphi_\theta''>0\text{ on }(0,\alpha_\theta),
+  \qquad
+  \varphi_\theta''<0\text{ on }(\alpha_\theta,\beta_\theta),
+  \qquad
+  \varphi_\theta''>0\text{ on }(\beta_\theta,\infty).
+\]
+Thus, for $\theta>1$, $q_\theta$ increases, then decreases, then increases.
+\end{lemma}
+
+\begin{proof}
+The case $\theta=1$ follows immediately from \cref{lem:derivatives}, since then
+\[
+  P_1(z)=z^2(z-3)
+\]
+and $z^{\theta-2}P_\theta(z)=z^{-1}z^2(z-3)=z(z-3)$.
+
+Assume now $\theta>1$.  The signs of the coefficients of $P_\theta$ are
+\[
+  +,\quad -,\quad -,\quad +,
+\]
+so Descartes' rule of signs gives at most two positive zeros.  On the other hand,
+\[
+  P_\theta(0)=\theta^2(\theta-1)>0,
+  \qquad
+  \lim_{z\to\infty}P_\theta(z)=+\infty.
+\]
+At $z=\rho_\theta$, use $\rho_\theta^2=\rho_\theta+\theta^2$ to obtain
+\[
+  P_\theta(\rho_\theta)=-\rho_\theta-2\theta^2<0.
+\]
+Hence there is at least one positive zero below $\rho_\theta$ and at least one above it.  Since there are at most two, there are exactly two, denoted $\alpha_\theta$ and $\beta_\theta$.  The sign pattern follows from $P_\theta(0)>0$, $P_\theta(\rho_\theta)<0$, and $P_\theta(z)\to+\infty$.
+\end{proof}
+
+\begin{lemma}[Two-root marginal equation]\label{lem:two-root}
+For every $\theta\ge1$ and every $\lambda\in\R$, the equation
+\[
+  q_\theta(z)=\lambda,
+  \qquad z>0,
+\]
+has at most two positive solutions.
+
+More precisely, for $\theta>1$ there are two possible two-root configurations.  If $\lambda>0$, then one root lies in the convex interval $(0,\alpha_\theta)$ and the other lies in the concave interval $(\alpha_\theta,\rho_\theta)$.  If $\lambda<0$, then one root lies in the concave interval $(\rho_\theta,\beta_\theta)$ and the other lies in the convex interval $(\beta_\theta,\infty)$.  For $\lambda=0$, the only positive root is $\rho_\theta$.
+\end{lemma}
+
+\begin{proof}
+For $\theta=1$, $q_1$ decreases on $(0,3)$ and increases on $(3,\infty)$ by \cref{lem:curvature}; hence a horizontal line intersects the graph at most twice.
+
+Let $\theta>1$.  By \cref{lem:curvature}, $q_\theta$ increases on $(0,\alpha_\theta)$, decreases on $(\alpha_\theta,\beta_\theta)$, and increases on $(\beta_\theta,\infty)$.  Also
+\[
+  q_\theta(0+)=0,
+  \qquad q_\theta(\rho_\theta)=0,
+  \qquad q_\theta(\infty)=0^-.
+\]
+Since $\alpha_\theta<\rho_\theta<\beta_\theta$, we have $q_\theta(\alpha_\theta)>0$ and $q_\theta(\beta_\theta)<0$.  Therefore positive levels can be hit only once on $(0,\alpha_\theta)$ and once on $(\alpha_\theta,\rho_\theta)$; negative levels can be hit only once on $(\rho_\theta,\beta_\theta)$ and once on $(\beta_\theta,\infty)$; and the zero level has the unique positive root $\rho_\theta$.  This proves the claim.
+\end{proof}
+
+\section{Structured perturbations on simplex faces}
+
+We now record the elementary local-maximum test that turns the root count into a one-exceptional conclusion.
+
+\begin{lemma}[KKT equations on the active face]\label{lem:kkt}
+Let $z\in\Sigma_{n,t}$ be a local maximum of $\mathcal R_{\theta,t,n}$, and let
+\[
+  A=\{i:z_i>0\}
+\]
+be its active support.  If $|A|\ge2$, then there is a scalar $\lambda$ such that
+\[
+  q_\theta(z_i)=\lambda,
+  \qquad i\in A.
+\]
+If $j\notin A$, then the boundary KKT inequality is
+\[
+  q_\theta(0+)\le \lambda.
+\]
+In particular, when $\theta=1$ no zero coordinate can occur at a full-simplex local maximum with at least two active coordinates, while for $\theta>1$ a boundary local maximum can occur only when $\lambda\ge0$.
+\end{lemma}
+
+\begin{proof}
+On the relative interior of the face $A$, the only equality constraint is $\sum_{i\in A}z_i=t$.  The Lagrange multiplier rule gives $q_\theta(z_i)=\lambda$ for all active coordinates.  For an inactive coordinate $j$ and active coordinate $i$, move mass $\varepsilon$ from $i$ to $j$.  The first-order change is
+\[
+  \varphi_\theta(\varepsilon)-\varphi_\theta(0)
+  +\varphi_\theta(z_i-\varepsilon)-\varphi_\theta(z_i)
+  =\varepsilon\bigl(q_\theta(0+)-q_\theta(z_i)\bigr)+o(\varepsilon),
+\]
+when the one-sided derivative $q_\theta(0+)$ is finite.  For $\theta=1$, $q_1(0+)=1$, and $q_1(z)<1$ for all $z>0$, so the inequality fails unless there is only one active coordinate.  For $\theta>1$, $q_\theta(0+)=0$, so the inequality is $0\le\lambda$.
+\end{proof}
+
+\begin{lemma}[Convex-branch singleton test]\label{lem:singleton}
+Let $z\in\Sigma_{n,t}$ be a local maximum of $\mathcal R_{\theta,t,n}$ on its active face.  If two active coordinates are equal to $x>0$, then
+\[
+  \varphi_\theta''(x)\le0.
+\]
+Consequently, an active value lying in a strictly convex branch of $\varphi_\theta$ can occur with multiplicity at most one.
+\end{lemma}
+
+\begin{proof}
+If $z_i=z_j=x$, use the feasible balanced perturbation
+\[
+  (x,x)\mapsto(x+\varepsilon,x-\varepsilon).
+\]
+For small $\varepsilon$, this stays in the same active face and preserves the sum.  The second-order change is
+\[
+  \varphi_\theta(x+\varepsilon)+\varphi_\theta(x-\varepsilon)-2\varphi_\theta(x)
+  =\varphi_\theta''(x)\varepsilon^2+o(\varepsilon^2).
+\]
+If $\varphi_\theta''(x)>0$, the objective increases for sufficiently small nonzero $\varepsilon$, contradicting local maximality.
+\end{proof}
+
+\section{Proof of R2}
+
+\begin{proof}[Proof of \cref{thm:R2}]
+By \cref{lem:risk-separable}, it is enough to maximize $\mathcal R_{\theta,t,n}$ on $\Sigma_{n,t}$, with $\theta=r+1\ge1$.  A maximizer exists by compactness.  If it has active support size one, it is a Dirac law and hence Dirac--uniform.  Assume from now on that the active support has size at least two.
+
+By \cref{lem:kkt}, all positive active coordinates solve the same scalar equation
+\[
+  q_\theta(z)=\lambda.
+\]
+By \cref{lem:two-root}, there are at most two positive active values.  If there is only one value, the maximizer is uniform on its active support.
+
+Suppose there are two positive active values.  By \cref{lem:two-root}, exactly one of them lies in a convex branch of $\varphi_\theta$: for $\lambda>0$ it is the smaller value in $(0,\alpha_\theta)$, while for $\lambda<0$ it is the larger value in $(\beta_\theta,\infty)$.  For $\theta=1$, the only two-root case is the negative-level case, and the convex root is the larger value $>3$.  By \cref{lem:singleton}, the convex-branch value can occur with multiplicity at most one.  Hence all remaining active coordinates are equal, and the maximizer is one-exceptional on its active support.  Reintroducing zero coordinates gives the asserted Dirac--uniform form for $p_i=z_i/t$.
+
+For $r=0$, i.e. $\theta=1$, the two-root case has one repeated value in $(\rho_1,3)$ and one singleton value in $(3,\infty)$, so the exceptional coordinate is heavy.  For $r\ge1$, i.e. $\theta>1$, the positive-level two-root case gives a singleton light value and a repeated larger value below $\rho_\theta$, while the negative-level case gives a singleton heavy value.  This proves the final wording claim.
+\end{proof}
+
+\begin{audit}[What changed after audit]
+The first-pass proof idea is sound for the separable canonical order-$r$ family, but it requires the explicit marginal-root analysis in \cref{lem:two-root}.  The following corrections are important.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item Descartes' rule applies to the curvature polynomial $P_\theta$, not directly to the KKT equation $q_\theta(z)=\lambda$.  One must combine the curvature sign pattern with $q_\theta(0+)$, $q_\theta(\rho_\theta)=0$, and $q_\theta(\infty)=0^-$.
+\item For $r\ge1$, the statement should be ``one-exceptional'' or ``Dirac--uniform,'' not literally ``one-heavy.''  A positive KKT level has a singleton light value.
+\item For $r\ge1$, $q_\theta(0+)=0$, so boundary zeros are compatible with local maximality whenever the active multiplier satisfies $\lambda\ge0$.  Thus the clean statement is active-support uniformity/Dirac--uniformity, with zeros allowed outside the active support.
+\end{enumerate}
+\end{audit}
+
+\section{Finite-dimensional reduction of the least-favorable risk}\label{sec:finite-reduction}
+
+The structural theorem reduces the finite-alphabet least-favorable value to a small family of one-dimensional searches.
+
+\begin{proposition}[Exact stratum reduction]\label{prop:stratum}
+For $\theta\ge1$, $t>0$, and $n\ge1$,
+\[
+  \max_{z\in\Sigma_{n,t}}\sum_i\varphi_\theta(z_i)
+  =\max_{1\le k\le n}\;\max_{0\le b\le t}
+  \left\{(k-1)\varphi_\theta\!
+    \left(\frac{t-b}{k-1}\right)+\varphi_\theta(b)\right\},
+\]
+where for $k=1$ the inner expression is interpreted as $\varphi_\theta(t)$.  The active-uniform candidate of support size $k$ is included by taking $b=t/k$.
+\end{proposition}
+
+\begin{proof}
+By \cref{thm:R2}, some maximizer has Dirac--uniform form with active support size $k$ and exceptional scaled mass $b$.  If $k\ge2$, the remaining $k-1$ positive coordinates are all equal to $(t-b)/(k-1)$.  Conversely, every such vector belongs to $\Sigma_{n,t}$ after adding $n-k$ zeros, so comparing these strata is exact.
+\end{proof}
+
+\begin{remark}[Stationarity on a stratum]
+For $k\ge2$, an interior exceptional point satisfies
+\[
+  q_\theta(b)=q_\theta\left(\frac{t-b}{k-1}\right).
+\]
+This scalar equation is useful for numerical phase diagrams.  The theorem above does not assert that the global maximizer is always full-support, nor that the exceptional atom is always heavy; both questions depend on $r$, $t$, and $n$.
+\end{remark}
+
+\section{Relation to the active-uniform program}\label{sec:connections}
+
+The proof is an instance of the active-uniform method developed for missing-mass functionals.  The general template is:
+\begin{quote}
+\emph{KKT crossing controls possible levels, and balanced perturbations rule out repeated convex levels.}
+\end{quote}
+For separable objectives $\sum_i f(p_i)$, the KKT equation is one-dimensional:
+\[
+  f'(p_i)=\lambda.
+\]
+If this equation has few roots and convex roots are unstable under
+\[
+  (x,x)\mapsto(x+\varepsilon,x-\varepsilon),
+\]
+then local maxima have few active levels.  In the classical missing-mass expectation problem, the kernel $x(1-x)^t$ has a one-valley derivative, giving uniform or one-heavy extrema.  In the ordinary Poissonized Good--Turing MSE case $r=0$, the kernel after scaling is
+\[
+  \varphi_1(z)=z(z+1)e^{-z},
+\]
+which is precisely the base case of the present theorem.
+
+The novelty in R2 is that for every $r\ge0$ the risk kernel remains just simple enough: although the curvature polynomial becomes cubic, its sign pattern still forces the marginal equation to have at most two positive roots.  This keeps the least-favorable shape in the active-uniform/Dirac--uniform class.
+
+\subsection{Connection with high-order occupancy and high-order missing mass}
+
+The order-$r$ occupancy mass
+\[
+  M_r=\sum_i p_i\one\{N_i=r\}
+\]
+should be distinguished from the high-order missing-mass functional sometimes written
+\[
+  \Theta_s=\sum_i p_i^s\one\{N_i=0\}.
+\]
+Both are missing- or rare-species functionals, but their risk geometries differ.  In the present order-$r$ Good--Turing setting, the Poissonized unbiased estimator produces the separable kernel $z^{r+1}(z+r+1)e^{-z}$.  For high-order missing mass, expectation kernels have the form $p^s e^{-t p}$ or $p^s(1-p)^t$, whose derivatives can have more turning points; the active-level theorem usually gives bounded-level complexity, not automatically a Dirac--uniform theorem.
+
+\subsection{Connection with vector-separable MSE objectives}\label{sec:biased-generalized}
+
+For a general symmetric coordinate estimator $T_i(N_i)$ of a target coordinate $A_i(p_i,N_i)$, the Poissonized MSE has the form
+\[
+  \operatorname{MSE}(p)
+  =\sum_i v(p_i)+\left(\sum_i e(p_i)\right)^2,
+\]
+where $e(x)$ is the coordinate bias and $v(x)$ is the coordinate variance.  This is vector-separable, not purely separable unless the estimator is coordinatewise unbiased.  At a regular local maximum, the frozen marginal equation is
+\[
+  v'(x)+2B e'(x)=\lambda,
+  \qquad B=\sum_i e(p_i),
+\]
+and a repeated level must satisfy
+\[
+  v''(x)+2B e''(x)\le0.
+\]
+Thus a Painsky-style or otherwise biased one-parameter generalized Good--Turing family will inherit R2 only if every relevant frozen kernel has the same two-root/one-convex-root geometry.  This gives a concrete route to proving or disproving the broader biased-estimator version of R2.
+
+\section{Related open problems and conjectures}
+
+\begin{problem}[Phase diagram for order-$r$ Poissonized GT risk]
+For fixed $r\ge1$ and $n$, determine the full phase diagram in $t$ after the stratum reduction of \cref{prop:stratum}.  In particular, decide when the winner is active-uniform, one-heavy, one-light, or supported on a proper face.  The structural theorem reduces the problem to finitely many one-dimensional comparisons, but does not by itself give a single threshold.
+\end{problem}
+
+\begin{problem}[Asymptotic thresholds for $r\ge1$]
+For fixed $r\ge1$ and $n\to\infty$, derive the analogue of the golden-ratio expansion known for $r=0$.  A natural surrogate is obtained by placing the repeated coordinates near the maximizer of $\varphi_{r+1}$, namely $\rho_{r+1}$, and comparing
+\[
+  n\varphi_{r+1}(t/n)
+  \quad\text{with}\quad
+  (n-1)\varphi_{r+1}(\rho_{r+1}).
+\]
+The audit suggests that a light-exceptional branch may also be relevant for some ranges of $t$.
+\end{problem}
+
+\begin{conjecture}[Canonical order-$r$ single-crossing, qualified]
+For every fixed $r\ge0$ and $n\ge2$, each active support size $k$ has at most one value transition between its active-uniform branch and its nonuniform active branch.  The global phase diagram is then a finite ordered sequence of support and one-exceptional transitions.
+\end{conjecture}
+
+\begin{problem}[Biased generalized Good--Turing families]
+Consider a one-parameter estimator using several frequencies of frequencies, for example
+\[
+  \widehat M_{0,a}=c_1(a)\Phi_1+c_2(a)\Phi_2.
+\]
+Under Poissonization, compute the functions $v_a(x)$ and $e_a(x)$ and classify the frozen kernels
+\[
+  \ell_{a,B}'(x)=v_a'(x)+2B e_a'(x).
+\]
+Find the exact parameter range for which every frozen marginal equation has at most two positive roots with at most one convex root.  In that range R2 extends; outside it one should search for three-level counterexamples.
+\end{problem}
+
+\begin{problem}[De-Poissonization]
+For fixed sample size, multinomial counts are dependent and the risk is no longer a simple sum of coordinate risks.  Determine whether the Poissonized Dirac--uniform least-favorable structure survives exactly, asymptotically, or only as an approximate extremal principle.
+\end{problem}
+
+\begin{problem}[Countable alphabets and nonattainment]
+Without a finite alphabet bound, least-favorable laws may fail to exist.  For $r=0$, splitting mass into many tiny atoms is a familiar obstruction.  Determine, for each $r\ge0$, whether the supremum over countable alphabets is attained, and if not, whether it is approached by active-uniform finite-support laws whose support tends to infinity.
+\end{problem}
+
+\begin{conjecture}[Frozen-kernel active-support principle]
+In constrained, biased, or weakly nonseparable variants of missing-mass risk, every regular least-favorable law belongs to a finite active-level stratum determined by the roots of a frozen one-dimensional marginal equation.  Uniform and Dirac--uniform laws are the universal two-root cases; higher-level laws arise only when the frozen marginal has higher crossing number.
+\end{conjecture}
+
+\section{Bibliographic notes}
+
+Good--Turing estimators originate in Good's account of Turing's wartime frequency-estimation method \cite{Good1953}.  McAllester and Schapire gave influential learning-theoretic convergence guarantees for Good--Turing missing-mass estimation \cite{McAllesterSchapire2000}.  Berend and Kontorovich developed sharp missing-mass expectation bounds and finite-alphabet extremizer structure \cite{BerendKontorovich2012}.  Painsky's JASA paper introduced a generalized Good--Turing framework for missing-mass estimation and optimized MSE upper bounds over its parameters \cite{Painsky2023}; his JMLR paper studies convergence guarantees for Good--Turing occupancy-probability estimators and discusses generalized Good--Turing variants using additional frequencies of frequencies \cite{Painsky2022}.  Favaro and Naulet study high-order missing masses and the rare-type match problem \cite{FavaroNaulet2023}.  These works motivate the distinction between the canonical unbiased order-$r$ Poissonized theorem proved here and the broader biased/vector-separable generalized Good--Turing program listed above as open problems.
+
+\appendix
+
+\section{Algebra checklist}
+
+This appendix collects the algebraic identities used in the proof.
+
+\subsection{Derivative calculation}
+
+For
+\[
+  \varphi_\theta(z)=z^\theta(z+\theta)e^{-z},
+\]
+one has
+\begin{align*}
+  \varphi_\theta'(z)
+  &=\theta z^{\theta-1}(z+\theta)e^{-z}+z^\theta e^{-z}-z^\theta(z+\theta)e^{-z} \\
+  &=z^{\theta-1}e^{-z}\{\theta(z+\theta)+z-z(z+\theta)\} \\
+  &=z^{\theta-1}e^{-z}(\theta^2+z-z^2).
+\end{align*}
+Differentiating once more yields
+\[
+  \varphi_\theta''(z)=z^{\theta-2}e^{-z}
+  \left[z^3-(\theta+2)z^2-\theta(\theta-1)z+
+  \theta^2(\theta-1)\right].
+\]
+
+\subsection{\texorpdfstring{Curvature at the stationary point of $\varphi_\theta$}{Curvature at the stationary point of phi theta}}
+
+At
+\[
+  \rho_\theta=\frac{1+\sqrt{1+4\theta^2}}{2},
+  \qquad \rho_\theta^2=\rho_\theta+\theta^2,
+\]
+we have
+\begin{align*}
+  P_\theta(\rho_\theta)
+  &=\rho_\theta^3-(\theta+2)\rho_\theta^2
+    -\theta(\theta-1)\rho_\theta+\theta^2(\theta-1) \\
+  &=\rho_\theta(1+\theta^2)+\theta^2
+    -(\theta+2)(\rho_\theta+\theta^2)
+    -\theta(\theta-1)\rho_\theta+\theta^2(\theta-1) \\
+  &=-\rho_\theta-2\theta^2<0.
+\end{align*}
+This verifies that the two positive zeros of $P_\theta$ straddle $\rho_\theta$.
+
+\begin{thebibliography}{99}
+
+\bibitem{Good1953}
+I. J. Good.
+\newblock The population frequencies of species and the estimation of population parameters.
+\newblock \emph{Biometrika}, 40(3--4):237--264, 1953.
+
+\bibitem{McAllesterSchapire2000}
+D. A. McAllester and R. E. Schapire.
+\newblock On the convergence rate of Good--Turing estimators.
+\newblock In \emph{Proceedings of the Thirteenth Annual Conference on Computational Learning Theory}, pages 1--6, 2000.
+
+\bibitem{BerendKontorovich2012}
+D. Berend and A. Kontorovich.
+\newblock The missing mass problem.
+\newblock \emph{Statistics and Probability Letters}, 82(6):1102--1110, 2012.
+
+\bibitem{Painsky2023}
+A. Painsky.
+\newblock Generalized Good--Turing improves missing mass estimation.
+\newblock \emph{Journal of the American Statistical Association}, 118(543):1890--1899, July 2023.
+\newblock doi:10.1080/01621459.2021.2020658.
+
+\bibitem{Painsky2022}
+A. Painsky.
+\newblock Convergence guarantees for the Good--Turing estimator.
+\newblock \emph{Journal of Machine Learning Research}, 23(279):1--37, 2022.
+
+\bibitem{FavaroNaulet2023}
+S. Favaro and Z. Naulet.
+\newblock Optimal estimation of high-order missing masses, and the rare-type match problem.
+\newblock arXiv:2306.14998, 2023.
+
+\end{thebibliography}
+
+\end{document}

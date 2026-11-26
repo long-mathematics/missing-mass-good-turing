@@ -1,0 +1,171 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,microtype}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
+\hypersetup{pdftitle={Canonical Poissonized Good--Turing Risk: One-Exceptional Extremizers},pdfauthor={Christopher D. Long}}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\E}{\mathbb E}
+\newcommand{\one}{\mathbf1}
+\title{Canonical Poissonized Good--Turing Risk:\\One-Exceptional Extremizers}
+\author{Christopher D. Long}
+\date{November 26, 2026}
+\begin{document}\maketitle
+\begin{abstract}
+For a fixed finite alphabet, we characterize the coordinate structure of distributions maximizing the squared risk of the canonical unbiased Poissonized Good--Turing estimator of an occupancy mass. Every maximizer is uniform on its positive support or has one exceptional positive coordinate and all other positive coordinates equal. The exceptional coordinate is heavy for ordinary missing-mass estimation, whereas higher occupancy orders permit both orientations in the structural reduction. The proof uses an exact separable risk formula, a cubic curvature calculation, and mass-preserving perturbations. This is a structural reduction, not a complete phase diagram or a minimax-estimation theorem.
+\end{abstract}
+
+\section{Model and exact risk}
+Fix an integer \(n\ge1\), an intensity \(t>0\), an integer \(r\ge0\), and a probability vector \(p\) on \(n\) symbols. Let \(N_i\) be independent Poisson variables with means \(tp_i\). Define
+\[
+M_r=\sum_i p_i\one\{N_i=r\},\qquad
+\widehat M_r=\frac{r+1}{t}\sum_i\one\{N_i=r+1\}.
+\]
+The estimator is canonical in the sense that its coordinate expectation equals the expectation of the corresponding occupancy mass:
+\[
+\frac{r+1}{t}\Pr(N_i=r+1)
+=p_i\Pr(N_i=r).
+\]
+This is the Poissonized version of the occupancy identity underlying Good--Turing estimation \cite{Good}. Our optimization fixes this estimator and maximizes its risk over the sampling law; it does not optimize over estimators.
+
+Closely related worst-case risk questions have been studied in the fixed-sample model. Skorski \cite[Theorems 2--3]{Skorski} gives an asymptotic mean-squared-error formula with a negative squared coupling term and a Dirac--uniform asymptotic extremizer under an alphabet bound. Painsky \cite{Painsky} obtains worst-case mean-squared-error bounds and convergence guarantees for occupancy probabilities at general orders, including simultaneous guarantees. Here the observations are independent Poisson counts and the intensity is known: the exact risk is separable, with no squared coupling term. The contribution proved below is an exact finite-alphabet structural reduction for this particular risk at every occupancy order. It is not a replacement for fixed-sample risk analysis or a claim of exhaustive priority.
+
+\begin{proposition}[Separable squared risk]\label{prop:risk}
+Put \(\theta=r+1\) and
+\[
+\varphi_\theta(z)=z^\theta(z+\theta)e^{-z}.
+\]
+Then
+\[
+R_{r,t}(p):=\E_p(\widehat M_r-M_r)^2
+=\frac{1}{r!\,t^2}\sum_{i=1}^n\varphi_\theta(tp_i).
+\]
+\end{proposition}
+\begin{proof}
+The coordinate errors are independent and have mean zero, so cross terms vanish. The events \(N_i=r\) and \(N_i=r+1\) are disjoint. With \(z=tp_i\), their contribution is
+\[
+p_i^2 e^{-z}\frac{z^r}{r!}
++\frac{(r+1)^2}{t^2}e^{-z}\frac{z^{r+1}}{(r+1)!}
+=\frac{z^{r+1}(z+r+1)e^{-z}}{r!\,t^2}.
+\]
+Summing proves the formula, including coordinates with \(p_i=0\).
+\end{proof}
+
+\section{Marginal roots and repeated coordinates}
+The simplex constraint becomes \(\sum_i z_i=t\), with \(z_i\ge0\). Define
+\[
+b_\theta=\frac{1+\sqrt{1+4\theta^2}}2.
+\]
+The derivative of the kernel is
+\[
+\varphi_\theta'(z)
+=z^{\theta-1}e^{-z}(\theta^2+z-z^2).
+\]
+It is positive on \((0,b_\theta)\), zero at \(b_\theta\), and negative thereafter.
+
+\begin{lemma}[Two roots at each nonzero marginal level]\label{lem:roots}
+For every integer \(\theta\ge1\), each horizontal line meets
+\(\varphi_\theta'\) in at most two positive points. If it meets at two points,
+one lies in a strictly convex interval of \(\varphi_\theta\), and the other lies in a strictly concave interval. For \(\theta=1\), the convex point is the larger one.
+\end{lemma}
+\begin{proof}
+For \(\theta=1\),
+\[
+\varphi_1''(z)=z(z-3)e^{-z}.
+\]
+Thus the marginal strictly decreases up to \(3\), then increases to zero from below. A two-root level is negative, with one root below \(3\) and one above.
+
+For \(\theta>1\),
+\[
+\varphi_\theta''(z)=z^{\theta-2}e^{-z}P_\theta(z),\qquad
+P_\theta(z)=z^3-(\theta+2)z^2-\theta(\theta-1)z+\theta^2(\theta-1).
+\]
+The ordered coefficients have exactly two sign changes. Descartes' rule gives at most two positive roots, counted with multiplicity. On the other hand,
+\(P_\theta(0)>0\), while
+\[
+P_\theta(b_\theta)=b_\theta(1-2b_\theta)<0,
+\]
+as follows by differentiating the marginal at its zero. Finally \(P_\theta(z)\to+\infty\). Consequently it has exactly two distinct, simple positive roots
+\(c_1<b_\theta<c_2\), and the curvature signs are \(+,-,+\).
+The marginal therefore first rises from zero to a positive maximum, then decreases through zero to a negative minimum, and finally rises to zero from below.
+
+A positive horizontal level has at most one root on each of the first two intervals; a negative level has at most one on each of the last two. The zero level has only \(b_\theta\). A level tangent at either turning point has just that one positive root. Every genuine two-root level therefore has precisely one strictly convex root and one strictly concave root.
+\end{proof}
+
+\begin{lemma}[Convex-coordinate exclusion]\label{lem:repeat}
+At a relative-interior local maximum of \(\sum_i f(z_i)\), subject to
+\(\sum_i z_i=t\), a coordinate value \(a>0\) with \(f''(a)>0\) cannot occur twice.
+\end{lemma}
+\begin{proof}
+Replace two equal coordinates by \(a+\varepsilon,a-\varepsilon\). The sum is unchanged and the objective increases by
+\(f''(a)\varepsilon^2+o(\varepsilon^2)>0\).
+\end{proof}
+
+\section{Global structure and finite reduction}
+\begin{theorem}[Canonical Poissonized extremizers]\label{thm:main}
+Every global maximizer of \(R_{r,t}\) on the \(n\)-symbol probability simplex, after permuting coordinates, is of the form
+\[
+p=(\underbrace{a,\ldots,a}_{m-1\text{ entries}},b,0,\ldots,0)
+\]
+for some \(1\le m\le n\), with the support-one case interpreted as a point mass. In particular, the positive support is uniform or has one exceptional coordinate.
+
+For \(r=0\), every maximizer has full support and its exceptional coordinate, when present, is heavy. For \(r\ge1\), this theorem does not exclude a light exceptional coordinate or boundary zeros.
+\end{theorem}
+\begin{proof}
+The continuous objective attains a maximum on the compact simplex. Restrict a maximizer to the relative interior of its positive-support face. The Lagrange-multiplier equations give
+\(\varphi_\theta'(z_i)=\nu\) on that face.
+By Lemma~\ref{lem:roots}, there are at most two distinct positive values. If two occur, the convex-root value occurs only once by Lemma~\ref{lem:repeat}. All other positive coordinates are equal. If only one value occurs, the face is uniform.
+
+For \(\theta=1\), the convex root is the larger one. Moreover,
+\(\varphi_1'(0)=1>\varphi_1'(z)\) for every \(z>0\).
+Indeed the marginal decreases from \(1\) until \(3\), then increases to \(0\) from below. If a maximizer had a zero coordinate, transferring a small amount of mass from any positive coordinate to the zero would strictly improve the objective. Thus support is full.
+\end{proof}
+
+\begin{corollary}[Exact one-dimensional search family]
+For each \(m\ge2\), write \(b=1-(m-1)a\) and define
+\[
+J_{m,r,t}(a)
+=(m-1)\varphi_{r+1}(ta)
++\varphi_{r+1}\bigl(t(1-(m-1)a)\bigr).
+\]
+The maximum risk equals
+\[
+\frac1{r!\,t^2}
+\max\left\{\varphi_{r+1}(t),
+\max_{2\le m\le n}\max_{0\le a\le1/(m-1)}J_{m,r,t}(a)\right\}.
+\]
+For \(r=0\) and \(n\ge2\), it is enough to take \(m=n\) and \(0\le a\le1/n\). For \(n=1\), only the point-mass first term is present.
+\end{corollary}
+\begin{proof}
+Every vector in the displayed families is feasible, including endpoint cases with smaller support. Theorem~\ref{thm:main} puts at least one global maximizer in the family, so the two maxima agree. Its last assertion gives the ordinary-risk restriction.
+\end{proof}
+
+\begin{remark}[Boundary selection for higher orders]
+For \(\theta>1\), \(\varphi_\theta'(0)=0\). If the common active marginal is negative, adding mass to a zero coordinate improves the objective to first order. Hence any boundary maximizer must have nonnegative active marginal. This is a necessary condition, not a global classification of the active support.
+\end{remark}
+
+\section{What this establishes and what remains}
+The theorem gives the exact candidate family for the canonical unbiased Poissonized risk at every order. It does not show uniqueness of the scalar optimizer, identify all support transitions, or prove the complete ordinary-risk threshold expansion reported in an earlier working manuscript. That older phase argument requires a fully written convexity certificate for its stationary branch and quantitative localization before an exponentially small surrogate-to-true threshold estimate can be asserted.
+
+Fixed sample size introduces dependence between occupancy indicators. Biased estimators and arbitrary combinations of frequency counts may also introduce a squared-bias coupling. The separable calculation above does not apply to those settings without further work. In particular, this note makes no claim that fixed-count Good--Turing risk is always maximized by a one-heavy law, or that Good--Turing is an exact minimax estimator.
+
+The accompanying checks verify the risk identity independently from Poisson event probabilities, the curvature polynomial symbolically, its positive-root counts exactly for a finite set of orders, and the candidate-family reduction against independent full-simplex optimization. Finite computation supplements the proofs and does not replace them.
+
+\begin{thebibliography}{9}
+\bibitem{Good} I.~J. Good.
+The population frequencies of species and the estimation of population parameters.
+\emph{Biometrika} 40(3--4):237--264, 1953.
+\href{https://doi.org/10.1093/biomet/40.3-4.237}{doi:10.1093/biomet/40.3-4.237}.
+\bibitem{Skorski} M.~Skorski.
+Mean-Squared Accuracy of Good-Turing Estimator.
+arXiv:2104.07029, 2021.
+\href{https://arxiv.org/abs/2104.07029}{arXiv:2104.07029}.
+\bibitem{Painsky} A.~Painsky.
+Convergence Guarantees for the Good-Turing Estimator.
+\emph{Journal of Machine Learning Research} 23(279):1--37, 2022.
+\href{https://www.jmlr.org/papers/v23/21-1528.html}{JMLR article}.
+\end{thebibliography}
+\end{document}

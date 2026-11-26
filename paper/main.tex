@@ -1,0 +1,2157 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage[nameinlink,noabbrev]{cleveref}
+
+\hypersetup{
+  pdftitle={Four Missing-Mass Extremizer Problems: Phase Diagrams, Fixed Samples, and Fixed Tails},
+  pdfauthor={Christopher D. Long},
+  pdfsubject={Missing mass; active-uniform extremizers; MGF phase diagrams},
+  pdfkeywords={missing mass, moment generating functions, Poissonization, active levels, extremizers}
+}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{problem}[theorem]{Problem}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{note}[theorem]{Note}
+
+\newcommand{\E}{\mathbb E}
+\newcommand{\PP}{\mathbb P}
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\one}{\mathbf 1}
+\newcommand{\dd}{\,d}
+\newcommand{\simplex}{\Delta_{n-1}}
+\newcommand{\unif}{\mathrm{unif}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\Span}{\operatorname{span}}
+\newcommand{\Argmax}{\operatorname*{arg\,max}}
+\newcommand{\stir}[2]{\genfrac{\{} {\}}{0pt}{}{#1}{#2}}
+\newcommand{\cA}{\mathcal A}
+\newcommand{\cV}{\mathcal V}
+\newcommand{\cL}{\mathcal L}
+
+\title{Four Missing-Mass Extremizer Problems\\
+\large Phase diagrams, fixed samples, and fixed-threshold tails}
+\author{Christopher D. Long}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We study four extremal problems for the missing mass.  For the Poissonized positive moment generating function, separability and a one-valley KKT argument reduce the global optimization to a one-heavy scalar excess.  An affine-gauge identity yields the exact pointwise duality
+\[
+D_{\lambda,s}(x)=D_{s,\lambda}(x),
+\]
+so the full phase diagram is determined by one late boundary.  We prove, by a first-return argument that excludes isolated pinch zeros, that the late nonuniform phase is a ray.  Its boundary \(\beta_n\) is continuous, strictly increasing, and satisfies \(\beta_n(s)>s\).  The key signs are upward Maxwell transversality in \(\lambda\) and early-downward transversality in \(s\); both are encoded by one elementary convex bracket.  The early sign is established by an explicit inductive comparison theorem.  We also give a rigorous small-\(s\) connection to the Poissonized expected-missing-mass threshold and a two-sided global-concavity/spinodal sandwich that quantifies the large-\(s\) collapse of the uniform window toward the diagonal.
+
+For fixed sample size, coefficient extraction converts the nonseparable MGF into a finite vector-separable objective.  A frozen KKT equation is a nonzero real exponential polynomial.  A self-contained disconjugacy argument gives at most \(t(t+1)\) distinct positive levels at every facewise constrained critical point for every real \(s\ne0\).  For fixed-threshold tails, the functional is upper semicontinuous and therefore attains its maximum.  We prove a stronger bounded-support result: with
+\[
+m_0(t,a)=\left\lceil \frac{t}{1-a}\right\rceil,
+\]
+there is always a maximizer supported on at most \(m_0(t,a)\) atoms, and tail probability one is possible on an alphabet of size \(n\) if and only if \(n\ge m_0(t,a)\).  The remaining finite problem is polynomial on the strata of a finite hyperplane arrangement.
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction and notation}
+
+Let
+\[
+\simplex=\left\{p=(p_1,\ldots,p_n):p_i\ge0,\ \sum_{i=1}^n p_i=1\right\}.
+\]
+For a fixed sample size \(t\), let \(X_1,\ldots,X_t\) be independent with common law \(p\), and define the missing mass
+\[
+U_t=\sum_{i=1}^n p_i\one\{i\notin\{X_1,\ldots,X_t\}\}.
+\]
+For the Poissonized model, let the occupancy counts be independent with
+\[
+N_i(\lambda)\sim\operatorname{Poisson}(\lambda p_i),
+\]
+and put
+\[
+U_\lambda=\sum_{i=1}^n p_i\one\{N_i(\lambda)=0\}.
+\]
+The missing mass and its concentration properties have a substantial literature; see, for example, \cite{Good1953,McAllesterSchapire2000,McAllesterOrtiz2003,BerendKontorovich2012,BerendKontorovich2013,BenHamouBoucheronOhannessian2017}.  Our concern here is not a universal concentration bound, but the structure of distributions that maximize MGFs or fixed tails.  The classical Good--Turing work motivates the occupancy quantities, while the extremal-distribution theorem of Berend and Kontorovich \cite[Theorem~5]{BerendKontorovich2012} is the closest antecedent to the expected-mass phase analysis below.
+
+The four problems are as follows.
+\begin{enumerate}[label=\textbf{C\arabic*.},leftmargin=*]
+\item Determine the zero set of the Poissonized positive-MGF excess for fixed \(n\) and \(s\).
+\item Prove the one-transition/two-transition phase picture and identify the two boundaries by duality.
+\item Bound the active-level complexity of fixed-sample MGF extremizers uniformly in the alphabet size.
+\item Prove the existence of bounded-complexity fixed-threshold tail extremizers and reduce the residual problem to finite algebraic optimization.
+\end{enumerate}
+
+The results below resolve these questions in the stated senses.  C1/C2 are exact phase-diagram theorems.  C3 gives a uniform, explicit level bound, not a sharp classification.  C4 gives a stronger bounded-support existence theorem; it does not assert that every maximizer has bounded level complexity.
+
+Throughout the Poissonized analysis, we write
+\[
+u=\frac1n,\qquad k=n-1,\qquad y=1-kx,
+\]
+so that a one-heavy vector has the form
+\[
+(x,\ldots,x,y),\qquad 0\le x\le u\le y.
+\]
+
+\section{An active-uniform principle}
+
+\begin{definition}[One-heavy law]
+A vector \(p\in\simplex\) is \emph{one-heavy} if, after a permutation,
+\[
+p=(x,\ldots,x,y),\qquad 0\le x\le\frac1n,\qquad y=1-(n-1)x.
+\]
+The value \(x=y=1/n\) is the uniform law.
+\end{definition}
+
+\begin{lemma}[One-valley active-uniform principle]\label{lem:one-valley}
+Let \(f\in C^2((0,1])\cap C^1([0,1])\).  Suppose that
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item \(f'(z)<f'(0)\) for every \(z>0\);
+\item \(f'\) is strictly decreasing, or else strictly decreases and then strictly increases once.
+\end{enumerate}
+Then every global maximizer of
+\[
+p\longmapsto \sum_{i=1}^n f(p_i)
+\]
+over \(\simplex\) has full support and is either uniform or one-heavy.
+\end{lemma}
+
+\begin{proof}
+If a candidate maximizer has \(p_j=0\) and \(p_i>0\), transferring an amount \(\varepsilon\) from coordinate \(i\) to coordinate \(j\) changes the objective by
+\[
+\varepsilon\{f'(0)-f'(p_i)\}+o(\varepsilon)>0.
+\]
+Thus every maximizer is interior.  The KKT equations give a scalar \(\nu\) such that
+\[
+f'(p_i)=\nu\qquad(1\le i\le n).
+\]
+Under the one-valley hypothesis, this equation has at most two roots.  If only one root occurs, the sum constraint forces uniformity.  If two roots occur, one lies on the decreasing branch of \(f'\) and one on its increasing branch.  A value \(z\) on the strictly increasing branch cannot occur twice at a local maximum.  Indeed, for all sufficiently small \(\varepsilon>0\),
+\[
+\begin{aligned}
+f(z+\varepsilon)+f(z-\varepsilon)-2f(z)
+&=\int_0^\varepsilon
+\bigl(f'(z+\tau)-f'(z-\tau)\bigr)\,\dd\tau\\
+&>0.
+\end{aligned}
+\]
+Thus at most one coordinate uses the increasing-branch value, and all remaining coordinates are equal.  This is precisely the one-heavy form.
+\end{proof}
+
+\begin{remark}[Affine gauge]
+On the simplex, adding an affine function to a coordinate kernel does not change its maximizers.  More precisely, if \(\widetilde f(z)=f(z)+az+b\), then
+\[
+\sum_i\widetilde f(p_i)=\sum_i f(p_i)+a+nb.
+\]
+This simple observation is the correct conceptual setting for the \(\lambda\leftrightarrow s\) duality used below.
+\end{remark}
+
+\begin{lemma}[Quadratic factorization at a persistent stationary point]\label{lem:quadratic-factor}
+Let \(J,I\subset\R\) be intervals, let \(u\in I\), and suppose that \(F,F_x,F_{xx},F_t,F_{tx},F_{txx}\) exist and are jointly continuous on \(J\times I\).  Suppose
+\[
+F(t,u)=F_x(t,u)=0
+\qquad(t\in J).
+\]
+Then
+\begin{equation}\label{eq:quadratic-factor}
+F(t,x)=(x-u)^2G(t,x),
+\qquad
+G(t,x)=\int_0^1(1-r)F_{xx}\bigl(t,u+r(x-u)\bigr)\,\dd r.
+\end{equation}
+In particular,
+\[
+G(t,u)=\frac12F_{xx}(t,u).
+\]
+The functions \(G\) and \(G_t\) are jointly continuous, with \(G_t\) given by the same integral with \(F_{xx}\) replaced by \(F_{txx}\).  If \(F\) is real analytic, then \(G\) is real analytic.  More generally, further derivatives of \(G\) follow whenever the corresponding derivatives of \(F_{xx}\) are continuous; no assertion of preservation of finite differentiability order in \(x\) is needed.
+\end{lemma}
+
+\begin{proof}
+Apply Taylor's formula with integral remainder in the second variable.  The identities at \(u\) remove the constant and linear terms.  The continuity and parameter derivative follow from the stated mixed-derivative assumptions and differentiation under the integral sign.  Analyticity follows from the locally convergent power series of \(F\), whose constant and linear coefficients at \(u\) vanish.
+\end{proof}
+
+\begin{lemma}[First-return exclusion for scalar max envelopes]\label{lem:first-return}
+Let \(J\subset\R\) be an interval, let \(a<u\), and let \(F:J\times[a,u]\to\R\) satisfy the hypotheses of \cref{lem:quadratic-factor}.  Assume
+\[
+F(t,u)=0,
+\qquad
+\Delta(t):=\max_{a\le x\le u}F(t,x)\ge0.
+\]
+Let \(G\) be the factor in \eqref{eq:quadratic-factor}.  Suppose that:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item \(F(t,a)<0\) for every \(t\in J\);
+\item if \(\Delta(t_0)=F(t_0,x_0)=0\) for some \(x_0\in(a,u)\), then \(F_t(t_0,x_0)>0\);
+\item if \(\Delta(t_0)=0\) and \(G(t_0,u)=0\), then \(G_t(t_0,u)>0\).
+\end{enumerate}
+If \(\Delta(t_{\mathrm p})>0\) at one point \(t_{\mathrm p}\in J\), then
+\[
+\Delta(t)>0
+\qquad
+\text{for every }t>t_{\mathrm p}\text{ in }J.
+\]
+\end{lemma}
+
+\begin{proof}
+Suppose instead that \(\Delta(t_1)=0\) for some \(t_1>t_{\mathrm p}\), and let
+\[
+t_0=\inf\{t\in[t_{\mathrm p},t_1]:\Delta(t)=0\}.
+\]
+Continuity of the maximum over the compact interval gives \(t_0>t_{\mathrm p}\),
+\[
+\Delta(t)>0\quad(t_{\mathrm p}\le t<t_0),
+\qquad
+\Delta(t_0)=0.
+\]
+Choose \(t_j\uparrow t_0\) and maximizers \(x_j\) with
+\[
+F(t_j,x_j)=\Delta(t_j)>0.
+\]
+After passage to a subsequence, \(x_j\to x_0\in[a,u]\), and continuity gives
+\[
+F(t_0,x_0)=\Delta(t_0)=0.
+\]
+Condition~\textup{(i)} excludes \(x_0=a\).
+
+If \(x_0\in(a,u)\), condition~\textup{(ii)} and continuity yield a neighborhood on which \(F_t\ge c>0\).  Since \(F(t_0,x_j)\le0\), for all large \(j\),
+\[
+F(t_j,x_j)
+=F(t_0,x_j)-\int_{t_j}^{t_0}F_t(r,x_j)\,\dd r
+\le-c(t_0-t_j)<0,
+\]
+a contradiction.
+
+It remains to consider \(x_0=u\).  Since \(x_j\ne u\), positivity of \(F(t_j,x_j)\) is equivalent to positivity of \(G(t_j,x_j)\).  Global optimality at \(t_0\) gives \(G(t_0,x)\le0\) for \(x<u\).  If \(G(t_0,u)<0\), continuity already contradicts \(G(t_j,x_j)>0\).  Hence \(G(t_0,u)=0\).  By condition~\textup{(iii)}, \(G_t\ge c>0\) near \((t_0,u)\), and therefore
+\[
+G(t_j,x_j)
+=G(t_0,x_j)-\int_{t_j}^{t_0}G_t(r,x_j)\,\dd r
+\le-c(t_0-t_j)<0,
+\]
+the final contradiction.
+\end{proof}
+
+\section{The Poissonized expected-missing-mass threshold}\label{sec:expected-threshold}
+
+The small-MGF-parameter limit is governed by the Poissonized expected missing mass.  We include the required phase statement so that the normalization \(\lambda_n^\star\) is intrinsic to this paper.  For comparison, in the fixed-sample model
+\[
+\E_p U_t=\sum_{i=1}^n p_i(1-p_i)^t.
+\]
+Berend and Kontorovich proved that every local maximizer of this fixed-sample expectation is uniform or one-heavy, and that there is a global uniform-to-one-heavy threshold \(\tau(n)>n\), with
+\[
+\tau(n)=n+\sqrt{2n}\,(1+o(1));
+\]
+see \cite[Theorem~5]{BerendKontorovich2012}.  The theorem below is the Poissonized analogue needed for the MGF endpoint analysis.
+
+For \(\theta\ge0\), define
+\[
+q_\theta(z)=z e^{-\theta z}
+\]
+and the one-heavy expected-missing-mass excess
+\begin{equation}\label{eq:Q-def}
+Q_{n,\theta}(x)=kq_\theta(x)+q_\theta(y)-nq_\theta(u)
+=kx e^{-\theta x}+y e^{-\theta y}-e^{-\theta/n}.
+\end{equation}
+Let
+\[
+\delta_n(\theta)=\max_{0\le x\le u}Q_{n,\theta}(x).
+\]
+The same formula is meaningful on the larger feasible interval \(0\le x\le1/k\).  Points \(x>u\) represent one-light laws with \(k\) equal heavier coordinates and one lighter coordinate.  In particular, whenever uniform is globally optimal, \(Q_{n,\theta}(x)\le0\) on both sides of \(u\).  The proofs below require only the one-heavy half-interval, but this extension makes the uniform point an interior point of the scalar family.
+
+\begin{lemma}[Expected-mass one-heavy reduction]\label{lem:expected-one-heavy}
+For every \(\theta>0\), every global maximizer of
+\[
+p\longmapsto \sum_{i=1}^n p_i e^{-\theta p_i}
+\]
+over \(\simplex\) is uniform or one-heavy.
+\end{lemma}
+
+\begin{proof}
+For \(q_\theta(z)=ze^{-\theta z}\),
+\[
+q_\theta'(z)=e^{-\theta z}(1-\theta z),\qquad
+q_\theta''(z)=\theta e^{-\theta z}(\theta z-2).
+\]
+Thus \(q_\theta'\) decreases and then increases once.  Also \(q_\theta'(0)=1\) and \(q_\theta'(z)<1\) for \(z>0\).  Apply \cref{lem:one-valley}.
+\end{proof}
+
+\begin{lemma}[Expected-mass upward transversality]\label{lem:expected-transversality}
+Suppose \(0<x<u<y\) satisfies
+\[
+q_\theta'(x)=q_\theta'(y),\qquad
+Q_{n,\theta}(x)=0.
+\]
+Then
+\[
+\partial_\theta Q_{n,\theta}(x)>0.
+\]
+\end{lemma}
+
+\begin{proof}
+Since \(q_\theta'\) decreases and then increases to \(0\) from below, a two-root stationary equality occurs at a negative derivative level.  Hence \(q_\theta\) is decreasing on \([x,y]\), and
+\[
+q_\theta(x)>q_\theta(u)>q_\theta(y).
+\]
+Write \(H=q_\theta(u)\) and \(q_\theta(x)=H+\eta\), where \(\eta>0\).  The Maxwell equation gives
+\[
+q_\theta(y)=H-k\eta.
+\]
+Since \(\partial_\theta q_\theta(z)=-zq_\theta(z)\),
+\begin{align*}
+\partial_\theta Q_{n,\theta}(x)
+&=-\{kxq_\theta(x)+yq_\theta(y)-nuq_\theta(u)\}\\
+&=-\{kx(H+\eta)+y(H-k\eta)-H\}\\
+&=k\eta(y-x)>0,
+\end{align*}
+where we used \(kx+y=nu=1\).
+\end{proof}
+
+\begin{theorem}[Expected-missing-mass phase threshold]\label{thm:expected-threshold}
+For every \(n\ge2\), there is a number
+\[
+0<\lambda_n^\star\le2n
+\]
+such that
+\[
+\delta_n(\theta)=0\quad(0\le\theta\le\lambda_n^\star),
+\qquad
+\delta_n(\theta)>0\quad(\theta>\lambda_n^\star).
+\]
+For every \(0<\theta<\lambda_n^\star\), uniform is the unique maximizer.
+\end{theorem}
+
+\begin{proof}
+For \(0<\theta<2\), the kernel \(q_\theta\) is strictly concave on \([0,1]\), so uniform is uniquely optimal.  For large \(\theta\), taking \(x=1/\theta\) gives
+\[
+Q_{n,\theta}(1/\theta)=\frac{k}{e\theta}+o(\theta^{-1})>0.
+\]
+Thus the positive set
+\[
+\mathcal P_n=\{\theta>0:\delta_n(\theta)>0\}
+\]
+is a nonempty open set and is disjoint from a neighborhood of the origin.
+
+We apply \cref{lem:first-return} with parameter \(t=\theta\) and scalar excess \(F(\theta,x)=Q_{n,\theta}(x)\).  The left endpoint is excluded by
+\[
+Q_{n,\theta}(0)=e^{-\theta}-e^{-\theta/n}<0
+\qquad(\theta>0).
+\]
+Every zero-level interior maximizer is stationary, so condition~\textup{(ii)} of \cref{lem:first-return} is exactly \cref{lem:expected-transversality}.
+
+For the uniform alternative, let
+\[
+Q_{n,\theta}(x)=(x-u)^2G_n(\theta,x)
+\]
+be the factorization from \cref{lem:quadratic-factor}.  Then
+\begin{equation}\label{eq:expected-G-uniform}
+G_n(\theta,u)
+=\frac12Q_{n,\theta}''(u)
+=\frac{nk}{2}\,\theta e^{-\theta/n}
+\left(\frac\theta n-2\right).
+\end{equation}
+Hence \(G_n(\theta,u)=0\) only at \(\theta=2n\), and
+\begin{equation}\label{eq:expected-G-orientation}
+\partial_\theta G_n(2n,u)=nk e^{-2}>0.
+\end{equation}
+Condition~\textup{(iii)} of \cref{lem:first-return} follows.  Therefore, once \(\delta_n\) becomes positive, it cannot return to zero, even at an isolated pinch point.
+
+Define
+\[
+\lambda_n^\star=\inf\mathcal P_n.
+\]
+The preceding argument gives
+\[
+\mathcal P_n=(\lambda_n^\star,\infty).
+\]
+Since the uniform Hessian in \eqref{eq:expected-G-uniform} is positive for \(\theta>2n\), uniform is locally unstable there, and therefore \(\lambda_n^\star\le2n\).
+
+Finally, suppose \(0<\theta<\lambda_n^\star\) and a nonuniform law ties uniform globally.  By \cref{lem:expected-one-heavy}, a one-heavy maximizer exists; its scalar parameter lies in \((0,u)\), because the endpoint value is negative.  It is a stationary Maxwell tie, so \cref{lem:expected-transversality} gives positive excess at \(\theta+\varepsilon<\lambda_n^\star\) for all sufficiently small \(\varepsilon>0\), a contradiction.  Thus uniform is the unique maximizer below the threshold.
+\end{proof}
+
+\begin{lemma}[Quadratic stability below \(\lambda_n^\star\)]\label{lem:expected-quadratic-stability}
+Fix \(0<\theta<\lambda_n^\star\).  There exists \(c_{n,\theta}>0\) such that
+\[
+Q_{n,\theta}(x)\le-c_{n,\theta}(u-x)^2
+\qquad(0\le x\le u).
+\]
+\end{lemma}
+
+\begin{proof}
+By \cref{thm:expected-threshold}, \(Q_{n,\theta}(x)<0\) for \(x<u\).  Since \(\theta<\lambda_n^\star\le2n\),
+\[
+Q_{n,\theta}''(u)=nk\theta e^{-\theta/n}\left(\frac\theta n-2\right)<0.
+\]
+The ratio
+\[
+-\frac{Q_{n,\theta}(x)}{(u-x)^2}
+\]
+extends continuously to \(x=u\), with limiting value \(-Q_{n,\theta}''(u)/2>0\).  Its minimum on \([0,u]\) is therefore positive.
+\end{proof}
+
+\section{Poissonized positive MGFs and scalar reduction}
+
+Poissonization makes the unseen indicators independent:
+\[
+\one\{N_i(\lambda)=0\}\sim\operatorname{Bernoulli}(e^{-\lambda p_i}).
+\]
+Therefore, for \(s>0\),
+\begin{equation}\label{eq:poisson-mgf}
+\log\E_p e^{sU_\lambda}
+=\sum_{i=1}^n h_{\lambda,s}(p_i),
+\end{equation}
+where
+\begin{equation}\label{eq:h-def-new}
+h_{\lambda,s}(z)
+=\log\left(1+e^{-(\lambda-s)z}-e^{-\lambda z}\right)
+=\log\left(1+e^{-\lambda z}(e^{sz}-1)\right).
+\end{equation}
+
+\begin{proposition}[Global one-heavy reduction]\label{prop:mgf-one-heavy}
+For every \(n\ge2\), \(s>0\), and \(\lambda>0\), every global maximizer of \(p\mapsto\log\E_p e^{sU_\lambda}\) over \(\simplex\) is uniform or one-heavy.
+\end{proposition}
+
+\begin{proof}
+Set \(a=\lambda-s\), \(b=\lambda\), and
+\[
+g(z)=1+e^{-az}-e^{-bz},\qquad h(z)=\log g(z).
+\]
+A direct calculation gives
+\begin{equation}\label{eq:hsecond}
+g(z)^2h''(z)
+=a^2e^{-az}-b^2e^{-bz}-(b-a)^2e^{-(a+b)z}.
+\end{equation}
+After multiplication by \(e^{(a+b)z}>0\), the sign is the sign of the curvature numerator
+\begin{equation}\label{eq:kappa-curvature}
+\kappa_{\lambda,s}(z)
+=(\lambda-s)^2e^{\lambda z}
+-\lambda^2e^{(\lambda-s)z}-s^2.
+\end{equation}
+Since \(\kappa_{\lambda,s}(0)=-2\lambda s<0\), and since its derivative is either everywhere positive or first negative and then positive, \(\kappa_{\lambda,s}\) crosses zero at most once, necessarily from negative to positive.  Thus \(h'\) decreases and then possibly increases once.
+
+It remains to exclude boundary maximizers.  We have \(h'(0)=s\), and the sign of \(h'(z)-s\) is the sign of
+\[
+q(z)=\lambda+s-\lambda e^{sz}-s e^{\lambda z}.
+\]
+Now \(q(0)=0\) and
+\[
+q'(z)=-\lambda s e^{sz}-s\lambda e^{\lambda z}<0.
+\]
+Hence \(h'(z)<h'(0)\) for every \(z>0\).  The result follows from \cref{lem:one-valley}.
+\end{proof}
+
+For \(0\le x\le u\), define the one-heavy value and excess
+\begin{align}
+H_{n,\lambda,s}(x)
+&=kh_{\lambda,s}(x)+h_{\lambda,s}(y),\label{eq:H-new}\\
+D_{\lambda,s}(x)
+&=H_{n,\lambda,s}(x)-nh_{\lambda,s}(u),\label{eq:D-new}\\
+\Delta_{n,s}(\lambda)
+&=\max_{0\le x\le u}D_{\lambda,s}(x).\label{eq:Delta-new}
+\end{align}
+Then \(D_{\lambda,s}(u)=0\), so \(\Delta_{n,s}(\lambda)\ge0\).  By \cref{prop:mgf-one-heavy},
+\begin{equation}\label{eq:Delta-detects}
+\Delta_{n,s}(\lambda)=0
+\quad\Longleftrightarrow\quad
+\text{uniform is globally optimal}.
+\end{equation}
+The scalar formula \eqref{eq:D-new} also parametrizes feasible one-light laws on \(u<x\le1/k\).  Thus global uniform optimality implies \(D_{\lambda,s}(x)\le0\) on the full interval \([0,1/k]\).  This extension is useful near \(u\), where it turns the uniform point into an interior point of the scalar family, although the one-heavy reduction itself only requires \(0\le x\le u\).
+
+\begin{lemma}[Basic endpoint information]\label{lem:mgf-endpoints}
+Fix \(n\ge2\) and \(s>0\).
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item \(\Delta_{n,s}(0)=0\), and every law ties at \(\lambda=0\).
+\item At \(\lambda=s\), uniform is the unique maximizer.
+\item For all sufficiently large \(\lambda\), \(\Delta_{n,s}(\lambda)>0\).
+\item If \(s>\lambda_n^\star\), then \(\Delta_{n,s}(\lambda)>0\) for all sufficiently small \(\lambda>0\).
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+At \(\lambda=0\), \(h_{0,s}(z)=sz\), so the objective is identically \(s\).  At \(\lambda=s\),
+\[
+h_{s,s}(z)=\log(2-e^{-sz}),\qquad
+h_{s,s}''(z)=-\frac{2s^2e^{-sz}}{(2-e^{-sz})^2}<0,
+\]
+so strict concavity gives unique uniformity.
+
+For large \(\lambda\), take \(x=1/\lambda\).  Then
+\[
+h_{\lambda,s}(1/\lambda)=\frac{s}{e\lambda}+O(\lambda^{-2}),
+\]
+while \(h_{\lambda,s}(y)=O(e^{-c\lambda})\) and \(h_{\lambda,s}(u)=O(e^{-\lambda/n})\).  Hence
+\[
+D_{\lambda,s}(1/\lambda)=\frac{ks}{e\lambda}+o(\lambda^{-1})>0.
+\]
+
+Finally, as \(\lambda\downarrow0\), uniformly for \(z\in[0,1]\),
+\[
+h_{\lambda,s}(z)=sz+\lambda(ze^{-sz}-z)+O(\lambda^2).
+\]
+The affine terms cancel in the excess, giving
+\[
+D_{\lambda,s}(x)=\lambda Q_{n,s}(x)+O(\lambda^2).
+\]
+If \(s>\lambda_n^\star\), \cref{thm:expected-threshold} supplies an \(x\) with \(Q_{n,s}(x)>0\), and the same \(x\) gives positive MGF excess for all small \(\lambda>0\).
+\end{proof}
+
+\section{Affine-gauge duality}
+
+\begin{lemma}[Full-objective and pointwise duality]\label{lem:full-duality}
+For every \(z\in[0,1]\),
+\begin{equation}\label{eq:h-dual-new}
+h_{\lambda,s}(z)=h_{s,\lambda}(z)+(s-\lambda)z.
+\end{equation}
+Consequently, for every \(p\in\simplex\),
+\begin{equation}\label{eq:F-dual}
+\sum_i h_{\lambda,s}(p_i)
+=
+\sum_i h_{s,\lambda}(p_i)+(s-\lambda),
+\end{equation}
+and hence
+\begin{equation}\label{eq:argmax-dual}
+\Argmax_{p\in\simplex}\sum_i h_{\lambda,s}(p_i)
+=
+\Argmax_{p\in\simplex}\sum_i h_{s,\lambda}(p_i).
+\end{equation}
+At the scalar one-heavy/one-light level,
+\begin{equation}\label{eq:D-pointwise-dual}
+D_{\lambda,s}(x)=D_{s,\lambda}(x)
+\qquad(0\le x\le1/k),
+\end{equation}
+and therefore
+\begin{equation}\label{eq:Delta-dual-new}
+\Delta_{n,s}(\lambda)=\Delta_{n,\lambda}(s).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+The identity
+\[
+1+e^{-(\lambda-s)z}-e^{-\lambda z}
+=e^{(s-\lambda)z}
+\left(1+e^{-(s-\lambda)z}-e^{-sz}\right)
+\]
+gives \eqref{eq:h-dual-new}.  Summation over a probability vector yields \eqref{eq:F-dual}.  In the one-heavy excess, the linear contribution is
+\[
+(s-\lambda)(kx+y-nu)=0,
+\]
+which gives \eqref{eq:D-pointwise-dual} and \eqref{eq:Delta-dual-new}.
+\end{proof}
+
+\begin{remark}
+The pointwise identity \eqref{eq:D-pointwise-dual} is stronger than equality of the maximized excesses.  It identifies the complete stationary and Maxwell sets after reflection across the diagonal \(\lambda=s\).
+\end{remark}
+
+\section{Late stationary geometry and transversality}
+
+A nonuniform stationary point satisfies
+\begin{equation}\label{eq:stationary-new}
+h_{\lambda,s}'(x)=h_{\lambda,s}'(y),
+\qquad 0<x<u<y,
+\end{equation}
+and a Maxwell tie with uniform additionally satisfies
+\begin{equation}\label{eq:maxwell-new}
+D_{\lambda,s}(x)=0.
+\end{equation}
+The late half-plane is \(\lambda\ge s\).
+
+\begin{lemma}[Late endpoint exclusion]\label{lem:late-endpoint-exclusion}
+If \(\lambda\ge s>0\), then
+\[
+z\longmapsto \frac{h_{\lambda,s}(z)}z
+\]
+is strictly decreasing on \((0,\infty)\).  In particular,
+\begin{equation}\label{eq:D0-neg-new}
+D_{\lambda,s}(0)=h_{\lambda,s}(1)-nh_{\lambda,s}(1/n)<0.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Write \(\mu=\lambda-s\ge0\) and
+\[
+v(z)=e^{-\mu z}(1-e^{-sz}),\qquad h_{\lambda,s}(z)=\log(1+v(z)).
+\]
+It suffices to prove \(zh'(z)<h(z)\).  If \(v'(z)\le0\), this is immediate.  If \(v'(z)>0\), we first show \(zv'(z)\le v(z)\).  With \(r=sz>0\) and \(c=\mu/s\ge0\), this is equivalent to
+\[
+r\{(c+1)e^{-r}-c\}\le1-e^{-r},
+\]
+or
+\[
+1+r(c+1)\le e^r(1+rc).
+\]
+The latter follows from
+\[
+e^r(1+rc)-1-r(c+1)
+=(e^r-1-r)+rc(e^r-1)\ge0.
+\]
+Therefore
+\[
+zh'(z)=\frac{zv'(z)}{1+v(z)}
+\le\frac{v(z)}{1+v(z)}
+<\log(1+v(z))=h(z).
+\]
+The endpoint inequality follows by comparing \(z=1\) and \(z=1/n\).
+\end{proof}
+
+\begin{lemma}[Late stationary ordering]\label{lem:late-ordering-new}
+Assume \(\lambda>s>0\), and let \(0<x<u<y\) satisfy \eqref{eq:stationary-new}.  Then the common derivative is negative and
+\[
+h_{\lambda,s}(x)>h_{\lambda,s}(u)>h_{\lambda,s}(y).
+\]
+\end{lemma}
+
+\begin{proof}
+The numerator of \(h_{\lambda,s}'(z)\) is
+\[
+-(\lambda-s)e^{-(\lambda-s)z}+\lambda e^{-\lambda z},
+\]
+which vanishes exactly once, at
+\[
+z_0=\frac1s\log\frac{\lambda}{\lambda-s}.
+\]
+Thus \(h'\) is positive before \(z_0\) and negative after \(z_0\).  By \cref{prop:mgf-one-heavy}, \(h'\) has one valley, and its increasing branch tends to \(0\) from below.  Hence a level attained at two distinct points must be negative.  Both \(x\) and \(y\) therefore lie to the right of \(z_0\), where \(h\) is decreasing.  Since \(x<u<y\), the stated ordering follows.
+\end{proof}
+
+\begin{lemma}[The common Maxwell bracket]\label{lem:maxwell-bracket}
+For \(0<x<u<y\), define
+\begin{equation}\label{eq:chi-def}
+\chi_x(d)=kx e^d+y e^{-kd}-1.
+\end{equation}
+Then \(\chi_x(0)=0\), \(\chi_x(d)>0\) for every \(d<0\), and \(\chi_x\) is strictly convex.  Moreover, if \(d_0>0\) and \(\chi_x(d_0)<0\), then
+\[
+\chi_x(d)<0
+\qquad(0<d\le d_0).
+\]
+\end{lemma}
+
+\begin{proof}
+For \(d\le0\),
+\[
+\chi_x'(d)=k\bigl(xe^d-ye^{-kd}\bigr)<0,
+\]
+because \(xe^d\le x<y\le ye^{-kd}\).  Since \(\chi_x(0)=0\), this gives \(\chi_x(d)>0\) for \(d<0\).  Also
+\[
+\chi_x''(d)=kx e^d+k^2y e^{-kd}>0.
+\]
+If \(0<d<d_0\) and \(\chi_x(d_0)<0\), strict convexity places \(\chi_x(d)\) strictly below the chord joining \((0,0)\) and \((d_0,\chi_x(d_0))\), so \(\chi_x(d)<0\).
+\end{proof}
+
+\begin{lemma}[Upward late Maxwell transversality]\label{lem:upward-transversality-new}
+Let \(\lambda>s>0\), and suppose \(0<x<u<y\) satisfies \eqref{eq:stationary-new}--\eqref{eq:maxwell-new}.  Then
+\begin{equation}\label{eq:Dlambda-pos-new}
+\partial_\lambda D_{\lambda,s}(x)>0.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Set \(H=h_{\lambda,s}(u)\).  By \cref{lem:late-ordering-new}, there is \(\delta>0\) such that
+\[
+h_{\lambda,s}(x)=H+\delta,
+\qquad
+h_{\lambda,s}(y)=H-k\delta,
+\]
+where the second identity is the Maxwell equation.  Also
+\begin{equation}\label{eq:hlambda-derivative}
+\partial_\lambda h_{\lambda,s}(z)
+=-z\left(1-e^{-h_{\lambda,s}(z)}\right).
+\end{equation}
+Since \(kx+y=nu=1\), the constant terms cancel and
+\begin{equation}\label{eq:Dlambda-chi}
+\partial_\lambda D_{\lambda,s}(x)
+=e^{-H}\chi_x(-\delta).
+\end{equation}
+The right-hand side is positive by \cref{lem:maxwell-bracket}.
+\end{proof}
+
+\section{The late spinodal and no reentrance}
+
+The uniform tangent-space Hessian is governed by the following explicit quantity.
+
+\begin{lemma}[Late spinodal curves and orientation]\label{lem:spinodal-strong}
+For an integer \(m\ge1\) and \(s>0\), define
+\begin{equation}\label{eq:K-new}
+K_m(\lambda,s)
+=(\lambda-s)^2e^{\lambda/m}
+-\lambda^2e^{(\lambda-s)/m}-s^2.
+\end{equation}
+There is a unique root \(\sigma_m(s)>s\) of \(K_m(\lambda,s)=0\) on \([s,\infty)\).  At this root,
+\begin{equation}\label{eq:K-orientation}
+\partial_\lambda K_m(\sigma_m(s),s)>0,
+\qquad
+\partial_s K_m(\sigma_m(s),s)<0.
+\end{equation}
+Consequently \(\sigma_m\) is \(C^1\) and strictly increasing.  When \(m=n\ge2\), the sign of the uniform tangent-space Hessian for the \(n\)-symbol MGF problem is the sign of \(K_n(\lambda,s)\).
+\end{lemma}
+
+\begin{proof}
+For uniqueness, write
+\[
+q=\frac\lambda s\ge1,
+\qquad R=e^{s/(2m)}>1.
+\]
+Then
+\[
+\frac{K_m(\lambda,s)}{s^2}
+=e^{\frac{s}{m}(q-1)}
+\left(R^2(q-1)^2-q^2\right)-1.
+\]
+The bracket factors as
+\[
+(R(q-1)-q)(R(q-1)+q).
+\]
+It is nonpositive until \(q_0=R/(R-1)\), and positive and strictly increasing after \(q_0\).  Thus the displayed expression is negative up to \(q_0\), strictly increasing thereafter, and tends to \(+\infty\).  It has exactly one zero.
+
+For the derivative signs, put
+\[
+t=\frac{s}{m}>0,
+\qquad d=\frac{\lambda-s}{m}>0.
+\]
+Then
+\[
+K_m(\lambda,s)=m^2F(d,t),
+\qquad
+F(d,t)=e^d\{d^2e^t-(d+t)^2\}-t^2.
+\]
+At a root,
+\begin{equation}\label{eq:F-root}
+d^2e^t-(d+t)^2=t^2e^{-d}>0.
+\end{equation}
+Therefore
+\[
+F_d=t^2+2e^d\{de^t-(d+t)\}>0,
+\]
+because \eqref{eq:F-root} implies \(de^{t/2}>d+t\).  Since \(\partial_\lambda d=1/m\), this gives \(K_\lambda=mF_d>0\).
+
+It remains to show \(K_s<0\).  First, the root satisfies \(d<2\).  Indeed, uniqueness and \(F(0,t)<0\) reduce this to \(F(2,t)>0\), which is equivalent to
+\[
+4e^t-(t+2)^2-e^{-2}t^2>0.
+\]
+The left-hand side and its first derivative vanish at \(t=0\), while its second derivative is
+\[
+4e^t-2-2e^{-2}>0
+\qquad(t\ge0).
+\]
+Hence it is positive for \(t>0\).  A direct differentiation at fixed \(\lambda\), followed by use of \eqref{eq:F-root}, gives
+\[
+\frac1mK_s
+=d e^{d+t}(d-2)-t^2-2t<0.
+\]
+The implicit function theorem now gives
+\[
+\sigma_m'(s)=-\frac{K_s}{K_\lambda}>0.
+\]
+
+Finally, for \(m=n\ge2\), the Hessian assertion follows from \eqref{eq:hsecond} evaluated at \(u=1/n\), or equivalently from \eqref{eq:late-G-uniform} below.
+\end{proof}
+
+\begin{definition}[Late boundary]
+For \(s>0\), let
+\begin{equation}\label{eq:beta-new}
+\beta_n(s)=\inf\{\lambda\ge s:\Delta_{n,s}(\lambda)>0\}.
+\end{equation}
+\end{definition}
+
+\begin{theorem}[Late no-reentrance]\label{thm:late-ray-new}
+For every \(n\ge2\) and \(s>0\), the boundary \(\beta_n(s)\) is finite and satisfies \(\beta_n(s)>s\).  Moreover,
+\begin{equation}\label{eq:late-ray-new}
+\Delta_{n,s}(\lambda)=0
+\quad(s\le\lambda\le\beta_n(s)),
+\qquad
+\Delta_{n,s}(\lambda)>0
+\quad(\lambda>\beta_n(s)).
+\end{equation}
+Equivalently,
+\[
+\{\lambda\ge s:\Delta_{n,s}(\lambda)>0\}
+=(\beta_n(s),\infty).
+\]
+\end{theorem}
+
+\begin{proof}
+By \cref{lem:mgf-endpoints}, the late positive set is a nonempty open subset of \((s,\infty)\), while strict uniformity persists for \(\lambda>s\) sufficiently close to \(s\).  It remains to exclude every return to zero after positivity, including an isolated pinch zero.
+
+Apply \cref{lem:first-return} with parameter \(t=\lambda\), fixed \(s\), and scalar excess \(F(\lambda,x)=D_{\lambda,s}(x)\).  Condition~\textup{(i)} follows from \cref{lem:late-endpoint-exclusion}.  Every zero-level interior maximizer is stationary, so condition~\textup{(ii)} is \cref{lem:upward-transversality-new}.
+
+For the uniform alternative, write
+\[
+D_{\lambda,s}(x)=(x-u)^2G_{n,s}(\lambda,x)
+\]
+as in \cref{lem:quadratic-factor}.  Set
+\[
+A_{\lambda,s}=1+e^{-(\lambda-s)/n}-e^{-\lambda/n}>0.
+\]
+Equations \eqref{eq:hsecond} and \eqref{eq:K-new} give
+\begin{equation}\label{eq:late-G-uniform}
+G_{n,s}(\lambda,u)
+=\frac{nk}{2}h_{\lambda,s}''(u)
+=\frac{nk}{2}\,
+\frac{e^{-(2\lambda-s)/n}}{A_{\lambda,s}^2}
+K_n(\lambda,s).
+\end{equation}
+If this quantity vanishes, then \(\lambda=\sigma_n(s)\), and at the root
+\begin{equation}\label{eq:late-G-orientation}
+\partial_\lambda G_{n,s}(\sigma_n(s),u)
+=\frac{nk}{2}\,
+\frac{e^{-(2\sigma_n(s)-s)/n}}{A_{\sigma_n(s),s}^2}
+\partial_\lambda K_n(\sigma_n(s),s)>0
+\end{equation}
+by \cref{lem:spinodal-strong}.  Thus condition~\textup{(iii)} of \cref{lem:first-return} also holds.
+
+The first-return lemma now shows that once the late excess is positive, it remains positive for every larger \(\lambda\).  Hence the positive set is the ray in \eqref{eq:late-ray-new}.  Finiteness follows from large-\(\lambda\) positivity, and \(\beta_n(s)>s\) follows from strict concavity at \(\lambda=s\) and persistence of strict uniformity in a neighborhood.
+\end{proof}
+
+\begin{theorem}[Continuity of the late boundary]\label{thm:beta-cont-new}
+For each \(n\ge2\), the map \(\beta_n:(0,\infty)\to(0,\infty)\) is continuous.
+\end{theorem}
+
+\begin{proof}
+Fix \(s_0>0\).  If \(\lambda>\beta_n(s_0)\), then \(\Delta_{n,s_0}(\lambda)>0\), and continuity of the maximized excess gives the same inequality for all \(s\) sufficiently close to \(s_0\).  Hence
+\[
+\limsup_{s\to s_0}\beta_n(s)\le\beta_n(s_0).
+\]
+
+For lower semicontinuity, suppose \(s_j\to s_0\) and \(\beta_n(s_j)\to L<\beta_n(s_0)\).  Choose
+\[
+\max\{s_0,L\}<\lambda<\beta_n(s_0).
+\]
+For large \(j\), the ray theorem gives \(\Delta_{n,s_j}(\lambda)>0\).  Choose maximizers \(x_j\) and pass to a subsequence with \(x_j\to x_0\).  Since \(\lambda<\beta_n(s_0)\),
+\[
+D_{\lambda,s_0}(x_0)=\Delta_{n,s_0}(\lambda)=0.
+\]
+The endpoint \(x_0=0\) is excluded by \cref{lem:late-endpoint-exclusion}.
+
+If \(0<x_0<u\), upward transversality gives \(D_{\lambda+\varepsilon,s_0}(x_0)>0\) for small \(\varepsilon>0\), contradicting \(\lambda+\varepsilon<\beta_n(s_0)\).  If \(x_0=u\), use the factor in \eqref{eq:late-G-uniform}.  Positivity along \((s_j,x_j)\to(s_0,u)\) forces \(G_{n,s_0}(\lambda,u)=0\), hence \(\lambda=\sigma_n(s_0)\).  The orientation \eqref{eq:late-G-orientation} then gives positive excess at \(\lambda+\varepsilon<\beta_n(s_0)\), again a contradiction.  Therefore
+\[
+\liminf_{s\to s_0}\beta_n(s)\ge\beta_n(s_0).
+\]
+\end{proof}
+
+\section{Early-downward transversality and strict boundary monotonicity}
+
+The remaining sign is the response of a late Maxwell tie to the MGF parameter \(s\).  Its proof rests on the following one-heavy comparison theorem.  A complete inductive proof is given in \cref{app:comparison}.
+
+\begin{theorem}[One-heavy comparison theorem]\label{thm:comparison-main}
+Fix \(\mu>0\) and \(r>0\), and define
+\[
+q_\mu(z)=ze^{-\mu z},
+\qquad
+\psi_{\mu,r}(z)
+=\frac{ze^{-(\mu+r)z}}
+{1+e^{-\mu z}-e^{-(\mu+r)z}}.
+\]
+For \(0<x<u<y\), with \(y=1-kx\), define
+\[
+\cA f=kf(x)+f(y)-nf(u).
+\]
+Then
+\begin{equation}\label{eq:comparison-main}
+\cA q_\mu\ge0
+\quad\Longrightarrow\quad
+\cA\psi_{\mu,r}>0.
+\end{equation}
+Consequently, for
+\[
+g_{\mu,s}(z)=\log\left(1+e^{-\mu z}-e^{-(\mu+s)z}\right),
+\]
+one has
+\begin{equation}\label{eq:comparison-integrated}
+\cA q_\mu\ge0
+\quad\Longrightarrow\quad
+\cA g_{\mu,s}>0
+\qquad(s>0).
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+The implication \eqref{eq:comparison-main} is proved in \cref{app:comparison}.  Since
+\[
+\partial_r g_{\mu,r}(z)=\psi_{\mu,r}(z),
+\qquad g_{\mu,0}(z)=0,
+\]
+integration over \(0<r<s\) gives \eqref{eq:comparison-integrated}.
+\end{proof}
+
+\begin{theorem}[Early-downward transversality]\label{thm:early-down-new}
+Let \(\lambda>s>0\), and suppose \(0<x<u<y\) satisfies \eqref{eq:stationary-new}--\eqref{eq:maxwell-new}.  Then
+\begin{equation}\label{eq:Ds-neg-new}
+\partial_sD_{\lambda,s}(x)<0.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Put \(\mu=\lambda-s>0\).  Then
+\[
+h_{\lambda,s}(z)=g_{\mu,s}(z)
+=\log\left(1+e^{-\mu z}-e^{-(\mu+s)z}\right).
+\]
+At the Maxwell tie, \(\cA g_{\mu,s}=0\).  By \cref{thm:comparison-main}, this forces
+\begin{equation}\label{eq:Aq-neg-new}
+\cA q_\mu<0.
+\end{equation}
+Indeed, \(\cA q_\mu\ge0\) would imply \(\cA g_{\mu,s}>0\).
+
+Let \(L=u-x\).  Since \(y-u=kL\), \eqref{eq:Aq-neg-new} is equivalent to
+\begin{equation}\label{eq:C-muL}
+kx e^{\mu L}+y e^{-k\mu L}<1.
+\end{equation}
+Now pass to the dual kernel
+\[
+\widetilde h(z)=h_{s,\lambda}(z)=\mu z+g_{\mu,s}(z).
+\]
+It is strictly increasing because
+\[
+\widetilde h'(z)
+=\frac{\mu e^{\mu z}+s e^{-sz}}
+{1+e^{\mu z}-e^{-sz}}>0.
+\]
+The affine term does not change stationarity or the Maxwell excess.  Therefore
+\[
+\widetilde h(x)<\widetilde h(u)<\widetilde h(y).
+\]
+Set
+\[
+\widetilde H=\widetilde h(u),
+\qquad
+\widetilde\delta=\widetilde h(u)-\widetilde h(x)>0.
+\]
+By \cref{lem:late-ordering-new}, \(g_{\mu,s}(x)>g_{\mu,s}(u)\), so
+\begin{equation}\label{eq:deltatilde-new}
+0<\widetilde\delta
+=\mu L-\{g_{\mu,s}(x)-g_{\mu,s}(u)\}
+<\mu L.
+\end{equation}
+
+Equation \eqref{eq:C-muL} says \(\chi_x(\mu L)<0\).  Together with \eqref{eq:deltatilde-new}, \cref{lem:maxwell-bracket} gives
+\begin{equation}\label{eq:early-bracket-new}
+\chi_x(\widetilde\delta)
+=kx e^{\widetilde\delta}+y e^{-k\widetilde\delta}-1<0.
+\end{equation}
+
+By pointwise duality, \(D_{\lambda,s}=D_{s,\lambda}\), so differentiation with respect to the second parameter on the left is differentiation with respect to the first parameter on the right.  Applying \eqref{eq:hlambda-derivative} to \(\widetilde h=h_{s,\lambda}\), and using the dual Maxwell identity
+\[
+\widetilde h(y)=\widetilde H+k\widetilde\delta,
+\]
+gives
+\begin{equation}\label{eq:Ds-chi}
+\partial_sD_{\lambda,s}(x)
+=e^{-\widetilde H}\chi_x(\widetilde\delta).
+\end{equation}
+The right-hand side is negative by \eqref{eq:early-bracket-new}.
+\end{proof}
+
+\begin{corollary}[Unified Maxwell transversality]\label{cor:unified-transversality}
+At every nonuniform late Maxwell point,
+\[
+D_\lambda=e^{-H}\chi_x(-\delta)>0,
+\qquad
+D_s=e^{-\widetilde H}\chi_x(\widetilde\delta)<0,
+\]
+with the notation of \cref{lem:upward-transversality-new,thm:early-down-new}.  Thus the two transverse signs are evaluations of the same strictly convex function \(\chi_x\), on opposite sides of the origin.
+\end{corollary}
+
+We now prove strict monotonicity without assuming that every boundary point lies on a regular Maxwell arc.
+
+\begin{theorem}[Local phase orientation]\label{thm:local-orientation}
+Fix \(s_0>0\), and put \(\lambda_0=\beta_n(s_0)\).  There exists \(\eta>0\) such that, whenever \(0<\varepsilon<\eta\),
+\begin{equation}\label{eq:local-orientation}
+\beta_n(s_0-\varepsilon)<\lambda_0
+<\beta_n(s_0+\varepsilon).
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Choose \(\eta\) small enough that \(s_0-\eta>0\) and \(s_0+\eta<\lambda_0\).  At \((\lambda_0,s_0)\),
+\[
+D_{\lambda_0,s_0}(x)\le0
+\qquad(0\le x\le u),
+\]
+with equality at \(x=u\).  The scalar formula extends analytically across \(u\) to the one-light interval, and it is not identically zero by \cref{lem:late-endpoint-exclusion}.  Hence its zeros on \([0,u]\) form a finite set.  Let
+\[
+T=\{x\in(0,u):D_{\lambda_0,s_0}(x)=0\}
+\]
+be the finite set of nonuniform ties.
+
+First lower \(s\).  If \(T\ne\varnothing\), choose \(x_\star\in T\).  This is an interior stationary Maxwell tie, and \cref{thm:early-down-new} gives
+\[
+D_s(\lambda_0,s_0,x_\star)<0.
+\]
+Therefore
+\[
+D_{\lambda_0,s_0-\varepsilon}(x_\star)>0
+\]
+for all sufficiently small \(\varepsilon>0\), and the late ray theorem implies
+\[
+\beta_n(s_0-\varepsilon)<\lambda_0.
+\]
+
+Suppose instead that \(T=\varnothing\).  Let
+\[
+D_{\lambda,s}(x)=(x-u)^2G(\lambda,s,x)
+\]
+be the joint factorization from \cref{lem:quadratic-factor}.  If \(G(\lambda_0,s_0,u)<0\), then strict negativity near \(u\), together with the negative compactness margin away from \(u\), would persist for \(\lambda>\lambda_0\) sufficiently close to \(\lambda_0\), contradicting the definition of \(\beta_n(s_0)\).  Hence
+\[
+G(\lambda_0,s_0,u)=0,
+\]
+so \(\lambda_0=\sigma_n(s_0)\).  At the spinodal, \eqref{eq:late-G-uniform} and \cref{lem:spinodal-strong} give
+\[
+G_s(\lambda_0,s_0,u)<0.
+\]
+Lowering \(s\) therefore makes \(G(\lambda_0,s,u)\) positive, so uniform is locally unstable and again
+\[
+\beta_n(s_0-\varepsilon)<\lambda_0.
+\]
+
+Now increase \(s\).  By \cref{thm:early-down-new} and finiteness of \(T\), one may choose disjoint neighborhoods of the points of \(T\), a constant \(c>0\), and \(\varepsilon_0>0\) such that
+\[
+D_s(\lambda_0,s,x)\le-c
+\]
+on these neighborhoods whenever \(|s-s_0|<\varepsilon_0\).  Since \(D_{\lambda_0,s_0}\le0\), integration in \(s\) makes the excess strictly negative there for \(s=s_0+\varepsilon\).  Away from these neighborhoods and from a small neighborhood of \(u\), the original excess has a strict negative compactness margin, which persists under small perturbations of \(s\).
+
+It remains to control the neighborhood of \(u\).  At \(s=s_0\), global optimality gives
+\[
+G(\lambda_0,s_0,x)\le0
+\qquad(x<u).
+\]
+If \(G(\lambda_0,s_0,u)<0\), continuity gives strict negativity near \(u\) for all nearby \(s\).  If \(G(\lambda_0,s_0,u)=0\), then the spinodal orientation gives \(G_s(\lambda_0,s_0,u)<0\).  After shrinking the neighborhood,
+\[
+G_s(\lambda_0,s,x)\le-c<0,
+\]
+and hence
+\[
+G(\lambda_0,s_0+\varepsilon,x)
+=G(\lambda_0,s_0,x)
++\int_{s_0}^{s_0+\varepsilon}G_s(\lambda_0,r,x)\,\dd r
+<0.
+\]
+Thus, for all sufficiently small \(\varepsilon>0\),
+\[
+D_{\lambda_0,s_0+\varepsilon}(x)<0
+\qquad(0\le x<u),
+\]
+and moreover the quadratic factor at \(u\) is strictly negative.  The negative margin away from \(u\) and the negative factor near \(u\) persist for \(\lambda\in[\lambda_0,\lambda_0+\delta]\) for some \(\delta>0\).  Hence uniform remains uniquely optimal on a nontrivial interval to the right of \(\lambda_0\), and
+\[
+\beta_n(s_0+\varepsilon)>\lambda_0.
+\]
+Combining the two directions proves \eqref{eq:local-orientation}.
+\end{proof}
+
+\begin{corollary}[Strict increase of the late boundary]\label{cor:beta-strict-new}
+For every \(n\ge2\), \(\beta_n\) is strictly increasing on \((0,\infty)\).
+\end{corollary}
+
+\begin{proof}
+By \cref{thm:local-orientation}, the value at each point strictly exceeds all sufficiently close values to its left and is strictly smaller than all sufficiently close values to its right.  Suppose, to the contrary, that \(a<b\) and \(\beta_n(a)\ge\beta_n(b)\).  Local orientation at \(a\) gives \(\beta_n(a+\varepsilon)>\beta_n(a)\) for small \(\varepsilon>0\).  Let
+\[
+t_0=\inf\{t>a:\beta_n(t)\le\beta_n(a)\}.
+\]
+Continuity gives \(t_0>a\), \(\beta_n(t_0)=\beta_n(a)\), and \(\beta_n(t)>\beta_n(a)\) for \(a<t<t_0\).  But local orientation at \(t_0\) requires \(\beta_n(t_0-\varepsilon)<\beta_n(t_0)\) for small \(\varepsilon>0\), a contradiction.
+\end{proof}
+
+\begin{proposition}[Regular stationary Maxwell arcs]\label{prop:regular-maxwell-arcs}
+Suppose \(\lambda_0>s_0>0\), \(0<x_0<u\), and
+\[
+D(\lambda_0,s_0,x_0)=D_x(\lambda_0,s_0,x_0)=0,
+\qquad D_{xx}(\lambda_0,s_0,x_0)<0.
+\]
+Then there are unique real-analytic functions \(\Lambda(s),X(s)\) near \(s_0\),
+passing through \((\lambda_0,x_0)\), that solve the stationary Maxwell equations.
+Their slope at \(s_0\), and at every nearby point on this late arc, satisfies
+\begin{equation}\label{eq:beta-slope-new}
+\Lambda'(s)=-\frac{D_s}{D_\lambda}>0.
+\end{equation}
+If additionally \(\lambda_0=\beta_n(s_0)\), \(x_0\) is the only nonuniform global
+maximizer of the scalar excess at this point, and \(h_{\lambda_0,s_0}''(u)<0\),
+then \(\Lambda(s)=\beta_n(s)\) locally.  Without these additional hypotheses,
+the analytic arc is not asserted to coincide with the global phase boundary.
+\end{proposition}
+
+\begin{proof}
+Apply the analytic implicit function theorem to \(D=0,D_x=0\).  Its Jacobian
+with respect to \((\lambda,x)\) has determinant \(D_\lambda D_{xx}\), since
+\(D_x=0\).  This is nonzero by upward transversality and the stated curvature
+hypothesis.  Differentiating the value equation yields \eqref{eq:beta-slope-new};
+the early-downward transversality theorem gives its sign.  More explicitly,
+\begin{equation}\label{eq:beta-slope-chi}
+\Lambda'(s)=e^{H-\widetilde H}
+\frac{-\chi_x(\widetilde\delta)}{\chi_x(-\delta)}.
+\end{equation}
+For the last assertion, strict curvature yields a unique local maximizing
+stationary branch near \(x_0\).  At the base point there is a strict negative
+compactness margin away from \(x_0\) and \(u\), and strict negativity of the
+quadratic factor near \(u\); both persist nearby.  Hence no other point can
+compete for a positive excess.  The local maximizing branch has positive
+\(\lambda\)-derivative at its zero, so its zero is exactly the local phase
+boundary.  Continuity of \(\beta_n\) identifies that boundary with \(\Lambda\).
+\end{proof}
+
+\begin{remark}[Definable tameness]\label{rem:definable}
+For fixed \(n\), the functions \(D_{\lambda,s}(x)\), \(\Delta_{n,s}(\lambda)\), and the graph of \(\beta_n\) are definable in the real exponential field.  Wilkie's o-minimality theorem for \(\R_{\exp}\) and standard one-variable cell decomposition therefore imply that, on each compact \(s\)-interval, \(\beta_n\) admits a finite \(C^r\) stratification for every fixed \(r\); see \cite{Wilkie1996,vanDenDries1998}.  For each fixed \(r\), the exceptional points outside the open \(C^r\) strata are finite on each compact interval.  This statement does not rule out competing analytic tie branches or prove analyticity of the global boundary at every nondegenerate stationary tie.  The local analytic statement in \cref{prop:regular-maxwell-arcs} does not require o-minimality.
+\end{remark}
+
+\section{The small-\texorpdfstring{$s$}{s} endpoint and large-\texorpdfstring{$s$}{s} bounds}
+
+\begin{theorem}[Expected-missing-mass endpoint]\label{thm:beta-zero-new}
+For every \(n\ge2\),
+\begin{equation}\label{eq:beta-zero-new}
+\lim_{s\downarrow0}\beta_n(s)=\lambda_n^\star.
+\end{equation}
+We therefore extend \(\beta_n\) continuously to \([0,\infty)\) by setting \(\beta_n(0)=\lambda_n^\star\).
+\end{theorem}
+
+\begin{proof}
+Fix \(\lambda\) in a compact subset of \((0,\infty)\).  Taylor expansion in \(s\), uniformly in \(z\in[0,1]\) and with two \(z\)-derivatives, gives
+\begin{equation}\label{eq:h-small-s-C2}
+\frac{h_{\lambda,s}(z)}s
+=ze^{-\lambda z}+s r_{\lambda,s}(z),
+\end{equation}
+where \(r_{\lambda,s}\) is uniformly bounded in \(C^2([0,1])\) for small \(s\).  Hence
+\begin{equation}\label{eq:D-small-s-quad}
+\frac{D_{\lambda,s}(x)}s
+=Q_{n,\lambda}(x)+sR_{\lambda,s}(x),
+\end{equation}
+where \(R_{\lambda,s}(u)=R_{\lambda,s}'(u)=0\) and
+\[
+|R_{\lambda,s}(x)|\le C_{n,\lambda}(u-x)^2.
+\]
+
+Let \(0<\lambda<\lambda_n^\star\).  By \cref{lem:expected-quadratic-stability},
+\[
+Q_{n,\lambda}(x)\le-c_{n,\lambda}(u-x)^2.
+\]
+For sufficiently small \(s\), \eqref{eq:D-small-s-quad} gives
+\[
+D_{\lambda,s}(x)\le0
+\qquad(0\le x\le u).
+\]
+Thus \(\lambda\le\beta_n(s)\), and letting \(\lambda\uparrow\lambda_n^\star\) yields
+\[
+\liminf_{s\downarrow0}\beta_n(s)\ge\lambda_n^\star.
+\]
+
+Conversely, if \(\lambda>\lambda_n^\star\), \cref{thm:expected-threshold} gives an \(x\) with \(Q_{n,\lambda}(x)>0\).  Equation \eqref{eq:D-small-s-quad} then gives \(D_{\lambda,s}(x)>0\) for all sufficiently small \(s\), so \(\beta_n(s)<\lambda\).  Letting \(\lambda\downarrow\lambda_n^\star\) proves the reverse inequality.
+\end{proof}
+
+\begin{definition}[Global concavity threshold]
+For \(s>0\), define
+\[
+\sigma_{\mathrm c}(s)=\sigma_1(s),
+\]
+the unique late root of \(K_1(\lambda,s)=0\).  The subscript \(\mathrm c\) emphasizes that this is a global concavity threshold, not a nontrivial one-symbol phase transition.
+\end{definition}
+
+\begin{proposition}[Global-concavity/spinodal sandwich]\label{prop:spinodal-bound}
+For every \(n\ge2\) and \(s>0\),
+\begin{equation}\label{eq:beta-sigma-bound}
+s<\sigma_{\mathrm c}(s)\le\beta_n(s)\le\sigma_n(s).
+\end{equation}
+For \(m=1\) and \(m=n\),
+\begin{equation}\label{eq:sigma-asymptotic}
+\sigma_m(s)-s
+=\sqrt2\,s e^{-s/(2m)}(1+o(1))
+\qquad(s\to\infty).
+\end{equation}
+Consequently,
+\begin{equation}\label{eq:beta-diagonal}
+\sqrt2\,s e^{-s/2}(1+o(1))
+\le\beta_n(s)-s
+\le\sqrt2\,s e^{-s/(2n)}(1+o(1)),
+\end{equation}
+and in particular \(\beta_n(s)-s\to0\).
+\end{proposition}
+
+\begin{proof}
+The upper bound is the usual spinodal bound: for \(\lambda>\sigma_n(s)\), the uniform Hessian is positive, so uniform is locally unstable and \(\Delta_{n,s}(\lambda)>0\).
+
+For the lower bound, recall from \eqref{eq:kappa-curvature} that the sign of \(h_{\lambda,s}''(z)\) is the sign of \(\kappa_{\lambda,s}(z)\), and that \(\kappa_{\lambda,s}\) crosses zero at most once, from negative to positive.  Since
+\[
+\kappa_{\lambda,s}(1)=K_1(\lambda,s),
+\]
+we have \(K_1(\lambda,s)\le0\) for \(s\le\lambda\le\sigma_{\mathrm c}(s)\), and hence
+\[
+h_{\lambda,s}''(z)\le0
+\qquad(0\le z\le1).
+\]
+Thus the coordinate kernel is concave on the entire probability range.  Jensen's inequality gives global uniform optimality, proving \(\sigma_{\mathrm c}(s)\le\beta_n(s)\).
+
+It remains to derive the asymptotics.  Fix \(m\ge1\), let
+\[
+d=\sigma_m(s)-s,
+\qquad r=\frac ds,
+\]
+and divide \(K_m(\sigma_m(s),s)=0\) by \(s^2e^{d/m}\).  This gives the exact identity
+\begin{equation}\label{eq:r-spinodal}
+r^2e^{s/m}=(1+r)^2+e^{-sr/m}.
+\end{equation}
+Put \(A=e^{-s/(2m)}\).  For large \(s\), \eqref{eq:r-spinodal} forces \(r<1\), and then \(r\le\sqrt5 A\).  Hence \(r\to0\) and \(sr/m\to0\).  Writing \(r=Az\) in \eqref{eq:r-spinodal} yields
+\[
+z^2=(1+r)^2+e^{-sr/m}\longrightarrow2.
+\]
+Therefore \(r=\sqrt2A(1+o(1))\).  Applying this with \(m=1\) and \(m=n\), and using \eqref{eq:beta-sigma-bound}, proves the proposition.
+\end{proof}
+
+\begin{remark}[Where majorization stops]
+For \(s\le\lambda\le\sigma_{\mathrm c}(s)\), the MGF kernel is globally concave and Jensen's inequality, equivalently Schur concavity, settles the optimization.  Between \(\sigma_{\mathrm c}(s)\) and \(\sigma_n(s)\), the kernel has mixed curvature and is neither globally concave nor globally convex.  This is precisely the regime in which a first-order Maxwell transition may precede loss of local uniform stability.
+\end{remark}
+
+\begin{corollary}[Quantitative collapse of the central uniform window]\label{cor:window-shrink}
+Let \(\alpha_n(s)=\beta_n^{-1}(s)\) for \(s>\lambda_n^\star\), and set
+\[
+W_n(s)=\beta_n(s)-\alpha_n(s).
+\]
+Then
+\begin{equation}\label{eq:window-bounds}
+\sqrt2\,s e^{-s/2}(1+o(1))
+\le W_n(s)
+\le2\sqrt2\,s e^{-s/(2n)}(1+o(1)),
+\end{equation}
+so \(W_n(s)\to0\) as \(s\to\infty\).
+\end{corollary}
+
+\begin{proof}
+Since \(\alpha_n(s)<s\),
+\[
+W_n(s)\ge\beta_n(s)-s\ge\sigma_{\mathrm c}(s)-s,
+\]
+which gives the lower estimate.  The upper estimate for \(\beta_n(s)-s\) follows from \cref{prop:spinodal-bound}.  Also
+\[
+s-\alpha_n(s)
+=\beta_n(\alpha_n(s))-\alpha_n(s)
+\le\sqrt2\,\alpha_n(s)e^{-\alpha_n(s)/(2n)}(1+o(1)).
+\]
+The right-hand side tends to zero, so \(\alpha_n(s)=s+o(1)\); replacing \(\alpha_n(s)\) by \(s\) in the last asymptotic changes it by a factor \(1+o(1)\).  Adding the two endpoint gaps yields the upper bound in \eqref{eq:window-bounds}.
+\end{proof}
+
+\section{C1/C2: the complete phase diagram}
+
+The exact zero set follows from late no-reentrance and pointwise duality.
+
+\begin{theorem}[Exact zero-set criterion]\label{thm:zero-criterion-new}
+For every \(s>0\) and \(\lambda\ge0\),
+\[
+\Delta_{n,s}(\lambda)=0
+\]
+if and only if either \(\lambda=0\), or \(\lambda>0\) and
+\begin{equation}\label{eq:two-beta-new}
+\lambda\le\beta_n(s)
+\qquad\text{and}\qquad
+s\le\beta_n(\lambda).
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+If \(\lambda\ge s\), \cref{thm:late-ray-new} gives
+\[
+\Delta_{n,s}(\lambda)=0
+\quad\Longleftrightarrow\quad
+\lambda\le\beta_n(s).
+\]
+The second inequality in \eqref{eq:two-beta-new} is automatic because \(\beta_n(\lambda)>\lambda\ge s\).  If \(0<\lambda\le s\), pointwise duality gives
+\[
+\Delta_{n,s}(\lambda)=\Delta_{n,\lambda}(s),
+\]
+and the late theorem applied to the right-hand side gives
+\[
+\Delta_{n,\lambda}(s)=0
+\quad\Longleftrightarrow\quad
+s\le\beta_n(\lambda).
+\]
+The first inequality in \eqref{eq:two-beta-new} is then automatic because \(\beta_n(s)>s\ge\lambda\).  Finally, \(\lambda=0\) is the degenerate affine case from \cref{lem:mgf-endpoints}.
+\end{proof}
+
+\begin{theorem}[C1/C2 phase diagram]\label{thm:C1C2-new}
+Fix \(n\ge2\), and extend \(\beta_n\) to \([0,\infty)\) by \(\beta_n(0)=\lambda_n^\star\).  For \(s>0\), let
+\[
+Z_{n,s}=\{\lambda\ge0:\Delta_{n,s}(\lambda)=0\}.
+\]
+Then the following hold.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item If \(0<s\le\lambda_n^\star\), then
+\begin{equation}\label{eq:low-phase-new}
+Z_{n,s}=[0,\beta_n(s)],
+\end{equation}
+and
+\[
+\Delta_{n,s}(\lambda)>0
+\quad\Longleftrightarrow\quad
+\lambda>\beta_n(s).
+\]
+Thus there is exactly one positive transition endpoint.
+\item If \(s>\lambda_n^\star\), there is a unique
+\[
+\alpha_n(s)=\beta_n^{-1}(s)\in(0,s),
+\]
+and
+\begin{equation}\label{eq:high-phase-new}
+Z_{n,s}=\{0\}\cup[\alpha_n(s),\beta_n(s)].
+\end{equation}
+Equivalently,
+\[
+\Delta_{n,s}(\lambda)>0
+\quad\Longleftrightarrow\quad
+0<\lambda<\alpha_n(s)
+\quad\text{or}\quad
+\lambda>\beta_n(s).
+\]
+Thus there are exactly two positive transition endpoints.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+By \cref{thm:beta-zero-new,cor:beta-strict-new}, \(\beta_n\) is continuous and strictly increasing on \([0,\infty)\).  If \(s\le\lambda_n^\star\) and \(0<\lambda<s\), then
+\[
+\beta_n(\lambda)\ge\beta_n(0)=\lambda_n^\star\ge s.
+\]
+The exact criterion \cref{thm:zero-criterion-new} therefore gives uniformity throughout \([0,s]\); combining this with the late interval \([s,\beta_n(s)]\) proves \eqref{eq:low-phase-new}.
+
+If \(s>\lambda_n^\star\), strict increase gives a unique \(\alpha_n(s)\in(0,s)\) with \(\beta_n(\alpha_n(s))=s\).  For \(0<\lambda<\alpha_n(s)\), one has \(\beta_n(\lambda)<s\), so the second inequality in \eqref{eq:two-beta-new} fails.  For \(\alpha_n(s)\le\lambda\le s\), it holds.  The late theorem then gives uniformity on \([s,\beta_n(s)]\) and nonuniformity after \(\beta_n(s)\).  Adding the degenerate zero at \(\lambda=0\) gives \eqref{eq:high-phase-new}.
+\end{proof}
+
+\begin{remark}[Zeros and transition endpoints]
+The zero set contains an interval and is therefore infinite.  The finite quantity counted in C1 is the number of positive endpoints of the uniform region.  It equals one for \(s\le\lambda_n^\star\) and two for \(s>\lambda_n^\star\).
+\end{remark}
+
+At a nonuniform late transition \(\lambda=\beta_n(s)\), there is an \(x\in(0,u)\), with \(y=1-kx\), satisfying
+\begin{equation}\label{eq:transition-system-new}
+\begin{cases}
+ h_{\lambda,s}'(x)=h_{\lambda,s}'(y),\\
+ kh_{\lambda,s}(x)+h_{\lambda,s}(y)=nh_{\lambda,s}(u).
+\end{cases}
+\end{equation}
+Here
+\begin{equation}\label{eq:hprime-new}
+h_{\lambda,s}'(z)
+=\frac{e^{-\lambda z}\{s e^{sz}-\lambda(e^{sz}-1)\}}
+{1+e^{-\lambda z}(e^{sz}-1)}.
+\end{equation}
+The early transition for \(s>\lambda_n^\star\) is the reflected solution \(\alpha_n(s)=\beta_n^{-1}(s)\); it is not a separate Maxwell system.
+
+\section{A frozen-marginal theorem for vector-separable objectives}
+
+The fixed-sample MGF is not coordinate-separable, but it is finite vector-separable.  We first state the abstract mechanism.
+
+\begin{theorem}[Frozen-marginal active-level principle]\label{thm:frozen-abstract}
+Let \(I\subset\R\) be an interval, let \(\ell_1,\ldots,\ell_m\in C^2(I)\), and let \(\Psi\) be \(C^1\) on a neighborhood of the relevant range.  Consider
+\[
+F(p)=\Psi\left(\sum_i\ell_1(p_i),\ldots,\sum_i\ell_m(p_i)\right)
+\]
+on a simplex face whose active coordinates lie in \(I\).  At every relative-interior constrained critical point, the active values solve one scalar equation
+\begin{equation}\label{eq:frozen-abstract-equation}
+\sum_{j=1}^m\alpha_j\ell_j'(x)=\nu,
+\qquad
+\alpha_j=\partial_j\Psi.
+\end{equation}
+Assume that the actual frozen scalar function \(x\mapsto\sum_j\alpha_j\ell_j'(x)-\nu\) is not identically zero and belongs to an \(N\)-dimensional extended Chebyshev space on \(I\).  Then the critical point has at most \(N-1\) distinct active values.  The nonvanishing hypothesis is essential: a constant objective makes every feasible point critical.  At a relative-interior local maximum, a repeated active value \(x\) must also satisfy
+\begin{equation}\label{eq:frozen-concavity}
+\sum_{j=1}^m\alpha_j\ell_j''(x)\le0.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+The KKT equation on the active face is exactly \eqref{eq:frozen-abstract-equation}.  Hence every distinct active value is a zero of one frozen scalar function.  The Chebyshev zero bound gives at most \(N-1\) such values.  If the value \(x\) occurs in two coordinates, the mass-preserving perturbation
+\[
+(x,x)\mapsto(x+\varepsilon,x-\varepsilon)
+\]
+cancels all first-order changes in the vector of sums.  The quadratic term in \(F\) is
+\[
+\left(\sum_j\alpha_j\ell_j''(x)\right)\varepsilon^2+o(\varepsilon^2),
+\]
+which must be nonpositive at a local maximum.
+\end{proof}
+
+We will use the following self-contained exponential-polynomial zero bound.
+
+\begin{lemma}[Real exponential-polynomial zero bound]\label{lem:exp-poly-zero}
+Let \(a_1,\ldots,a_M\in\R\), with repetitions allowed.  Every nonzero solution of
+\[
+\prod_{j=1}^M\left(\frac\dd{\dd x}-a_j\right)f=0
+\]
+on an interval has at most \(M-1\) zeros, counted with multiplicity.
+\end{lemma}
+
+\begin{proof}
+We argue by induction on \(M\).  The assertion is immediate for \(M=1\), since a nonzero solution is a nonvanishing exponential.  For the induction step, let
+\[
+g=\left(\frac\dd{\dd x}-a_M\right)f
+=e^{a_Mx}\frac\dd{\dd x}\left(e^{-a_Mx}f(x)\right).
+\]
+If \(g\equiv0\), then \(f\) is a nonzero exponential and has no zeros.  Otherwise, if \(f\) has \(N\) zeros counted with multiplicity, Rolle's theorem applied to \(e^{-a_Mx}f(x)\) shows that \(g\) has at least \(N-1\) zeros counted with multiplicity.  By induction, \(N-1\le M-2\), hence \(N\le M-1\).
+\end{proof}
+
+\begin{remark}
+The preceding lemma is the constant-coefficient disconjugacy form of the classical extended-Chebyshev zero bound; see, for example, \cite{KarlinStudden1966}.  We included the proof because the multiplicities and the exact order of the annihilator are used explicitly below.
+\end{remark}
+
+\section{C3: fixed-sample MGFs}
+
+\begin{theorem}[Fixed-sample active-level bound]\label{thm:C3-new}
+Fix \(n\ge1\), \(t\ge1\), and a real \(s\ne0\).  Every facewise relative-interior constrained critical point of
+\[
+p\longmapsto\log\E_p e^{sU_t}
+\]
+has at most
+\begin{equation}\label{eq:C3-bound-new}
+t(t+1)
+\end{equation}
+distinct positive coordinate values.  In particular, the same bound holds for every local or global maximizer.
+\end{theorem}
+
+\begin{proof}
+For a multinomial count vector \((k_1,\ldots,k_n)\) with total \(t\), the factor \(e^{sp_i}\) is present exactly when \(k_i=0\).  Exponential generating functions therefore give
+\begin{equation}\label{eq:fixed-coeff-new}
+\E_p e^{sU_t}
+=t![z^t]\prod_{i=1}^n\left(e^{sp_i}+e^{zp_i}-1\right).
+\end{equation}
+Since \(\sum_i p_i=1\),
+\[
+\prod_i\left(e^{sp_i}+e^{zp_i}-1\right)
+=e^s\prod_i\left(1+e^{-sp_i}(e^{zp_i}-1)\right).
+\]
+Define \(\ell_m\) by
+\begin{equation}\label{eq:ell-new}
+\log\left(1+e^{-sx}(e^{zx}-1)\right)
+=\sum_{m\ge1}\ell_m(x)z^m.
+\end{equation}
+Only \(\ell_1,\ldots,\ell_t\) contribute to \([z^t]\).  With
+\[
+L_m(p)=\sum_i\ell_m(p_i),
+\]
+we obtain
+\begin{equation}\label{eq:vector-sep-new}
+\E_p e^{sU_t}
+=e^s t![z^t]\exp\left(\sum_{m=1}^tL_m(p)z^m\right).
+\end{equation}
+Thus the objective is vector-separable.
+
+Using
+\[
+\log(1+w)=\sum_{r\ge1}\frac{(-1)^{r+1}}r w^r
+\]
+and
+\[
+(e^{zx}-1)^r
+=r!\sum_{m\ge r}\stir{m}{r}\frac{x^mz^m}{m!},
+\]
+we get
+\begin{equation}\label{eq:ell-explicit-new}
+\ell_m(x)
+=\frac{x^m}{m!}
+\sum_{r=1}^m(-1)^{r+1}(r-1)!\stir{m}{r}e^{-rsx}.
+\end{equation}
+Hence every frozen marginal belongs to
+\begin{equation}\label{eq:V-new}
+\cV_{t,s}
+=\Span\{1\}
++\Span\{x^q e^{-rsx}:1\le r\le t,\ 0\le q\le t\}.
+\end{equation}
+This space is contained in the kernel of the constant-coefficient operator
+\begin{equation}\label{eq:annihilator-new}
+\cL_{t,s}
+=\frac\dd{\dd x}
+\prod_{r=1}^t\left(\frac\dd{\dd x}+rs\right)^{t+1},
+\end{equation}
+whose order is \(1+t(t+1)\).  Since \(s\ne0\), all characteristic roots are real.  By \cref{lem:exp-poly-zero}, every nonzero element of \(\cV_{t,s}\) has at most \(t(t+1)\) zeros.
+
+To identify the frozen equation, write
+\[
+B_j(y)=[z^j]\exp\left(\sum_{m=1}^t y_mz^m\right),
+\qquad
+\Psi_t(y)=\log B_t(y).
+\]
+At a facewise critical point, the active coordinates solve
+\begin{equation}\label{eq:frozen-fixed-new}
+\Phi_p(x)=\nu,
+\qquad
+\Phi_p(x)=\sum_{m=1}^t\alpha_m\ell_m'(x),
+\qquad
+\alpha_m=\frac{B_{t-m}}{B_t}.
+\end{equation}
+Here \(B_t>0\), because \eqref{eq:vector-sep-new} is a positive MGF.  In particular,
+\[
+\alpha_t=\frac1{B_t}>0.
+\]
+The \(r=t\) term in \(\ell_t\) is
+\[
+\frac{(-1)^{t+1}}t x^te^{-tsx},
+\]
+so \(\ell_t'\) contains the term
+\[
+(-1)^t s x^te^{-tsx}.
+\]
+No \(\ell_m'\) with \(m<t\) contains an exponential with rate \(-ts\).  Thus \(\Phi_p-\nu\) is not identically zero.  It has at most \(t(t+1)\) zeros in \((0,1)\), and every distinct positive active mass is one of them, except for the trivial support-one case.  This proves the theorem.
+\end{proof}
+
+\begin{remark}[Positivity of the frozen coefficients]
+At an actual probability vector, the formal series satisfy
+\[
+\exp\left(\sum_{m=1}^tL_m(p)z^m\right)
+\equiv\prod_i\left(1+e^{-sp_i}(e^{zp_i}-1)\right)
+\pmod {z^{t+1}}.
+\]
+Thus their coefficients agree through degree \(t\).
+Each factor has nonnegative coefficients, and any factor with \(p_i>0\) has strictly positive coefficients of every positive degree.  Since at least one coordinate is positive, it follows that
+\[
+B_j>0
+\qquad(0\le j\le t),
+\qquad
+\alpha_m=\frac{B_{t-m}}{B_t}>0
+\]
+for every real \(s\).  The nonvanishing proof itself only needs \(\alpha_t>0\) and \(s\ne0\).
+\end{remark}
+
+\begin{remark}[Why dimension counting alone does not sharpen C3]
+The explicit formula for \(\ell_m'\) shows that the rate \(-rs\) occurs only with powers \(x^q\) satisfying \(q\ge r-1\).  This places the frozen marginal in a smaller linear span than the ambient space used in the proof.  A smaller dimension, however, yields a sharper zero count only after one proves that the smaller span is an extended Chebyshev or otherwise disconjugate space.  No such conclusion follows from dimension alone.  Any improvement of \eqref{eq:C3-bound-new} must therefore exploit either a new zero-count theorem or the special relations among the actual coefficients \(\alpha_m\).
+\end{remark}
+
+\begin{corollary}[Repeated values in C3]\label{cor:C3-repeated}
+At a facewise local maximum, a positive mass value \(x\) that occurs at least twice must satisfy
+\[
+\Phi_p'(x)=\sum_{m=1}^t\alpha_m\ell_m''(x)\le0.
+\]
+\end{corollary}
+
+\begin{proof}
+This is \eqref{eq:frozen-concavity} from \cref{thm:frozen-abstract}.
+\end{proof}
+
+\begin{remark}[The case \(s=0\)]
+At \(s=0\), the MGF is identically one, so every distribution is a maximizer and no bound on the level complexity of every maximizer is possible.  A one-level maximizer nevertheless exists.
+\end{remark}
+
+\section{C4: fixed-threshold tails}
+
+Fix \(t\ge1\) and \(0<a<1\), and put
+\[
+b=1-a.
+\]
+Let \(S_t=\{X_1,\ldots,X_t\}\) be the observed support.  Then
+\[
+U_t=1-p(S_t),
+\qquad
+\PP_p(U_t\ge a)=\PP_p(p(S_t)\le b).
+\]
+
+\begin{lemma}[Upper semicontinuity and existence]\label{lem:tail-existence}
+The map
+\[
+p\longmapsto\PP_p(U_t\ge a)
+\]
+is upper semicontinuous on \(\simplex\).  In particular, it attains its maximum.
+\end{lemma}
+
+\begin{proof}
+For a nonempty set \(S\subseteq[n]\) with \(|S|\le t\), let \(q_{t,S}(p)\) be the probability that the observed support is exactly \(S\).  This is a nonnegative continuous polynomial.  Then
+\begin{equation}\label{eq:tail-support-sum}
+\PP_p(U_t\ge a)
+=\sum_{\substack{S\subseteq[n],\ 1\le|S|\le t}}
+q_{t,S}(p)\one\{p(S)\le b\}.
+\end{equation}
+The indicator of the closed half-space \(\{p:p(S)\le b\}\) is upper semicontinuous.  Multiplication by the nonnegative continuous function \(q_{t,S}\) preserves upper semicontinuity, and the sum is finite.  Compactness of \(\simplex\) gives existence of a maximizer.
+\end{proof}
+
+\begin{proposition}[Exact probability-one plateau]\label{prop:plateau-new}
+Let
+\[
+p_{(1)}\ge p_{(2)}\ge\cdots\ge p_{(n)}
+\]
+be the decreasing rearrangement of \(p\).  Then
+\begin{equation}\label{eq:plateau-new}
+\PP_p(U_t\ge a)=1
+\quad\Longleftrightarrow\quad
+\sum_{j=1}^{\min(t,n)}p_{(j)}\le1-a.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Every observed support contains at most \(t\) atoms, so its mass is at most the sum of the \(\min(t,n)\) largest coordinates.  This proves the forward sufficient condition.
+
+Conversely, if the sum in \eqref{eq:plateau-new} exceeds \(1-a\), there is a subset \(S\) of at most \(t\) positive-mass atoms with \(p(S)>1-a\).  The event that every atom of \(S\) appears at least once and no atom outside \(S\) appears has positive probability.  On that event, \(U_t=1-p(S)<a\).  Hence the tail probability is strictly less than one.
+\end{proof}
+
+Define
+\begin{equation}\label{eq:m0-def}
+m_0(t,a)=\left\lceil\frac{t}{1-a}\right\rceil.
+\end{equation}
+
+\begin{theorem}[Exact alphabet saturation and bounded support]\label{thm:C4-support}
+For every \(n\ge1\),
+\begin{equation}\label{eq:saturation-iff}
+\sup_{p\in\simplex}\PP_p(U_t\ge a)=1
+\quad\Longleftrightarrow\quad
+n\ge m_0(t,a).
+\end{equation}
+Moreover, for every \(n\), there is a global maximizer supported on at most \(m_0(t,a)\) atoms.
+\end{theorem}
+
+\begin{proof}
+Suppose \(n\ge m_0=m_0(t,a)\).  Choose a law that is uniform on any \(m_0\) coordinates and zero on the others.  Every observed support has at most \(t\) atoms, so
+\[
+p(S_t)\le\frac{t}{m_0}\le1-a.
+\]
+Thus the tail probability is one.  This law has support size \(m_0\).
+
+Conversely, suppose \(n<m_0\), and let \(m\le n\) be the support size of \(p\).  If \(m\le t\), the sum of the \(\min(t,n)\) largest masses is one, which is greater than \(1-a\).  If \(m>t\), the sum of the \(t\) largest masses is at least \(t/m\), and
+\[
+\frac{t}{m}>1-a
+\]
+because \(m<m_0=\lceil t/(1-a)\rceil\).  By \cref{prop:plateau-new}, tail probability one is impossible.  This proves \eqref{eq:saturation-iff}.
+
+When \(n<m_0\), a maximizer exists by \cref{lem:tail-existence} and automatically has support at most \(n<m_0\).  Together with the explicit saturated law for \(n\ge m_0\), this proves the bounded-support statement.
+\end{proof}
+
+\begin{corollary}[Bounded-level C4 theorem]\label{cor:C4-level}
+For every \(t\ge1\), \(0<a<1\), and \(n\ge1\), there is a global maximizer with at most
+\begin{equation}\label{eq:C4-level-bound-new}
+\left\lceil\frac{t}{1-a}\right\rceil-1
+\end{equation}
+distinct positive coordinate values.
+\end{corollary}
+
+\begin{proof}
+If \(n\ge m_0(t,a)\), the saturated maximizer in \cref{thm:C4-support} has one positive level.  Since \(m_0(t,a)\ge2\), this is at most \(m_0(t,a)-1\).  If \(n<m_0(t,a)\), every law has at most \(n\le m_0(t,a)-1\) distinct positive values.
+\end{proof}
+
+\begin{example}[Uniform stochastic dominance fails]\label{ex:tail-fail-new}
+Take \(t=2\), \(n=3\), and \(a=0.6\).  For the uniform law,
+\[
+\PP_{(1/3,1/3,1/3)}(U_2\ge0.6)=\frac13.
+\]
+For \(p=(0.4,0.4,0.2)\), the event occurs precisely on repeated-sample paths, and
+\[
+\PP_p(U_2\ge0.6)
+=0.4^2+0.4^2+0.2^2=0.36>\frac13.
+\]
+Thus uniform is not generally tail-maximal.
+\end{example}
+
+\begin{remark}[Why the theorem is existential]
+For \(t=1\),
+\[
+\PP_p(U_1\ge a)
+=\sum_i p_i\one\{p_i\le1-a\}.
+\]
+Every law whose atoms are all at most \(1-a\) has tail probability one.  Such maximizers can have arbitrarily many distinct positive masses as \(n\) grows.  Hence no uniform-in-\(n\) level bound can hold for every maximizer.
+\end{remark}
+
+\begin{proposition}[Finite stratified polynomial reduction]\label{prop:tail-strata}
+For every nonempty \(S\subseteq[n]\) with \(|S|\le t\),
+\begin{equation}\label{eq:q-support-poly}
+q_{t,S}(p)
+=\sum_{R\subseteq S}(-1)^{|S|-|R|}p(R)^t,
+\qquad p(R)=\sum_{i\in R}p_i.
+\end{equation}
+The hyperplanes
+\[
+p(S)=1-a,
+\qquad 1\le|S|\le t,
+\]
+partition the simplex into finitely many strata determined by the signs \(<,=,>\).  On each stratum, the tail functional is a polynomial of degree \(t\).  In the nonsaturated regime \(n<m_0(t,a)\), the optimization therefore reduces to finitely many polynomial Fritz--John or KKT systems in dimension bounded solely by \(t\) and \(a\).
+\end{proposition}
+
+\begin{proof}
+Inclusion--exclusion for the event that every atom in \(S\) is observed and no atom outside \(S\) is observed gives \eqref{eq:q-support-poly}.  On a fixed sign stratum, the collection of subsets satisfying \(p(S)\le1-a\) is fixed, so \eqref{eq:tail-support-sum} is a fixed polynomial sum.  Equality strata must be retained because the tail functional can jump upward on a threshold wall.  The dimension bound follows from \(n<m_0(t,a)\).
+\end{proof}
+
+\begin{remark}[Other observation mechanisms]
+The saturated construction uses only the deterministic bound \(|S_t|\le t\), not independence or multinomial sampling.  Thus uniform mass on \(m_0(t,a)\) atoms guarantees \(1-p(S)\ge a\) for every random-set observation mechanism satisfying \(|S|\le t\) almost surely.
+\end{remark}
+
+\begin{remark}[Strict tails]
+For the strict event \(U_t>a\), the least support size that guarantees probability one under a uniform law is
+\[
+\left\lfloor\frac{t}{1-a}\right\rfloor+1,
+\]
+because the required inequality is \(t/m<1-a\).
+\end{remark}
+
+\section{Connections, extensions, and open problems}
+
+\subsection{Connections with the active-uniform program}
+
+The common structural principle is
+\[
+\boxed{\text{crossing controls possible levels; structured perturbations control multiplicity.}}
+\]
+The elementary separable part of this principle is already a theorem.
+
+\begin{proposition}[Finite-crossing active-level bound]\label{prop:finite-crossing}
+Let \(f\in C^2((0,1])\cap C^1([0,1])\), and suppose that every horizontal line meets \(f'\) at most \(L\) times.  Then every relative-interior constrained critical point of
+\[
+p\longmapsto\sum_i f(p_i)
+\]
+has at most \(L\) distinct active values.  At a constrained local maximum, a value lying in an interval on which \(f'\) is strictly increasing can occur at most once.  If, in addition,
+\[
+f'(0)>f'(x)\qquad(x>0),
+\]
+then every global maximizer has full support.
+\end{proposition}
+
+\begin{proof}
+The KKT equations give \(f'(p_i)=\nu\) on the active face, so the active values are among the at most \(L\) solutions of one horizontal-level equation.  If a value \(z\) on a strictly increasing branch occurs twice, the mass-preserving perturbation of those two coordinates gives
+\[
+f(z+\varepsilon)+f(z-\varepsilon)-2f(z)
+=\int_0^\varepsilon
+\bigl(f'(z+\tau)-f'(z-\tau)\bigr)\,\dd\tau>0,
+\]
+contradicting local maximality.  The support assertion is the boundary-transfer argument used in \cref{lem:one-valley}.
+\end{proof}
+
+For vector-separable objectives, the external sums are frozen at a critical point and again produce one scalar marginal equation, as formalized in \cref{thm:frozen-abstract}.  The same perturbation excludes repeated values where the frozen marginal is increasing.  This mechanism also appears in entropy-constrained missing-mass problems \cite{BerendKontorovichZagdanski2017} and in other allocation objectives with finitely many derivative turns.
+
+The affine-gauge viewpoint in \cref{lem:full-duality} is also reusable.  Whenever two coordinate kernels differ by an affine function, they have identical simplex extremizers.  In the present problem, that observation upgrades a numerical-looking symmetry to an exact equality of optimizer sets, stationary branches, Maxwell ties, and transition curves.
+
+\subsection{Further consequences of the C1/C2 proof}
+
+The proof yields more than the phase count:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item the late positive set is an unconditional ray, with isolated pinch zeros excluded by the first-return lemma;
+\item \(\beta_n\) is continuous and strictly increasing without a regular-boundary hypothesis;
+\item both Maxwell signs are evaluations of the same convex bracket \(\chi_x\); nondegenerate stationary Maxwell arcs are analytic with slope \eqref{eq:beta-slope-chi}, with their identification as the global boundary subject to the hypotheses in \cref{prop:regular-maxwell-arcs};
+\item the boundary is definably tame and has only finitely many singular strata on compact intervals;
+\item the global-concavity and local-spinodal curves give the two-sided sandwich \eqref{eq:beta-sigma-bound};
+\item the entire central uniform window collapses to the diagonal with the quantitative bounds \eqref{eq:window-bounds}.
+\end{enumerate}
+
+\begin{problem}[Sharp large-\(s\) boundary asymptotics and slopes]
+The current bounds place \(\beta_n(s)-s\) between scales \(s e^{-s/2}\) and \(s e^{-s/(2n)}\).  Determine the correct exponential scale and leading constant, and do the same for the window width
+\[
+W_n(s)=\beta_n(s)-\alpha_n(s).
+\]
+The unified formula \eqref{eq:beta-slope-chi} also suggests studying whether
+\[
+\beta_n'(s)\longrightarrow1.
+\]
+A positive answer would give a differential route to sharper window asymptotics.
+\end{problem}
+
+\begin{problem}[Small-\(s\) expansion]
+Assume the expected-missing-mass transition at \(\lambda_n^\star\) is a nondegenerate Maxwell transition at \(x_n^\star\).  Expanding
+\[
+h_{\lambda,s}(z)
+=sze^{-\lambda z}
++\frac{s^2z^2}{2}\left(e^{-\lambda z}-e^{-2\lambda z}\right)
++O(s^3)
+\]
+suggests an explicit formula for \(\beta_n'(0+)\).  Derive that formula rigorously, and treat separately the continuous-transition case.
+\end{problem}
+
+\begin{problem}[Degenerate Maxwell points]
+Classify possible degenerate or competing-branch points on the phase boundary; definable tameness gives a finite stratification on each compact parameter interval.  In particular, determine whether higher-order Maxwell contacts or cusp points actually occur for any \(n\).
+\end{problem}
+
+
+\begin{problem}[Uniqueness and motion of the one-heavy optimizer]
+For \(\lambda>\beta_n(s)\), determine whether the scalar maximizer of \(D_{\lambda,s}\) is unique.  If so, study the monotonicity and asymptotics of the optimal light mass \(x_s(\lambda)\), and rule out switches between distinct one-heavy branches.
+\end{problem}
+
+\begin{problem}[Asymptotics of the Poissonized expected-mass threshold]
+Determine the large-\(n\) behavior of \(\lambda_n^\star\), including the existence and value of \(\lim_{n\to\infty}\lambda_n^\star/n\) and any boundary-layer correction.  Compare this Poissonized threshold with the fixed-sample asymptotic \(\tau(n)=n+\sqrt{2n}(1+o(1))\) from \cite{BerendKontorovich2012}.
+\end{problem}
+
+\subsection{Fixed-sample extensions}
+
+\begin{problem}[Sharp C3 level bound]
+The bound \(t(t+1)\) follows from an ambient exponential-polynomial space and is unlikely to be optimal.  Determine whether the correct order is \(O(t)\), or whether every fixed-sample positive-MGF maximizer is two-level.
+\end{problem}
+
+\begin{problem}[Poissonized occupancy masses]
+For \(r\ge1\), consider
+\[
+M_r=\sum_i p_i\one\{N_i(\lambda)=r\}.
+\]
+Poissonization remains separable, with coordinate kernel
+\[
+h^{(r)}_{\lambda,s}(z)
+=\log\left(1+(e^{sz}-1)e^{-\lambda z}
+\frac{(\lambda z)^r}{r!}\right).
+\]
+The affine \(\lambda\leftrightarrow s\) duality is lost because of the polynomial factor.  Determine the derivative-turn complexity of \((h^{(r)}_{\lambda,s})'\), the resulting active-level bounds, and which Maxwell-transversality arguments survive.  This is a direct bridge to Good--Turing occupancy-mass estimation.
+\end{problem}
+
+\begin{problem}[De-Poissonization of extremizers]
+Poissonized positive-MGF maximizers are one-heavy, whereas the current fixed-sample theorem gives only a quadratic-in-\(t\) level bound.  Prove convergence of fixed-sample extremizers to Poissonized one-heavy extremizers in a suitable Poisson scaling regime.
+\end{problem}
+
+\begin{problem}[Optimized Chernoff bridge]
+Study the relation
+\[
+\sup_p\PP_p(U_t\ge a)
+\le
+\inf_{s>0}e^{-sa}\sup_p\E_p e^{sU_t}.
+\]
+Determine when the optimization over \(p\) and the Legendre optimization over \(s\) admit a saddle point, and when the Chernoff relaxation is strict.  This is a natural bridge between the C3 frozen-KKT structure and the exact C4 tail problem.
+\end{problem}
+
+\subsection{Tail refinements}
+
+\begin{problem}[Exact residual C4 classification]
+In the finite regime \(n<m_0(t,a)\), classify the maximizers on the strata of \cref{prop:tail-strata}.  A plausible strengthening is that a maximizer may always be chosen two-level or boundary-two-level.
+\end{problem}
+
+\begin{conjecture}[Finite-turn reservoir refinement]
+Under suitable global crossing and boundary hypotheses beyond those of \cref{prop:finite-crossing}, separable simplex maximizers should have a reservoir form: all but finitely many active coordinates equalize, while a controlled number of exceptional coordinates absorb the residual mass.  The one-heavy theorem is the one-valley case of this proposed refinement.
+\end{conjecture}
+
+\begin{conjecture}[Reservoir principle]
+The one-heavy missing-mass theorem is the simplest instance of a broader reservoir principle for coverage, coding, storage, and Kelly-type allocation problems: most active coordinates equalize, while one or finitely many exceptional coordinates absorb the residual mass imposed by the simplex constraint.
+\end{conjecture}
+
+\appendix
+
+\section{Inductive proof of the one-heavy comparison theorem}\label{app:comparison}
+
+This appendix proves \cref{thm:comparison-main} by an exact decomposition followed by an induction in \(k=n-1\).  Every algebraic identity and sign used in the comparison is stated explicitly.
+
+\subsection{Normalization}
+
+Let
+\[
+L=u-x>0,
+\qquad
+x=aL,
+\qquad
+u=(a+1)L,
+\qquad
+y=(a+n)L,
+\qquad a>0.
+\]
+Set
+\[
+p=e^{-\mu L},
+\qquad
+q=e^{-rL},
+\qquad
+P=p^a,
+\qquad
+Q=q^a.
+\]
+Thus \(0<p,q,P,Q<1\).  For \(j\ge0\), define
+\begin{equation}\label{eq:Dj-app}
+D_j=1+Pp^j(1-Qq^j)
+=1+p^{a+j}(1-q^{a+j}),
+\end{equation}
+and
+\begin{equation}\label{eq:Ej-app}
+E_j=D_{j+1}-qD_j.
+\end{equation}
+
+A direct computation gives
+\begin{equation}\label{eq:Aq-S-app}
+\cA q_\mu=LPp\,S,
+\end{equation}
+where
+\begin{equation}\label{eq:S-app}
+S=\frac{ka}{p}+(a+n)p^k-n(a+1).
+\end{equation}
+Likewise,
+\begin{equation}\label{eq:Apsi-N-app}
+\cA\psi_{\mu,r}
+=\frac{LPQp}{D_0D_1D_n}\,N,
+\end{equation}
+where
+\begin{equation}\label{eq:N-app}
+N=\frac{ka}{p}D_1D_n
++(a+n)p^kq^nD_0D_1
+-n(a+1)qD_0D_n.
+\end{equation}
+It is therefore enough to prove
+\[
+S\ge0\quad\Longrightarrow\quad N>0.
+\]
+
+\subsection{Exact decomposition}
+
+Define
+\begin{equation}\label{eq:Gamma-app}
+\Gamma_k(p)=\sum_{\ell=1}^k p^{-\ell}.
+\end{equation}
+Put
+\[
+\alpha=\frac{ka}{p},
+\qquad
+\beta=(a+n)p^k,
+\qquad
+\gamma=n(a+1),
+\]
+so that \(S=\alpha+\beta-\gamma\).  The elementary identity
+\begin{equation}\label{eq:key-alpha-beta-app}
+\alpha-\beta\Gamma_k(p)=\frac{S}{1-p}
+\end{equation}
+follows from
+\[
+p^k\Gamma_k(p)=1+p+\cdots+p^{k-1}.
+\]
+Indeed,
+\begin{align*}
+(1-p)\{\alpha-\beta\Gamma_k(p)\}
+&=\frac{ka(1-p)}p-(a+n)(1-p^k)\\
+&=\frac{ka}{p}+(a+n)p^k-n(a+1)=S.
+\end{align*}
+
+Using \(n=k+1\), \(\gamma=\alpha+\beta-S\), and \(E_0=D_1-qD_0\), we obtain
+\begin{align*}
+N
+&=SqD_0D_n+\alpha D_nE_0
++\beta qD_0(q^kD_1-D_n)\\
+&=S\left(qD_0D_n+\frac{D_nE_0}{1-p}\right)
++\beta H_k,
+\end{align*}
+where
+\begin{equation}\label{eq:Hk-app}
+H_k
+=\Gamma_k(p)D_{k+1}E_0
++qD_0\left(q^kD_1-D_{k+1}\right).
+\end{equation}
+Thus it remains to prove \(H_k>0\).
+
+\subsection{Three monotonicity inequalities}
+
+\begin{lemma}[Three-exponential monotonicity]\label{lem:three-exp-app}
+Let \(0<p,q<1\), and define
+\[
+d(z)=1+p^z(1-q^z),
+\qquad z>0.
+\]
+For \(a>0\), let \(D_j=d(a+j)\) and \(E_j=D_{j+1}-qD_j\).  Then
+\begin{equation}\label{eq:Epos-app}
+E_j>0\qquad(j\ge0),
+\end{equation}
+and, for every integer \(j\ge1\),
+\begin{align}
+p^jE_j&<E_0,\label{eq:Edec-app}\\
+D_jD_{j+1}&>q^jD_0D_1.\label{eq:Dprod-app}
+\end{align}
+\end{lemma}
+
+\begin{proof}
+Write
+\[
+M=-\log p>0,
+\qquad
+R=-\log q>0.
+\]
+Then
+\[
+d(z)=1+e^{-Mz}-e^{-(M+R)z}.
+\]
+
+First define
+\[
+F(z)=q^{-z}d(z)
+=e^{Rz}+e^{(R-M)z}-e^{-Mz}.
+\]
+We claim that \(F'(z)>0\).  If \(R\ge M\), this is immediate.  If \(R<M\), put \(c=M/R>1\) and \(w=e^{Rz}\ge1\).  Multiplication of \(F'(z)\) by \(e^{Mz}/R>0\) gives
+\[
+w^{c+1}-(c-1)w+c.
+\]
+This equals \(2\) at \(w=1\), and its derivative is at least \(2\) for \(w\ge1\).  Hence it is positive.  Since
+\[
+E_j=q^{a+j+1}\{F(a+j+1)-F(a+j)\},
+\]
+we obtain \eqref{eq:Epos-app}.
+
+Next define
+\[
+K(z)=(pq)^zF'(z)
+=R e^{-Mz}+(R-M)e^{-2Mz}+M e^{-(2M+R)z}.
+\]
+Then
+\[
+K'(z)
+=-M e^{-2Mz}
+\left(Re^{Mz}+2(R-M)+(2M+R)e^{-Rz}\right).
+\]
+The bracket is positive.  This is immediate if \(R\ge M\).  If \(0<R<M\), put \(c=R/M\in(0,1)\) and \(w=Mz\).  After division by \(M\), the bracket is
+\[
+b_c(w)=ce^w-2(1-c)+(2+c)e^{-cw}.
+\]
+The function \(b_c\) is strictly convex.  Its minimum occurs at
+\[
+e^{(1+c)w}=2+c
+\]
+and equals
+\[
+m(c)=(1+c)(2+c)^{1/(1+c)}-2(1-c).
+\]
+Now \(m(0)=0\), while
+\[
+m'(c)
+=(2+c)^{1/(1+c)}
+\left(1+\frac1{2+c}-\frac{\log(2+c)}{1+c}\right)+2>0,
+\]
+because \(\log(2+c)<1+c\).  Hence \(K'(z)<0\).
+
+Using
+\[
+E_j=q^{a+j+1}\int_0^1F'(a+j+t)\dd t,
+\]
+we get
+\[
+p^jE_j
+=q^{a+1}\int_0^1(pq)^jF'(a+j+t)\dd t
+<q^{a+1}\int_0^1F'(a+t)\dd t
+=E_0,
+\]
+which proves \eqref{eq:Edec-app}.
+
+Finally, define
+\[
+G(z)=q^{-z/2}d(z)
+=e^{Rz/2}+e^{(R/2-M)z}-e^{-(M+R/2)z}.
+\]
+Let \(\alpha=M/R>0\) and \(w=e^{Rz}\ge1\).  Multiplication of \(G'(z)\) by \((2/R)e^{(M+R/2)z}>0\) gives
+\begin{equation}\label{eq:Phi-alpha-app}
+\Phi_\alpha(w)
+=w^{1+\alpha}+(1-2\alpha)w+1+2\alpha.
+\end{equation}
+If \(0<\alpha\le1/2\), this is plainly positive.  If \(1/2<\alpha\le2\), then
+\[
+\Phi_\alpha'(w)
+=(1+\alpha)w^\alpha+1-2\alpha
+\ge2-\alpha\ge0,
+\]
+so \(\Phi_\alpha(w)\ge\Phi_\alpha(1)=3\).
+
+Suppose \(\alpha>2\).  The unique critical point satisfies
+\[
+w_\star^\alpha=\frac{2\alpha-1}{1+\alpha}<2.
+\]
+Since \(2^{1/\alpha}\le1+1/\alpha\), we have \(w_\star<1+1/\alpha\).  At the critical point,
+\[
+\Phi_\alpha(w_\star)
+=1+2\alpha
+-\frac{\alpha(2\alpha-1)}{1+\alpha}w_\star
+>2.
+\]
+Thus \(G'(z)>0\) in all cases.  Hence
+\[
+D_j>q^{j/2}D_0,
+\qquad
+D_{j+1}>q^{j/2}D_1,
+\]
+and multiplication gives \eqref{eq:Dprod-app}.
+\end{proof}
+
+\subsection{Induction in \texorpdfstring{$k=n-1$}{k=n-1}}
+
+\begin{proposition}[Positivity of the remainder]\label{prop:H-positive-app}
+For every integer \(k\ge1\), the quantity \(H_k\) in \eqref{eq:Hk-app} is strictly positive.
+\end{proposition}
+
+\begin{proof}
+Set \(\Gamma_0=0\), \(H_0=0\), and
+\[
+J_k=\frac{H_k}{D_{k+1}}.
+\]
+Then \(J_0=0\), and
+\[
+J_k
+=\Gamma_k(p)E_0
++qD_0\left(q^k\frac{D_1}{D_{k+1}}-1\right).
+\]
+Let \(j=k+1\).  Since \(\Gamma_{k+1}-\Gamma_k=p^{-j}\),
+\begin{align*}
+J_{k+1}-J_k
+&=p^{-j}E_0
++qD_0D_1\left(\frac{q^j}{D_{j+1}}-\frac{q^{j-1}}{D_j}\right)\\
+&=p^{-j}E_0
+-\frac{q^jD_0D_1}{D_jD_{j+1}}E_j.
+\end{align*}
+By \eqref{eq:Dprod-app},
+\[
+0<\frac{q^jD_0D_1}{D_jD_{j+1}}<1,
+\]
+and by \eqref{eq:Edec-app}, \(E_j<p^{-j}E_0\).  Therefore \(J_{k+1}-J_k>0\).  Induction from \(J_0=0\) gives \(J_k>0\), and hence \(H_k=D_{k+1}J_k>0\).
+\end{proof}
+
+\begin{proof}[Completion of the proof of \cref{thm:comparison-main}]
+If \(S\ge0\), then the exact decomposition gives
+\[
+N
+=S\left(qD_0D_n+\frac{D_nE_0}{1-p}\right)
++(a+n)p^kH_k.
+\]
+Every factor in the first bracket is positive, and \(H_k>0\) by \cref{prop:H-positive-app}.  Hence \(N>0\).  Equations \eqref{eq:Aq-S-app} and \eqref{eq:Apsi-N-app} prove
+\[
+\cA q_\mu\ge0
+\quad\Longrightarrow\quad
+\cA\psi_{\mu,r}>0.
+\]
+\end{proof}
+
+\begin{thebibliography}{99}
+
+\bibitem{Good1953}
+I.~J. Good.
+\newblock The population frequencies of species and the estimation of population parameters.
+\newblock \emph{Biometrika}, 40(3--4):237--264, 1953.
+\newblock \href{https://doi.org/10.1093/biomet/40.3-4.237}{doi:10.1093/biomet/40.3-4.237}.
+
+\bibitem{McAllesterSchapire2000}
+D.~A. McAllester and R.~E. Schapire.
+\newblock On the convergence rate of Good--Turing estimators.
+\newblock In \emph{Proceedings of the Thirteenth Annual Conference on Computational Learning Theory (COLT 2000)}, pages 1--6, 2000.
+\newblock \href{https://doi.org/10.5555/648299.755182}{doi:10.5555/648299.755182}.
+
+\bibitem{McAllesterOrtiz2003}
+D.~A. McAllester and L.~E. Ortiz.
+\newblock Concentration inequalities for the missing mass and for histogram rule error.
+\newblock \emph{Journal of Machine Learning Research}, 4:895--911, 2003.
+\newblock \href{https://www.jmlr.org/papers/v4/mcallester03a.html}{JMLR article page}.
+
+\bibitem{BerendKontorovich2012}
+D.~Berend and A.~Kontorovich.
+\newblock The missing mass problem.
+\newblock \emph{Statistics \& Probability Letters}, 82(6):1102--1110, 2012.
+\newblock \href{https://doi.org/10.1016/j.spl.2012.02.014}{doi:10.1016/j.spl.2012.02.014}.
+
+\bibitem{BerendKontorovich2013}
+D.~Berend and A.~Kontorovich.
+\newblock On the concentration of the missing mass.
+\newblock \emph{Electronic Communications in Probability}, 18(3):1--7, 2013.
+\newblock \href{https://doi.org/10.1214/ECP.v18-2359}{doi:10.1214/ECP.v18-2359}.
+
+\bibitem{BerendKontorovichZagdanski2017}
+D.~Berend, A.~Kontorovich, and G.~Zagdanski.
+\newblock The expected missing mass under an entropy constraint.
+\newblock \emph{Entropy}, 19(7):315, 2017.
+\newblock \href{https://doi.org/10.3390/e19070315}{doi:10.3390/e19070315}.
+
+\bibitem{BenHamouBoucheronOhannessian2017}
+A.~Ben-Hamou, S.~Boucheron, and M.~I. Ohannessian.
+\newblock Concentration inequalities in the infinite urn scheme for occupancy counts and the missing mass, with applications.
+\newblock \emph{Bernoulli}, 23(1):249--287, 2017.
+\newblock \href{https://doi.org/10.3150/15-BEJ743}{doi:10.3150/15-BEJ743}.
+
+\bibitem{KarlinStudden1966}
+S.~Karlin and W.~J. Studden.
+\newblock \emph{Tchebycheff Systems: With Applications in Analysis and Statistics}.
+\newblock Interscience Publishers, New York, 1966.
+
+\bibitem{Wilkie1996}
+A.~J. Wilkie.
+\newblock Model completeness results for expansions of the ordered field of real numbers by restricted Pfaffian functions and the exponential function.
+\newblock \emph{Journal of the American Mathematical Society}, 9(4):1051--1094, 1996.
+\newblock \href{https://doi.org/10.1090/S0894-0347-96-00216-0}{doi:10.1090/S0894-0347-96-00216-0}.
+
+\bibitem{vanDenDries1998}
+L.~van den Dries.
+\newblock \emph{Tame Topology and O-minimal Structures}.
+\newblock London Mathematical Society Lecture Note Series 248. Cambridge University Press, Cambridge, 1998.
+\newblock \href{https://doi.org/10.1017/CBO9780511525919}{doi:10.1017/CBO9780511525919}.
+
+\end{thebibliography}
+
+\end{document}

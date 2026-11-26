@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "Please cite the particular manuscript used; both are included in this research repository."
+title: "Missing-mass extremizers and canonical Poissonized Good–Turing risk"
+authors:
+  - family-names: Long
+    given-names: Christopher D.
+type: software
+version: 2026.11.26
+date-released: 2026-11-26
+repository-code: "https://github.com/long-mathematics/missing-mass-good-turing"

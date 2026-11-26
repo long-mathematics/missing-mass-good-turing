@@ -1,0 +1,2667 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\emergencystretch=3em
+
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{problem}[theorem]{Problem}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\E}{\mathbb E}
+\newcommand{\Pp}{\mathbb P}
+\newcommand{\DeltaN}{\Delta_{n-1}}
+\newcommand{\dd}{\,\mathrm d}
+\newcommand{\ones}{\mathbf 1}
+\newcommand{\Unif}{\mathrm{Unif}}
+\newcommand{\Pois}{\mathrm{Pois}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\as}{\mathrm{as}}
+
+\title{Active-Uniform Extremizers for Missing-Mass Functionals\\
+\large A working draft on crossing, structured perturbations, and extensions of Berend--Kontorovich}
+\author{Working notes}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Berend and Kontorovich proved tight expectation bounds for the missing mass and, for finite alphabets, showed that every local maximizer of
+\[
+  \sum_{i=1}^n p_i(1-p_i)^t
+\]
+is either uniform or has one heavy coordinate and $n-1$ equal light coordinates. This note gives a short proof of the local extremizer structure by a crossing plus structured-perturbation argument. The proof is not special to missing mass: it is an instance of a general finite-turn principle for separable simplex objectives $\sum_i f(p_i)$. We record rigorous corollaries for ordinary missing mass, Poissonized expected missing mass, global Poissonized positive moment generating functions, missing $g$-mass, and frequency-$r$ occupancy mass. We also prove a global critical-window transfer for the Berend--Kontorovich transition. The exact surrogate crossing has a full expansion
+\[
+  \widehat t_n = n+\sqrt{2n}-\frac13-\frac{7}{18\sqrt{2n}}-\frac{2}{135n}
+       -\frac{431\sqrt2}{4320n^{3/2}}+O(n^{-2}),
+\]
+and the true active-branch crossing in the critical window differs from it by at most an exponentially small amount times $n^{3/2}$. This yields a sharp two-candidate integer rule for the strict transition. We make the rule explicit through an exact integer comparison for the surrogate root, track constants to obtain the effective cutoff $N_0=144$, prove a self-contained no-reentrance lemma removing the remaining dependence on the Berend--Kontorovich single-threshold argument, add rational interval-arithmetic verification for small values, prove a nonresonance estimate showing that the rounding ``drop'' cannot occur for $n\ge501$, and give an analytic rounding classification showing that the unique drop is $n=6$. We also prove the true Poissonized critical theorem and reduce the positive-MGF phase diagram to a one-dimensional curve, with rigorous early, central, and late phase information. We prove a frozen-kernel theorem for constrained and vector-separable objectives: active values solve one scalar KKT equation, and nonseparable rank couplings vanish on balanced plateau perturbations. This recovers a four-level local bound for entropy-constrained missing mass, adds boundary support-selection rules, gives global finite-stratum phase reductions for entropy, variance, Good--Turing MSE, and biased coordinate estimators, and identifies cases where the phase diagram reduces to one one-heavy curve. We then solve the Poissonized Good--Turing MSE phase diagram completely: after the scaling $z_i=t p_i$, the transition occurs at a unique threshold $\Theta_n$, uniform is optimal before it and one-heavy after it, and $\Theta_n$ has an explicit golden-ratio critical expansion. The final sections list next theorems, conjectures, and target problems connecting these separable and weakly nonseparable cases with active-support phenomena in Kelly-type and MDS-type problems.
+\end{abstract}
+
+\tableofcontents
+
+\section{Background and objective}
+
+Let $S$ be a countable alphabet with distribution $P=(p_s)_{s\in S}$, and let $X_1,\ldots,X_t$ be independent samples from $P$. The missing mass is
+\[
+  U_t=P\bigl(S\setminus \{X_1,\ldots,X_t\}\bigr).
+\]
+For a finite or countable alphabet,
+\[
+  \E U_t=\sum_{s\in S}p_s(1-p_s)^t.
+\]
+Berend and Kontorovich \cite{BK} proved sharp order bounds for this expectation, including finite-alphabet bounds and countable-alphabet bounds in terms of plateau length, and showed that without a finite plateau condition no nontrivial distribution-free decay bound is possible. Thus the main opportunity is not to improve the $n/t$ order in full generality. The opportunity is structural: explain why the same active-uniform forms appear and extend the mechanism to nearby functionals.
+
+For a finite alphabet of size $n$, write
+\[
+  F_t(p)=\sum_{i=1}^n p_i(1-p_i)^t,
+  \qquad p\in\Delta_{n-1}:=\{p_i\ge 0,\ \sum_i p_i=1\}.
+\]
+Berend and Kontorovich proved that every local maximum of $F_t$ has the form
+\[
+  p_1=\cdots=p_{n-1}\le p_n,
+\]
+and that there is a threshold $\tau(n)>n$ such that the global maximizer is uniform for $t<\tau(n)$ and one-heavy for $t>\tau(n)$, with
+\[
+  \tau(n)=n+\sqrt{2n}(1+o(1)).
+\]
+Their proof of the local structure uses Lagrange multipliers and a bordered-Hessian argument. The first contribution of this draft is a much shorter proof. The second is to identify the proof as an instance of a general method.
+
+\subsection{Guiding principle}
+
+The guiding principle is:
+\[
+\boxed{\text{crossing controls possible levels; structured perturbations control which levels may repeat.}}
+\]
+For separable objectives $F_f(p)=\sum_i f(p_i)$, crossing means the KKT equation
+\[
+  f'(p_i)=\lambda
+\]
+and structured perturbation means using special feasible variations, such as
+\[
+  (x,x)\mapsto (x+\varepsilon,x-\varepsilon),
+\]
+to test whether repeated coordinate values are stable. In more complicated nonseparable problems, this pairwise perturbation is replaced by genuine block contractions or block splittings. Thus the missing-mass theorem is the separable two-coordinate shadow of a broader active-uniform perturbation method.
+
+\section{Crossing and structured perturbations for separable objectives}
+
+Let $f:[0,1]\to\mathbb R$ be continuous and $C^1$ on $(0,1)$, and define
+\[
+  F_f(p)=\sum_{i=1}^n f(p_i),\qquad p\in\Delta_{n-1}.
+\]
+We first work in the relative interior of a fixed face of the simplex.
+
+\begin{theorem}[KKT level-count theorem]\label{thm:kkt-level}
+Let $f\in C^1(0,1)$, and let $p$ be a relative-interior local extremum of $F_f$ on a face with active support $A$. Then there is a scalar $\lambda$ such that
+\[
+  f'(p_i)=\lambda,\qquad i\in A.
+\]
+Consequently, if every level equation $f'(x)=\lambda$ has at most $K$ solutions in $(0,1)$, then every such local extremum has at most $K$ distinct positive coordinate values.
+\end{theorem}
+
+\begin{proof}
+On the face $A$, the only equality constraint is $\sum_{i\in A}p_i=1$. The Lagrange multiplier rule gives $f'(p_i)=\lambda$ for all active $i$. The level-count conclusion follows immediately.
+\end{proof}
+
+\begin{theorem}[Convex-branch singleton lemma]\label{thm:convex-singleton}
+Let $f\in C^2(0,1)$, and let $p$ be a relative-interior local maximum of $F_f$ on a face of the simplex. If two active coordinates satisfy $p_i=p_j=x$, then necessarily
+\[
+  f''(x)\le 0.
+\]
+Equivalently, a coordinate value lying in a strictly convex branch of $f$ can occur with multiplicity at most one at a local maximum.
+\end{theorem}
+
+\begin{proof}
+Perturb the two equal coordinates by
+\[
+  (x,x)\mapsto (x+\varepsilon,x-\varepsilon).
+\]
+This preserves the sum constraint and stays in the same face for sufficiently small $\varepsilon$. The change in objective is
+\[
+  f(x+\varepsilon)+f(x-\varepsilon)-2f(x)
+    = f''(x)\varepsilon^2+o(\varepsilon^2).
+\]
+If $f''(x)>0$, this change is positive for all sufficiently small nonzero $\varepsilon$, contradicting local maximality.
+\end{proof}
+
+
+\begin{theorem}[Degenerate and one-valley active-uniform theorem]\label{thm:one-valley}
+Let $f\in C^2(0,1)$ be continuous on $[0,1]$.
+
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item If $f'$ is strictly decreasing on $(0,1)$, then every relative-interior local maximum of $F_f$ on a simplex face is uniform on its active support.
+
+\item Suppose that there is $c\in(0,1)$ such that $f'$ is strictly decreasing on $(0,c)$ and strictly increasing on $(c,1)$, and suppose $f''(x)>0$ for $x\in(c,1)$. Then every relative-interior local maximum of $F_f$ on a simplex face is either uniform on its active support or one-exceptional:
+\[
+  p=(a,\ldots,a,b),\qquad a<c<b,
+\]
+after permutation.
+\end{enumerate}
+
+If, in either case,
+\[
+  f'_+(0)>f'(x)\qquad (0<x<1),
+\]
+then no zero coordinate can occur at a full-simplex local maximum. Thus in case \textup{(a)} every full-simplex local maximum is uniform, while in case \textup{(b)} every full-simplex local maximum is either uniform or one-exceptional,
+\[
+  p_1=\cdots=p_n=1/n
+  \quad\text{or}\quad
+  p_1=\cdots=p_{n-1}<p_n,
+\]
+after permutation.
+\end{theorem}
+
+\begin{proof}
+By Theorem \ref{thm:kkt-level}, active coordinates solve $f'(x)=\lambda$. If $f'$ is strictly decreasing on $(0,1)$, this equation has at most one solution, so all active coordinates are equal.
+
+In the one-valley case, the equation $f'(x)=\lambda$ has at most two solutions, one on each side of $c$. Thus the active coordinates take at most two values $a<c<b$. The upper value $b$ lies in the convex branch $(c,1)$, so Theorem \ref{thm:convex-singleton} implies that it occurs with multiplicity at most one. This gives the one-exceptional conclusion.
+
+For the boundary statement, suppose $p_j=0$ and $p_i=x>0$. Move mass $\delta$ from $i$ to $j$. The first-order change is
+\[
+  f(\delta)-f(0)+f(x-\delta)-f(x)
+  =\delta\bigl(f'_+(0)-f'(x)\bigr)+o(\delta),
+\]
+which is positive for small $\delta>0$ under the stated hypothesis. Hence no zero coordinate can occur at a local maximum on the full simplex.
+\end{proof}
+
+\begin{theorem}[Finite-turn active-level theorem]\label{thm:finite-turn}
+Let $f\in C^2(0,1)$. Suppose that $(0,1)$ can be partitioned into at most $K$ intervals on which $f'$ is strictly monotone. Then every relative-interior local extremum of $F_f$ has at most $K$ distinct positive coordinate values. Moreover, any value lying in an interval where $f''>0$ can occur with multiplicity at most one at a local maximum.
+\end{theorem}
+
+\begin{proof}
+The KKT equation is $f'(p_i)=\lambda$. On each monotonicity interval, this equation has at most one solution. This gives the $K$-level bound. The singleton statement is Theorem \ref{thm:convex-singleton}.
+\end{proof}
+
+\section{Berend--Kontorovich as the model case}
+
+For ordinary missing mass,
+\[
+  f_t(x)=x(1-x)^t.
+\]
+Then
+\[
+  f_t'(x)=(1-x)^{t-1}\bigl(1-(t+1)x\bigr),
+\]
+and
+\[
+  f_t''(x)=t(1-x)^{t-2}\bigl((t+1)x-2\bigr).
+\]
+Therefore $f_t'$ decreases on $(0,2/(t+1))$ and increases on $(2/(t+1),1)$, with convex branch $x>2/(t+1)$. Also $f_t'(0)=1>f_t'(x)$ for all $0<x<1$.
+
+\begin{corollary}[Short proof of the Berend--Kontorovich local structure]\label{cor:BK-short}
+For every $n$ and every integer $t\ge 1$, every local maximum of
+\[
+  F_t(p)=\sum_{i=1}^n p_i(1-p_i)^t
+\]
+on $\Delta_{n-1}$ is either uniform or one-heavy:
+\[
+  p_1=\cdots=p_{n-1}\le p_n
+\]
+after permutation.
+\end{corollary}
+
+\begin{proof}
+For $t=1$, $f_t'$ is strictly decreasing on $(0,1)$, so the degenerate case of Theorem \ref{thm:one-valley} gives uniformity. For $t>1$, the one-valley case applies with $c=2/(t+1)$ and excludes zero coordinates. Thus a nonuniform local maximum has one exceptional coordinate and $n-1$ equal coordinates.
+\end{proof}
+
+\begin{remark}
+This replaces the bordered-Hessian step in \cite{BK}. The key observation is that a repeated coordinate in the upper branch $x>2/(t+1)$ is unstable under the pairwise splitting $(x,x)\mapsto(x+\varepsilon,x-\varepsilon)$.
+\end{remark}
+
+\subsection{The one-variable reduction}
+
+Once the local structure is known, the finite-alphabet global maximization reduces to the one-variable family
+\[
+  G_{n,t}(x)=(n-1)x(1-x)^t+\bigl(1-(n-1)x\bigr)((n-1)x)^t,
+  \qquad 0\le x\le \frac1n.
+\]
+Here
+\[
+  x=p_1=\cdots=p_{n-1},\qquad p_n=1-(n-1)x.
+\]
+Uniform corresponds to $x=1/n$ and has value
+\[
+  U_n(t)=G_{n,t}(1/n)=\left(1-\frac1n\right)^t.
+\]
+The active one-heavy branch is controlled by the maximizer of the first term $x(1-x)^t$, namely
+\[
+  x_0=\frac1{t+1}.
+\]
+
+\section{Critical-window expansion and global transfer}
+
+This section proves a global critical-window transfer for the one-variable Berend--Kontorovich curve. The conclusion is that, throughout the critical window, the global comparison is only between the uniform endpoint and the active one-heavy branch. The active branch is exponentially close to a simple surrogate branch, so the true transition has the same full algebraic expansion as the surrogate transition.
+
+\subsection{The exact surrogate root}
+
+Define
+\[
+  S_n(t)=\frac{n-1}{t+1}\left(\frac{t}{t+1}\right)^t.
+\]
+This is the contribution of the $n-1$ equal light coordinates evaluated at the first-term maximizer $x_0=1/(t+1)$. Define $\widehat t_n$ to be the unique real solution of
+\begin{equation}\label{eq:surrogate-root}
+  S_n(t)=U_n(t),
+\end{equation}
+that is,
+\begin{equation}\label{eq:surrogate-explicit}
+  \frac{n-1}{t+1}\left(\frac{t}{t+1}\right)^t
+  =\left(\frac{n-1}{n}\right)^t.
+\end{equation}
+Equivalently, $\widehat t_n$ is the unique zero of
+\begin{equation}\label{eq:Phi}
+  \Phi_n(t)=\log\frac{n-1}{t+1}
+   +t\log\left(\frac{nt}{(t+1)(n-1)}\right).
+\end{equation}
+Indeed,
+\[
+  \Phi_n'(t)=\log\left(\frac{nt}{(t+1)(n-1)}\right)>0\qquad(t>n-1),
+\]
+so the surrogate crossing is unique in the critical region.
+
+\begin{proposition}[Surrogate critical expansion]\label{prop:surrogate-expansion}
+The root $\widehat t_n$ of \eqref{eq:surrogate-root} satisfies
+\[
+  \widehat t_n
+  =n+\sqrt{2n}-\frac13-\frac{7}{18\sqrt{2n}}-\frac{2}{135n}
+  -\frac{431\sqrt2}{4320n^{3/2}}+O(n^{-2}).
+\]
+In particular,
+\[
+  \widehat t_n
+  =n+\sqrt{2n}-\frac13-\frac{7}{18\sqrt{2n}}-\frac{2}{135n}+O(n^{-3/2}).
+\]
+\end{proposition}
+
+\begin{proof}
+Put $y=n^{-1/2}$ and write
+\[
+  t=y^{-2}+ay^{-1}+b+cy+dy^2+ey^3+O(y^4).
+\]
+Expanding \eqref{eq:Phi} gives
+\begin{align*}
+\Phi_n(t)
+&=\left(\frac{a^2}{2}-1\right)y^2
+ +\left(-\frac{a^3}{3}+ab+a\right)y^3 \\
+&\quad+\biggl(\frac{a^4}{4}-a^2b-\frac{a^2}{2}+ac+\frac{b^2}{2}+b\biggr)y^4 \\
+&\quad+\biggl(-\frac{a^5}{5}+a^3b+\frac{a^3}{2}-a^2c-ab^2-ab+ad+bc+c\biggr)y^5 \\
+&\quad+\bigl(\sqrt2\,e+431/2160\bigr)y^6+O(y^7),
+\end{align*}
+where the last displayed coefficient is after substituting the previous four coefficients. Setting coefficients to zero gives successively
+\[
+  a=\sqrt2,
+  \qquad b=-\frac13,
+  \qquad c=-\frac{7}{18\sqrt2},
+  \qquad d=-\frac2{135},
+  \qquad e=-\frac{431\sqrt2}{4320}.
+\]
+This proves the expansion.
+\end{proof}
+
+\subsection{Global structure of the one-heavy curve in the critical window}
+
+Recall
+\[
+  G_{n,t}(x)=(n-1)x(1-x)^t+\bigl(1-(n-1)x\bigr)((n-1)x)^t,
+  \qquad 0\le x\le \frac1n.
+\]
+Let
+\[
+  U_n(t)=G_{n,t}(1/n)=\left(1-\frac1n\right)^t
+\]
+be the uniform endpoint value, and let
+\[
+  I_t=\left[\frac1{t+1},\frac1t\right],
+  \qquad
+  B_n(t)=\max_{x\in I_t}G_{n,t}(x)
+\]
+be the active one-heavy branch value.
+
+\begin{theorem}[Global critical-window transfer]\label{thm:global-transfer}
+Fix constants $0<\alpha<\sqrt2<\beta$. For all sufficiently large $n$, uniformly for
+\[
+  n+\alpha\sqrt n\le t\le n+\beta\sqrt n,
+\]
+the following hold.
+
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item The only nonuniform local maximum of $G_{n,t}$ on $[0,1/n]$ lies in $I_t$. Hence
+\[
+  \max_{0\le x\le 1/n}G_{n,t}(x)=\max\{U_n(t),B_n(t)\}.
+\]
+
+\item The active branch is exponentially close to the surrogate branch:
+\[
+  S_n(t)\le B_n(t)\le S_n(t)+O(e^{-c\sqrt n})
+\]
+for some $c=c(\alpha)>0$.
+
+\item Equivalently,
+\[
+  \log\frac{B_n(t)}{U_n(t)}=\Phi_n(t)+O(e^{-c\sqrt n})
+\]
+uniformly in the same window.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Write
+\[
+  f_t(u)=u(1-u)^t,
+  \qquad N=n-1,
+  \qquad b=1-Nx.
+\]
+Then
+\[
+  G_{n,t}(x)=Nf_t(x)+f_t(b)
+\]
+and
+\[
+  G_{n,t}'(x)=N\bigl(f_t'(x)-f_t'(b)\bigr).
+\]
+For $u>1/(t+1)$, put
+\[
+  m(u)=-f_t'(u)=((t+1)u-1)(1-u)^{t-1}.
+\]
+The function $m$ is strictly increasing on $1/(t+1)<u<2/(t+1)$ and strictly decreasing for $u>2/(t+1)$.
+
+There is no nonuniform stationary point with $x<1/(t+1)$, since then $f_t'(x)>0$ while, in the present window, $b>1/(t+1)$ and $f_t'(b)<0$. For $x>1/(t+1)$, nonuniform critical points satisfy
+\[
+  m(x)=m(b),\qquad x<b.
+\]
+Introduce
+\[
+  \Delta=t-n+1=t-N,
+  \qquad
+  y=(t+1)x-1,
+  \qquad
+  z=(t+1)b-1.
+\]
+Then
+\[
+  z=\Delta-Ny.
+\]
+If $z\le 1$, then $0<y<z\le 1$ and both $x$ and $b$ lie on the increasing branch of $m$, so $m(x)<m(b)$ and equality is impossible. Thus every nonuniform critical point has $z>1$.
+
+Put
+\[
+  w=\frac zy.
+\]
+The relation $z=\Delta-Ny$ gives
+\[
+  y=\frac{\Delta}{N+w},
+  \qquad
+  z=\frac{\Delta w}{N+w}.
+\]
+The condition $z>1$ is
+\[
+  w>w_0:=\frac{N}{\Delta-1}.
+\]
+The critical equation $m(x)=m(b)$ is equivalent to
+\[
+  E(w)=0,
+\]
+where
+\begin{equation}\label{eq:Ew}
+  E(w)=(t-1)\log\left(1+\frac{\Delta(w-1)}{N(t+w)}\right)-\log w.
+\end{equation}
+Indeed, $E(w)=\log(m(x)/m(b))$.
+
+At $w=w_0$ one has $z=1$. Since
+\[
+  (t-1)\log\left(\frac{t-y}{t-1}\right)\le 1-y\le 1
+\]
+and $\log w_0\to\infty$, we have
+\[
+  E(w_0)<0
+\]
+for all sufficiently large $n$. At the point $x=1/t$, one has $w=w_t:=t\Delta-N$. There,
+\[
+  m(x)=\frac1t\left(1-\frac1t\right)^{t-1},
+\]
+while
+\[
+  m(b)\le C\sqrt n\left(1-\frac{\Delta}{t}\right)^{t-1}
+      \le C\sqrt n\,e^{-\Delta+O(1)}.
+\]
+Hence
+\[
+  \frac{m(b)}{m(x)}\le C t\sqrt n\,e^{-\alpha\sqrt n+O(1)}\to 0,
+\]
+so
+\[
+  E(w_t)>0
+\]
+for all sufficiently large $n$. Finally,
+\[
+  E(w)\to -\infty\qquad(w\to\infty).
+\]
+
+It remains to control the number of roots. Differentiating \eqref{eq:Ew} gives
+\[
+  E'(w)=
+  \frac{(t-1)\Delta(t+1)}{(t+w)(Nt-\Delta+tw)}-\frac1w.
+\]
+After clearing positive denominators, the sign of $E'(w)$ is the sign of the quadratic
+\[
+  P(w)=w(t-1)\Delta(t+1)-(t+w)(Nt-\Delta+tw).
+\]
+Equivalently,
+\[
+  P(w)=-tw^2+t\bigl((\Delta-1)t-N\bigr)w-t(Nt-\Delta),
+\]
+so $P$ opens downward. At the lower endpoint $w_0=N/(\Delta-1)$,
+\[
+  P(w_0)=-\frac{\Delta t(t-1)(t+1-2\Delta)}{(\Delta-1)^2}<0
+\]
+for all sufficiently large $n$ in the present window. At the point $w_t=t\Delta-N$ corresponding to $x=1/t$,
+\[
+  P(w_t)=-\Delta t(t-1)(t+1)<0.
+\]
+Since $E(w_0)<0<E(w_t)$, the derivative $E'$ is positive somewhere between $w_0$ and $w_t$. Hence the downward-opening quadratic $P$ has exactly two roots, both in $(w_0,w_t)$, and the sign pattern of $E'$ is
+\[
+  E'<0,\qquad E'>0,\qquad E'<0.
+\]
+Therefore $E$ decreases, then increases, then decreases. Combining this with
+\[
+  E(w_0)<0,\qquad E(w_t)>0,\qquad E(w)\to -\infty
+  \quad (w\to\infty),
+\]
+we see that $E$ has exactly two zeros in $(w_0,\infty)$: one in $(w_0,w_t)$ and one in $(w_t,\infty)$.
+
+The map $x\mapsto w$ is strictly decreasing. Therefore the zero in $(w_t,\infty)$ corresponds to a point in
+\[
+  \left(\frac1{t+1},\frac1t\right),
+\]
+and the zero in $(w_0,w_t)$ corresponds to a point in $(1/t,1/n)$. Since
+\[
+  G_{n,t}'(x)=N\,m(b)\bigl(1-e^{E(w)}\bigr),
+\]
+the first zero is a local maximum and the second is a local minimum. No other nonuniform local maximum exists. The endpoint $x=0$ has value $0$, and the endpoint $x=1/n$ is the uniform value $U_n(t)$. Hence
+\[
+  \max_{0\le x\le 1/n}G_{n,t}(x)=\max\{U_n(t),B_n(t)\}.
+\]
+
+It remains to compare $B_n(t)$ with $S_n(t)$. For $x\in I_t$, the light term is bounded by
+\[
+  N x(1-x)^t\le \frac{N}{t+1}\left(\frac{t}{t+1}\right)^t=S_n(t),
+\]
+because $x=1/(t+1)$ maximizes $x(1-x)^t$. The heavy term satisfies, for $x\le 1/t$,
+\[
+  Nx\le \frac Nt=1-\frac{\Delta}{t}.
+\]
+Thus
+\[
+  \bigl(1-Nx\bigr)(Nx)^t\le \left(1-\frac{\Delta}{t}\right)^t\le e^{-\Delta}\le e^{-c\sqrt n}.
+\]
+This proves
+\[
+  B_n(t)\le S_n(t)+O(e^{-c\sqrt n}).
+\]
+The lower bound follows by evaluating at $x_0=1/(t+1)$:
+\[
+  G_{n,t}(x_0)=S_n(t)+\bigl(1-Nx_0\bigr)(Nx_0)^t\ge S_n(t).
+\]
+Since $S_n(t)$ is bounded away from zero and infinity in the critical window, the logarithmic estimate follows.
+\end{proof}
+
+\subsection{Effective constants}
+
+The preceding proof is asymptotic.  For the integer theorem it is useful to have one completely explicit instantiation.  We record a deliberately conservative one.  It is not optimized.
+
+\begin{proposition}[Effective critical window]\label{prop:effective-window}
+Let
+\[
+  W_n=\bigl[n+\sqrt n,\,n+2\sqrt n\bigr].
+\]
+For every real $t\in W_n$ and every $n\ge 144$, the conclusions of Theorem \ref{thm:global-transfer} hold.  More precisely, if
+\[
+  S_n(t)=\frac{n-1}{t+1}\left(\frac{t}{t+1}\right)^t,
+  \qquad
+  U_n(t)=\left(\frac{n-1}{n}\right)^t,
+\]
+then
+\[
+  S_n(t)\le B_n(t)\le S_n(t)+e^{-\sqrt n},
+\]
+and hence
+\[
+  0\le \log\frac{B_n(t)}{S_n(t)}\le 5e^{-\sqrt n}.
+\]
+Also
+\[
+  \Phi_n'(t)\ge \frac{1}{8n^{3/2}},
+  \qquad t\in W_n,
+\]
+where
+\[
+  \Phi_n(t)=\log\frac{n-1}{t+1}+t\log\left(\frac{nt}{(t+1)(n-1)}\right).
+\]
+Finally the surrogate root satisfies
+\[
+  n+\frac65\sqrt n<\widehat t_n<n+\frac95\sqrt n,
+\]
+so, with $m_n=\lfloor \widehat t_n\rfloor$, the three integers $m_n-1,m_n,m_n+1$ all lie in $W_n$.
+\end{proposition}
+
+\begin{proof}
+Put $u=\sqrt n$, $N=n-1=u^2-1$, and $\Delta=t-N=t-n+1$.  In the window $W_n$ and for $u\ge12$,
+\[
+  u+1\le \Delta\le 2u+1.
+\]
+We track the estimates used in the proof of Theorem \ref{thm:global-transfer}.
+
+At the lower endpoint $w_0=N/(\Delta-1)$ of the transformed critical equation one has
+\[
+  E(w_0)\le 1-\log w_0.
+\]
+Since
+\[
+  w_0\ge \frac{u^2-1}{2u}>e\qquad (u\ge12),
+\]
+we get $E(w_0)<0$.
+
+At $x=1/t$, the ratio of the heavy-side marginal to the light-side marginal is bounded by
+\[
+  \frac{m(b)}{m(x)}
+  \le t\Delta\exp\{-(\Delta-1)\}
+  \le (u^2+2u)(2u+1)e^{-u}<1
+\]
+for $u\ge12$.  The last function is decreasing for $u\ge12$ and is already $<1$ at $u=12$. Hence $E(w_t)>0$ at the point $w_t$ corresponding to $x=1/t$.
+
+The sign-pattern part of Theorem \ref{thm:global-transfer} requires $P(w_0)<0$ and $P(w_t)<0$. The exact formulae are
+\[
+  P(w_0)=-\frac{\Delta t(t-1)(t+1-2\Delta)}{(\Delta-1)^2},
+  \qquad
+  P(w_t)=-\Delta t(t-1)(t+1).
+\]
+The second is always negative, and the first is negative because
+\[
+  t+1-2\Delta=n-\Delta\ge u^2-(2u+1)>0\qquad (u\ge12).
+\]
+Thus the global branch structure proved in Theorem \ref{thm:global-transfer} is valid throughout $W_n$ for $n\ge144$.
+
+For the branch comparison, the heavy term on $I_t=[1/(t+1),1/t]$ satisfies
+\[
+  (1-Nx)(Nx)^t\le \left(1-\frac{\Delta}{t}\right)^t\le e^{-\Delta}\le e^{-(u+1)}<e^{-u}.
+\]
+The light surrogate is bounded below by
+\[
+  S_n(t)\ge \frac{u^2-1}{(u+1)^2}\,e^{-1}
+  =\frac{u-1}{u+1}e^{-1}\ge \frac35e^{-1}>\frac15.
+\]
+Therefore
+\[
+  0\le \log\frac{B_n(t)}{S_n(t)}
+  \le \log\left(1+\frac{e^{-u}}{S_n(t)}\right)
+  \le 5e^{-u}.
+\]
+
+Next,
+\[
+  \Phi_n'(t)=\log\left(1+\frac{\Delta}{(t+1)N}\right).
+\]
+The quantity inside the logarithmic increment is at most $1$, so $\log(1+x)\ge x/2$ gives
+\[
+  \Phi_n'(t)
+  \ge \frac{\Delta}{2(t+1)N}
+  \ge \frac{u}{2u^2(u+1)^2}
+  \ge \frac{1}{8u^3}=\frac{1}{8n^{3/2}}.
+\]
+
+It remains to locate the surrogate root.  We show that
+\[
+  \Phi_n\left(n+\frac65u\right)<0,
+  \qquad
+  \Phi_n\left(n+\frac95u\right)>0
+\]
+for $u\ge12$.  For the first inequality, write
+\[
+  \Phi_n(t)=\log(1-y)+t\log(1+x),
+\]
+where
+\[
+  y=\frac{t+1-N}{t+1},
+  \qquad
+  x=\frac{t-N}{(t+1)N}.
+\]
+Using $\log(1-y)\le -y-y^2/2$ and $\log(1+x)\le x$, with $t=u^2+(6/5)u$, gives the upper bound
+\[
+  \Phi_n(t)
+  \le \frac{-35u^4+66u^3+505u^2+900u+500}
+          {5(u-1)(u+1)(5u^2+6u+5)^2}<0
+\]
+for $u\ge12$.
+For the second inequality, use
+\[
+  \log(1-y)\ge -y-\frac{y^2}{2}-\frac{y^3}{3(1-y)},
+  \qquad
+  \log(1+x)\ge x-\frac{x^2}{2}.
+\]
+With $t=u^2+(9/5)u$ this gives
+\[
+  \Phi_n(t)
+  \ge
+  \frac{465u^6+1566u^5+1215u^4-2403u^3-4700u^2-3375u-1000}
+       {30(u-1)^2(u+1)^2(5u^2+9u+5)^2}>0
+\]
+for $u\ge12$. Since $\Phi_n$ is strictly increasing, this proves
+\[
+  n+\frac65u<\widehat t_n<n+\frac95u.
+\]
+Consequently
+\[
+  m_n-1\ge \widehat t_n-2>n+u,
+  \qquad
+  m_n+1<\widehat t_n+1<n+2u
+\]
+for $u\ge12$, and the candidate integers lie in $W_n$.
+\end{proof}
+
+
+
+\subsection{A self-contained no-reentrance lemma}
+
+The effective critical-window estimates identify the sign of the branch comparison at the candidate integers.  To turn this into an all-time first-transition theorem without appealing to the Berend--Kontorovich single-threshold argument, we use the following monotonicity lemma.
+
+\begin{lemma}[No reentrance for a fixed one-heavy law]\label{lem:no-reentrance-fixed}
+Fix $n\ge2$ and $0\le x\le 1/n$.  Put
+\[
+  b=1-(n-1)x,
+  \qquad
+  R_{n,t}(x)=\frac{G_{n,t}(x)}{U_n(t)}.
+\]
+Then the map $t\mapsto R_{n,t}(x)$ is nondecreasing on $[n,\infty)$.  It is strictly increasing for $0<x<1/n$ unless the two terms degenerate at an endpoint.
+\end{lemma}
+
+\begin{proof}
+The endpoint cases follow by taking limits, so assume $0<x<1/n$.  Write
+\[
+  q=nx,
+  \qquad
+  r=1-q\in(0,1),
+  \qquad
+  a=\frac{n-q}{n-1}=1+\frac{r}{n-1},
+  \qquad
+  c=q=1-r.
+\]
+Then
+\[
+  R_{n,t}(x)
+  =\frac{(n-1)q}{n}a^t+\frac{n-(n-1)q}{n}q^t
+  =A a^t+B c^t,
+\]
+where
+\[
+  A=\frac{(n-1)(1-r)}{n},
+  \qquad
+  B=\frac{1+(n-1)r}{n}.
+\]
+Since $a>c$, it is enough to show that
+\[
+  \left.\frac{\partial}{\partial t}R_{n,t}(x)\right|_{t=n}\ge0.
+\]
+Indeed, the ratio of the positive part of $\partial_tR_{n,t}$ to the absolute value of its negative part is multiplied by $(a/c)^{t-n}$ as $t$ increases from $n$.
+
+At $t=n$ we must prove
+\[
+  D_n:=A a^n\log a+B c^n\log c\ge0.
+\]
+Using
+\[
+  \log a=\int_0^r\frac{ds}{n-1+s},
+  \qquad
+  -\log c=\int_0^r\frac{ds}{1-s},
+\]
+we get
+\[
+  nD_n=
+  \int_0^r
+  \left\{
+  \frac{(n-1)c a^n}{n-1+s}
+  -
+  \frac{(1+(n-1)r)c^n}{1-s}
+  \right\}\,ds .
+\]
+We now check that the integrand is pointwise nonnegative.  Since
+\[
+  \frac ac
+  =\frac{1+r/(n-1)}{1-r}
+  =1+\frac{nr}{(n-1)(1-r)},
+\]
+Bernoulli's inequality gives
+\[
+  \left(\frac ac\right)^{n-1}
+  \ge 1+\frac{nr}{1-r}.
+\]
+For \(0\le s\le r\), this lower bound is strong enough because
+\begin{align*}
+ &(n-1)a(1-s)\left(1+\frac{nr}{1-r}\right)
+      -\bigl(1+(n-1)r\bigr)(n-1+s) \\
+ &\hspace{20mm}
+ =\frac{n(r-s)(1+(n-1)r)}{1-r}\ge0.
+\end{align*}
+Multiplying this inequality by \(c^n=(1-r)^n\) gives
+\[
+  (n-1)c a^n(1-s)
+  \ge
+  \bigl(1+(n-1)r\bigr)c^n(n-1+s),
+\]
+which is exactly the pointwise nonnegativity of the integrand. Therefore
+\(D_n\ge0\), and the monotonicity follows.
+\end{proof}
+
+\begin{lemma}[Uniform wins through $t=n$]\label{lem:uniform-through-n}
+For every $n\ge2$ and every integer $1\le t\le n$, the uniform distribution is the unique full-simplex maximizer of $F_t$.
+\end{lemma}
+
+\begin{proof}
+By Corollary \ref{cor:BK-short}, any nonuniform local maximum would have the form
+\[
+  (x,\ldots,x,b),
+  \qquad b=1-(n-1)x,
+\]
+with
+\[
+  x>\frac{1}{t+1},
+  \qquad
+  b>\frac{2}{t+1}.
+\]
+The first inequality implies
+\[
+  b=1-(n-1)x<1-\frac{n-1}{t+1}=\frac{t-n+2}{t+1}.
+\]
+If $t\le n$, then the right-hand side is at most $2/(t+1)$, contradicting $b>2/(t+1)$.  Hence there is no nonuniform local maximum. Boundary maximizers are excluded by the boundary part of Corollary \ref{cor:BK-short}, so the uniform point is the unique maximizer.
+\end{proof}
+
+\begin{proposition}[Self-contained no-earlier-win theorem]\label{prop:no-earlier-win-proved}
+Let $n\ge144$, and let $m_n=\lfloor\widehat t_n\rfloor$.  If
+\[
+  B_n(m_n-1)\le U_n(m_n-1),
+\]
+then no nonuniform one-heavy law strictly beats uniform at any integer $t<m_n$.  Thus, once the single comparison at $m_n-1$ is known, the first strict nonuniform win is at least $m_n$, without using the Berend--Kontorovich single-threshold theorem.
+\end{proposition}
+
+\begin{proof}
+Lemma \ref{lem:uniform-through-n} handles all $t\le n$.  Suppose, to the contrary, that for some integer $t$ with $n<t<m_n$ one has $B_n(t)>U_n(t)$.  Then there is an $x\in(0,1/n)$ with
+\[
+  R_{n,t}(x)=\frac{G_{n,t}(x)}{U_n(t)}>1.
+\]
+Since $m_n-1\ge t$ and $t\ge n$, Lemma \ref{lem:no-reentrance-fixed} gives
+\[
+  R_{n,m_n-1}(x)\ge R_{n,t}(x)>1.
+\]
+Thus some one-heavy distribution beats uniform at $m_n-1$.  Since $m_n-1\in W_n$ by Proposition 
+ef{prop:effective-window}, the global transfer theorem in that window implies that the active branch itself must beat uniform: $B_n(m_n-1)>U_n(m_n-1)$.  This contradicts the hypothesis.  Thus no earlier strict win is possible.
+\end{proof}
+\begin{corollary}[Effective two-candidate integer rule]\label{cor:effective-integer}
+For every $n\ge144$, the strict transition satisfies
+\[
+  \tau_>(n)\in\{m_n,m_n+1\},
+  \qquad m_n=\lfloor\widehat t_n\rfloor.
+\]
+Moreover
+\[
+  \tau_>(n)=
+  \begin{cases}
+  m_n, & B_n(m_n)>U_n(m_n),\\[1mm]
+  m_n+1, & B_n(m_n)\le U_n(m_n).
+  \end{cases}
+\]
+\end{corollary}
+
+\begin{proof}
+For $u\ge12$ we have
+\[
+  5e^{-u}\le \frac{1}{16u^3}=\frac{1}{16n^{3/2}}.
+\]
+Indeed $80u^3e^{-u}\le1$ for $u\ge12$.  Proposition \ref{prop:effective-window} shows that $m_n-1\in W_n$.  Since $m_n-1<\widehat t_n$ and $\widehat t_n-(m_n-1)\ge1$, monotonicity of $\Phi_n$ and the derivative lower bound give
+\[
+  \Phi_n(m_n-1)\le -\frac{1}{8n^{3/2}}.
+\]
+Therefore
+\[
+  \log\frac{B_n(m_n-1)}{U_n(m_n-1)}
+  \le \Phi_n(m_n-1)+5e^{-u}
+  \le -\frac{1}{8n^{3/2}}+\frac{1}{16n^{3/2}}<0.
+\]
+Thus the active branch does not beat uniform at $m_n-1$.  At $m_n+1$, since $m_n+1>\widehat t_n$ and $B_n\ge S_n$,
+\[
+  \log\frac{B_n(m_n+1)}{U_n(m_n+1)}
+  \ge \Phi_n(m_n+1)>0.
+\]
+Proposition \ref{prop:no-earlier-win-proved} now excludes every earlier integer $t<m_n$ without any appeal to the Berend--Kontorovich single-threshold theorem.  Hence the original all-time first strict win is at $m_n$ or $m_n+1$, with the displayed rule.
+\end{proof}
+
+Combining Corollary \ref{cor:effective-integer} with the rational verification in Proposition \ref{prop:small-n-verified} below gives the same two-candidate rule, and the original strict threshold, for every $n\ge2$.
+
+
+\subsection{A nonresonance estimate and the rounding decision}
+
+The two-candidate rule leaves one possible ambiguity: at the surrogate integer
+\(m_n=\lfloor\widehat t_n\rfloor\), does the exponentially small heavy-atom correction move the true crossing to the left of \(m_n\)?  The answer is no for all sufficiently large \(n\), for an elementary number-theoretic reason.  The surrogate root cannot be exponentially close to an integer.
+
+\begin{lemma}[Effective nonresonance of the surrogate root]\label{lem:nonresonance}
+For every \(n\ge501\),
+\[
+  \operatorname{dist}(\widehat t_n,\mathbb Z)\ge \frac{1}{100\sqrt n}.
+\]
+\end{lemma}
+
+\begin{proof}
+Put \(s=\sqrt{2n}\).  A direct Taylor bracketing of the equation \(\Phi_n(t)=0\), using the monotonicity of \(\Phi_n\), gives the effective estimate
+\begin{equation}\label{eq:effective-root-bracket}
+  \left|\widehat t_n-
+  \left(n+s-\frac13-\frac{7}{18s}\right)\right|
+  \le \frac{1}{150\sqrt n},
+  \qquad n\ge501.
+\end{equation}
+This is a deliberately weak form of the expansion in Proposition \ref{prop:surrogate-expansion}; it follows by evaluating \(\Phi_n\) at the two endpoints in \eqref{eq:effective-root-bracket} and bounding the logarithmic remainders by the alternating Taylor estimates for \(\log(1+x)\) and \(\log(1-y)\).
+
+Let \(k=n+q\) be an integer lying in the effective critical window.  Set
+\[
+  r=3q+1,
+  \qquad
+  R=18n-r^2.
+\]
+Then \(R\equiv -1\equiv2\pmod 3\).  In particular \(R\ne7\), and hence
+\[
+  |R-7|\ge1.
+\]
+For
+\[
+  A_n^{(1)}=n+s-\frac13-\frac{7}{18s}
+\]
+we have the exact identity
+\begin{align*}
+  A_n^{(1)}-k
+  &=s-\frac r3-\frac{7}{18s} \\
+  &=\frac{6sR-7(3s+r)}{18s(3s+r)}
+   =\frac{6s(R-7)+7R/(3s+r)}{18s(3s+r)}.
+\end{align*}
+For \(n\ge501\) and \(k\) in the effective critical window, \(0<r<4s\).  The congruence restriction on \(R\) implies that the last numerator has absolute value at least \(6s\): the closest allowed value to \(7\) is \(R=8\), and then the numerator is positive and at least \(6s\); for all other allowed values its absolute value is larger.  Also \(3s+r<7s\).  Therefore
+\[
+  |A_n^{(1)}-k|\ge \frac{6s}{18s\cdot 7s}=\frac{1}{21s}
+  >\frac{1}{30\sqrt n}.
+\]
+Together with \eqref{eq:effective-root-bracket}, this gives
+\[
+  |\widehat t_n-k|
+  \ge \frac{1}{30\sqrt n}-\frac{1}{150\sqrt n}
+  >\frac{1}{100\sqrt n}.
+\]
+Since all integers within distance one of \(\widehat t_n\) lie in the effective critical window by Proposition \ref{prop:effective-window}, the displayed bound proves the lemma.
+\end{proof}
+
+\begin{proposition}[No large-\(n\) rounding drop]\label{prop:no-large-drop}
+For every \(n\ge501\), the exponentially small left displacement of the true active-branch crossing is too small to cross the integer \(m_n=\lfloor\widehat t_n\rfloor\).  Consequently, in the two-candidate rule,
+\[
+  B_n(m_n)\le U_n(m_n),
+  \qquad
+  \tau_>(n)=m_n+1.
+\]
+\end{proposition}
+
+\begin{proof}
+By Proposition \ref{prop:effective-window}, throughout the critical window
+\[
+  0\le \log\frac{B_n(t)}{S_n(t)}\le5e^{-\sqrt n},
+  \qquad
+  \Phi_n'(t)\ge \frac{1}{8n^{3/2}}.
+\]
+Hence the true active crossing is displaced to the left of \(\widehat t_n\) by at most
+\[
+  40n^{3/2}e^{-\sqrt n}.
+\]
+For \(n\ge501\),
+\[
+  40n^{3/2}e^{-\sqrt n}<\frac{1}{100\sqrt n},
+\]
+or equivalently \(4000n^2e^{-\sqrt n}<1\), which is already true at \(n=501\) and decreases thereafter.  Lemma \ref{lem:nonresonance} shows that \(\widehat t_n\) is at least \(1/(100\sqrt n)\) above the lower integer \(m_n\).  Thus the true crossing remains to the right of \(m_n\), so the nonuniform branch does not strictly beat uniform at \(m_n\).  Therefore the strict candidate is \(m_n+1\).
+\end{proof}
+
+\subsection{Consequences for the real and integer transitions}
+
+Let $\mathcal C_n$ be the set of real solutions in the critical window of
+\[
+  B_n(t)=U_n(t).
+\]
+The global transfer theorem implies that all such crossings lie exponentially close to the surrogate root.
+
+\begin{corollary}[Real critical-window refinement]\label{cor:real-critical}
+For all sufficiently large $n$, every $t_n^\star\in\mathcal C_n$ satisfies
+\[
+  t_n^\star=\widehat t_n+O(n^{3/2}e^{-c\sqrt n}).
+\]
+Consequently every real crossing in the critical window has the expansion
+\[
+  t_n^\star
+  =n+\sqrt{2n}-\frac13-\frac{7}{18\sqrt{2n}}-\frac{2}{135n}
+  -\frac{431\sqrt2}{4320n^{3/2}}+O(n^{-2}).
+\]
+In particular,
+\[
+  t_n^\star=n+\sqrt{2n}-\frac13+O(n^{-1/2}).
+\]
+\end{corollary}
+
+\begin{proof}
+By Theorem \ref{thm:global-transfer},
+\[
+  \log\frac{B_n(t)}{U_n(t)}=\Phi_n(t)+O(e^{-c\sqrt n}).
+\]
+Near $\widehat t_n$,
+\[
+  \Phi_n'(t)=\log\left(\frac{nt}{(t+1)(n-1)}\right)\asymp n^{-3/2}.
+\]
+Thus an additive logarithmic error $O(e^{-c\sqrt n})$ shifts the root by at most $O(n^{3/2}e^{-c\sqrt n})$. Proposition \ref{prop:surrogate-expansion} gives the displayed expansion.
+\end{proof}
+
+The same estimate gives a sharp integer localization.  It is useful to separate the exact surrogate integer from the asymptotic approximation.  Since $\Phi_n$ is strictly increasing for $t>n-1$, the integer
+\begin{equation}\label{eq:mn-def}
+  m_n=\lfloor \widehat t_n\rfloor
+\end{equation}
+can be found without numerical root-solving by the exact rule
+\begin{equation}\label{eq:mn-exact}
+  m_n=\max\left\{m\in\mathbb N:
+  (n-1)m^m n^m \le (n-1)^m(m+1)^{m+1}\right\}.
+\end{equation}
+Indeed, the inequality in \eqref{eq:mn-exact} is precisely $S_n(m)\le U_n(m)$ after clearing denominators.
+
+Define the strict integer transition by
+\[
+  \tau_>(n)=\min\{t\in\mathbb N:B_n(t)>U_n(t)\},
+\]
+where $B_n(t)$ is the active one-heavy branch value.  The critical-window transfer, together with the self-contained no-reentrance lemma, gives the following explicit rule for the original all-time strict integer transition.
+
+\begin{theorem}[Explicit integer transition]\label{thm:explicit-integer}
+For every $n\ge144$, let $m_n$ be defined by \eqref{eq:mn-def}, equivalently by the exact integer comparison \eqref{eq:mn-exact}.  Then
+\[
+  \tau_>(n)\in\{m_n,m_n+1\}.
+\]
+More precisely,
+\[
+  \boxed{
+  \tau_>(n)=
+  \begin{cases}
+  m_n, & \text{if }B_n(m_n)>U_n(m_n),\\[1mm]
+  m_n+1, & \text{if }B_n(m_n)\le U_n(m_n).
+  \end{cases}}
+\]
+Thus the usual value is $\lfloor\widehat t_n\rfloor+1$; the $+1$ is dropped exactly when the exponentially small left displacement from the surrogate crossing puts the true active-branch crossing below the integer $m_n$.
+\end{theorem}
+
+Using only the explicit truncated approximation
+\[
+  T_n=n+\sqrt{2n}-\frac13-\frac{7}{18\sqrt{2n}}-\frac2{135n},
+\]
+one has
+\[
+  \tau_>(n)=\lfloor T_n\rfloor+1
+\]
+whenever $T_n$ is not within $O(n^{-3/2})$ of an integer. If it is inside that rounding zone, one exact one-dimensional comparison at the candidate integer decides whether to keep or drop the $+1$.
+
+\subsection{Interval-arithmetic verification for small alphabets}
+
+For fixed $n$ and integer $t$, the candidate comparison $B_n(t)>U_n(t)$ can be certified by rational interval arithmetic.  The procedure used for the finite verification is as follows.
+
+First compute $m_n$ from \eqref{eq:mn-exact}; this uses only integer arithmetic.  For each integer $t$ to be checked, put $N=n-1$ and consider
+\[
+  D_{n,t}(x)=f_t'(x)-f_t'(1-Nx),
+  \qquad f_t'(x)=(1-x)^{t-1}(1-(t+1)x).
+\]
+On the active interval $I_t=[1/(t+1),1/t]$, the active critical point, when present, is the unique zero of $D_{n,t}$.  We enclose it by exact rational bisection: if $D_{n,t}(L)\ge0\ge D_{n,t}(R)$, then the root lies in $[L,R]$.  A rational midpoint $M=(L+R)/2$ gives the lower bound
+\[
+  B_n(t)\ge G_{n,t}(M).
+\]
+For an upper bound on the whole bracket, use the monotonicity of the two beta-type terms.  Since $x(1-x)^t$ is decreasing on $I_t$,
+\[
+  (n-1)x(1-x)^t\le (n-1)L(1-L)^t\qquad (x\in[L,R]).
+\]
+For the heavy term, write $y=Nx$ and $h_t(y)=(1-y)y^t$.  Then
+\[
+  h_t(y)\le \max_{y\in[NL,NR]}h_t(y),
+\]
+where the right-hand side is obtained exactly by checking the endpoints and the critical point $y=t/(t+1)$ if it lies in the interval.  Hence
+\begin{equation}\label{eq:interval-upper}
+  B_n(t)
+  \le (n-1)L(1-L)^t+
+  \max_{y\in[NL,NR]}(1-y)y^t.
+\end{equation}
+The lower and upper bounds in this paragraph are rational numbers, as is
+\[
+  U_n(t)=\left(\frac{n-1}{n}\right)^t.
+\]
+Thus the sign of $B_n(t)-U_n(t)$ is certified whenever either the rational lower bound exceeds $U_n(t)$ or the rational upper bound in \eqref{eq:interval-upper} is at most $U_n(t)$.
+
+The accompanying verification script applies this certificate, using our one-heavy local-structure theorem and the no-reentrance lemma above, to the integers $t=n+1,\ldots,m_n+1$.  It gives the following finite check.
+
+\begin{proposition}[Certified small-$n$ integer thresholds]\label{prop:small-n-verified}
+Exact rational interval arithmetic verifies the strict integer transition for every $2\le n\le 200$; in particular it covers all values below the effective cutoff $N_0=144$.  In addition, exact rational interval arithmetic verifies the candidate sign $B_n(m_n)-U_n(m_n)$ for every $2\le n\le500$.  In the full verified candidate range,
+\[
+  \tau_>(6)=m_6=9,
+\]
+and for every other $n$ with $2\le n\le 500$,
+\[
+  \tau_>(n)=m_n+1.
+\]
+Equivalently, among $2\le n\le 500$, the only candidate case in which the $+1$ in Theorem \ref{thm:explicit-integer} is dropped is $n=6$.  Combining this finite verification with Proposition \ref{prop:no-large-drop}, the $+1$ is never dropped for any $n>200$.
+\end{proposition}
+
+\begin{proof}[Verification protocol]
+The script uses no floating point arithmetic in the certified comparisons.  The approximate expansion for $\widehat t_n$ is used only to obtain a starting guess for $m_n$; the value of $m_n$ is then adjusted until the exact integer inequalities $S_n(m_n)\le U_n(m_n)$ and $S_n(m_n+1)>U_n(m_n+1)$ are certified by cross-multiplication.  For each checked $t$, exact rational bisection brackets the active critical point and compares the rational lower and upper bounds above with the rational uniform value.  The full-threshold run with bisection depth $70$ returned no inconclusive cases for $2\le n\le 200$; the ancillary file \texttt{integer\_threshold\_verification\_small\_n.csv} records the certified values of $m_n$, $\tau_>(n)$, and the comparison signs at $m_n$ and $m_n+1$ in this range.  A second exact rational run with bisection depth $80$ checks the candidate sign at $m_n$ for every $2\le n\le 500$; the file \texttt{candidate\_drop\_verification\_n500.csv} records these signs.
+\end{proof}
+
+
+
+\subsection{Rounding classification}
+
+The two-candidate rule reduces the strict integer transition to the single candidate
+comparison at \(m_n=\lfloor\widehat t_n\rfloor\).  The large-\(n\) part is
+analytic: Proposition \ref{prop:no-large-drop} shows that no rounding drop is
+possible for \(n\ge501\).  The remaining finite range \(2\le n\le500\) is
+certified by exact rational interval arithmetic; the certificate and the small
+finite tables are recorded in Appendix \ref{app:finite-certificates}.
+
+\begin{theorem}[Unique rounding drop]\label{thm:unique-rounding-drop}
+For every \(n\ge2\),
+\[
+  \boxed{
+  \tau_>(n)=
+  \begin{cases}
+  m_n, & n=6,\\[1mm]
+  m_n+1, & n\ne6,
+  \end{cases}}
+\]
+where \(m_n=\lfloor\widehat t_n\rfloor\) is equivalently defined by the exact
+integer comparison \eqref{eq:mn-exact}.
+\end{theorem}
+
+\begin{proof}
+For \(n\ge501\), Proposition \ref{prop:no-large-drop} implies
+\(B_n(m_n)\le U_n(m_n)\).  Hence the strict threshold is \(m_n+1\) in this
+range.  For \(2\le n\le500\), the exact certificate in Proposition
+\ref{prop:finite-certificate-500} shows that the candidate sign
+\(B_n(m_n)-U_n(m_n)\) is positive only for \(n=6\).  The two-candidate rule,
+Corollary \ref{cor:effective-integer} for \(n\ge144\) and the exact finite
+verification below that cutoff, then gives the displayed formula.
+\end{proof}
+
+\begin{remark}[Audit of the rounding proof]
+The final proof deliberately avoids any unproved \(q\)-only lower bound for the
+surrogate deficit.  What is used is the nonresonance estimate for \(n\ge501\),
+where the true crossing cannot move left far enough to cross the integer
+\(m_n\), together with exact rational certificates for the finite complementary
+range.  Thus the small finite \(q\)-tables are auxiliary certificates, not hidden
+floating-point evidence.
+\end{remark}
+
+
+
+\section{Poissonized missing mass}
+
+Let the sample size be $N\sim\Pois(\lambda)$. Then the expected missing mass is
+\[
+  \E U_\lambda=\sum_i p_i e^{-\lambda p_i}.
+\]
+Set
+\[
+  f_\lambda(x)=xe^{-\lambda x}.
+\]
+Then
+\[
+  f_\lambda'(x)=e^{-\lambda x}(1-\lambda x),
+  \qquad
+  f_\lambda''(x)=\lambda e^{-\lambda x}(\lambda x-2).
+\]
+Thus $f_\lambda'$ decreases and then increases, with the turn at $2/\lambda$ if $\lambda>2$.
+
+\begin{corollary}[Poissonized expected-mass extremizers]\label{cor:poisson-exp}
+Every full-simplex local maximum of
+\[
+  p\mapsto\sum_{i=1}^n p_i e^{-\lambda p_i}
+\]
+is uniform or one-heavy. If $\lambda\le 2$, it is uniform on its active support; if $\lambda>2$, a nonuniform local maximum has the form
+\[
+  p_1=\cdots=p_{n-1}<p_n.
+\]
+Consequently every global maximizer is uniform or one-heavy.
+\end{corollary}
+
+\begin{proof}
+If $\lambda\le 2$, then $f_\lambda'$ is strictly decreasing on $(0,1)$ and the degenerate case of Theorem \ref{thm:one-valley} gives uniformity on the active support. If $\lambda>2$, the one-valley case applies with $c=2/\lambda$. The boundary condition follows from $f_\lambda'(0)=1>f_\lambda'(x)$ for $x>0$. A global maximizer exists by compactness, cannot lie on the boundary, and hence is a local maximizer in the full simplex.
+\end{proof}
+
+\subsection{Poissonized critical surrogate and true transition}
+
+The one-heavy reduction gives
+\[
+  G^{\mathrm P}_{n,\lambda}(x)
+  =(n-1)x e^{-\lambda x}
+  +\bigl(1-(n-1)x\bigr)e^{-\lambda(1-(n-1)x)},
+  \qquad 0\le x\le \frac1n .
+\]
+Uniform has value
+\[
+  U^{\mathrm P}_n(\lambda)=e^{-\lambda/n}.
+\]
+The active light coordinate is near $x=1/\lambda$, and the surrogate crossing is
+\[
+  \frac{n-1}{\lambda}e^{-1}=e^{-\lambda/n}.
+\]
+Equivalently,
+\[
+  \Psi_n(\lambda)=\log\frac{n-1}{\lambda}-1+\frac{\lambda}{n}=0.
+\]
+
+\begin{proposition}[Poissonized surrogate expansion]\label{prop:poisson-surrogate}
+The root $\widehat\lambda_n$ of $\Psi_n(\lambda)=0$ in the window $\lambda=n+O(\sqrt n)$ satisfies
+\[
+  \widehat\lambda_n
+  =n+\sqrt{2n}+\frac23+\frac{11}{18\sqrt{2n}}+\frac{43}{135n}
+  +\frac{769\sqrt2}{4320n^{3/2}}+O(n^{-2}).
+\]
+\end{proposition}
+
+\begin{proof}
+Put $y=n^{-1/2}$ and write
+\[
+  \lambda=y^{-2}+ay^{-1}+b+cy+dy^2+ey^3+O(y^4).
+\]
+Expanding $\Psi_n(\lambda)$ in powers of $y$ and setting coefficients to zero gives
+\[
+  a=\sqrt2,
+  \qquad b=\frac23,
+  \qquad c=\frac{11}{18\sqrt2},
+  \qquad d=\frac{43}{135},
+  \qquad e=\frac{769\sqrt2}{4320}.
+\]
+\end{proof}
+
+We now show that the explicit surrogate root is also the true Poissonized transition, up to an exponentially small displacement.
+
+\begin{theorem}[True Poissonized critical theorem]\label{thm:true-poisson-critical}
+Let $\lambda_n^\star$ be the real transition for the Poissonized expected missing mass, namely the unique point at which the best nonuniform one-heavy law begins to beat the uniform law. Then
+\[
+  0\le \widehat\lambda_n-\lambda_n^\star
+  \le C n^{3/2}e^{-c\sqrt n}
+\]
+for some constants $C,c>0$. Consequently
+\[
+  \lambda_n^\star
+  =n+\sqrt{2n}+\frac23+\frac{11}{18\sqrt{2n}}+\frac{43}{135n}
+  +\frac{769\sqrt2}{4320n^{3/2}}+O(n^{-2}).
+\]
+In particular,
+\[
+  \lambda_n^\star=n+\sqrt{2n}+\frac23+O(n^{-1/2}).
+\]
+\end{theorem}
+
+\begin{proof}
+Write $N=n-1$, $b=1-Nx$, and $f(u)=u e^{-\lambda u}$.  The one-heavy curve is
+\[
+  G^{\mathrm P}_{n,\lambda}(x)=Nf(x)+f(b).
+\]
+Its interior critical points satisfy
+\[
+  f'(x)=f'(b),
+  \qquad
+  f'(u)=e^{-\lambda u}(1-\lambda u).
+\]
+In the critical window $\lambda=n+O(\sqrt n)$, a nonuniform critical point must have $x>1/\lambda$.  Put
+\[
+  \delta=\lambda-n,
+  \qquad
+  y=\lambda x-1,
+  \qquad
+  z=\lambda b-1.
+\]
+Then $0<y<z$, $z=\delta-Ny$, and the critical equation becomes
+\[
+  y e^{-y}=z e^{-z}.
+\]
+Set $w=z/y$.  Then
+\[
+  y=\frac{\delta}{N+w},
+  \qquad
+  z=\frac{\delta w}{N+w},
+\]
+and the condition $z>1$ is $w>w_0=N/(\delta-1)$.  The critical equation is
+\[
+  E(w)=0,
+  \qquad
+  E(w)=\frac{\delta(w-1)}{N+w}-\log w.
+\]
+At $w_0$ one has $z=1$, so
+\[
+  E(w_0)=1-\frac1{w_0}-\log w_0<0
+\]
+for large $n$. Also $E(w)\to -\infty$ as $w\to\infty$.  Taking $w_A=e^{\delta/2}$ gives, for large $n$,
+\[
+  E(w_A)>0.
+\]
+Moreover
+\[
+  E'(w)=\frac{\delta(N+1)}{(N+w)^2}-\frac1w,
+\]
+whose sign is the sign of the quadratic
+\[
+  P(w)=\delta n w-(N+w)^2.
+\]
+Thus $E'$ has at most two zeros.  Since $E$ is negative at both ends and positive in between, $E$ has exactly two zeros.  The larger zero corresponds to the active one-heavy local maximum and the smaller to a local minimum. Hence the global comparison is between the uniform endpoint and the active one-heavy branch.
+
+Let $B^{\mathrm P}_n(\lambda)$ denote the value of this active branch.  At the active root, the corresponding $w$ is exponentially large in $\delta$, so $y=O(\delta e^{-c\delta})$ and $z\ge c\delta$.  Therefore
+\[
+  x=\frac1\lambda+O\left(\frac{\delta e^{-c\delta}}{\lambda}\right),
+\]
+and the heavy contribution is $O(e^{-c\delta})$.  Since $u e^{-\lambda u}$ is maximized at $u=1/\lambda$,
+\[
+  \frac{n-1}{\lambda}e^{-1}
+  \le B^{\mathrm P}_n(\lambda)
+  \le \frac{n-1}{\lambda}e^{-1}\bigl(1+C e^{-c\sqrt n}\bigr)
+\]
+uniformly in the critical window.  Hence
+\[
+  \log\frac{B^{\mathrm P}_n(\lambda)}{U^{\mathrm P}_n(\lambda)}
+  =\Psi_n(\lambda)+O(e^{-c\sqrt n}).
+\]
+Finally,
+\[
+  \Psi_n'(\lambda)=\frac{\lambda-n}{n\lambda}\asymp n^{-3/2}
+\]
+in the critical window.  At $\lambda=\widehat\lambda_n$, the surrogate equals the uniform value, while the true active branch is at least the surrogate.  Moving left by $K n^{3/2}e^{-c\sqrt n}$ makes $\Psi_n$ negative by more than the logarithmic transfer error. Thus
+\[
+  0\le \widehat\lambda_n-\lambda_n^\star\le C n^{3/2}e^{-c\sqrt n}.
+\]
+The expansion follows from Proposition \ref{prop:poisson-surrogate}.
+\end{proof}
+
+\begin{remark}
+The fixed-count and Poissonized transitions therefore form a clean pair:
+\[
+  t_n^\star
+  =n+\sqrt{2n}-\frac13+O(n^{-1/2}),
+  \qquad
+  \lambda_n^\star
+  =n+\sqrt{2n}+\frac23+O(n^{-1/2}).
+\]
+Poissonization shifts the transition later by one unit at the constant scale.
+\end{remark}
+
+\section{Poissonized moment generating functions}
+
+Poissonization also gives independent unseen indicators:
+\[
+  U_\lambda=\sum_i p_i B_i,
+  \qquad B_i\sim\mathrm{Bernoulli}(e^{-\lambda p_i})
+\]
+independently. Hence, for $s>0$,
+\[
+  \log \E e^{sU_\lambda}
+  =\sum_i h_{\lambda,s}(p_i),
+\]
+where
+\[
+  h_{\lambda,s}(x)=\log\left(1-e^{-\lambda x}+e^{-\lambda x}e^{sx}\right)
+  =\log\left(1+e^{-(\lambda-s)x}-e^{-\lambda x}\right).
+\]
+
+\begin{theorem}[Global Poissonized positive-MGF extremizers]\label{thm:poisson-mgf}
+For every $n\ge2$, $\lambda>0$, and $s>0$, every global maximizer of
+\[
+  p\mapsto \log\E_p e^{sU_\lambda}
+\]
+over $\Delta_{n-1}$ is, up to permutation, either uniform or one-heavy:
+\[
+  p_1=\cdots=p_n=\frac1n
+  \quad\text{or}\quad
+  p_1=\cdots=p_{n-1}<p_n.
+\]
+Equivalently, with
+\[
+  H_{n,\lambda,s}(x)=(n-1)h_{\lambda,s}(x)+h_{\lambda,s}\bigl(1-(n-1)x\bigr),
+\]
+one has the exact one-dimensional reduction
+\[
+  \max_{p\in\Delta_{n-1}}\log\E_p e^{sU_\lambda}
+  =\max_{0\le x\le1/n}H_{n,\lambda,s}(x).
+\]
+\end{theorem}
+
+\begin{proof}
+Let $a=\lambda-s$, $b=\lambda$, and
+\[
+  g(x)=1+e^{-ax}-e^{-bx},
+  \qquad h(x)=\log g(x).
+\]
+A direct computation gives
+\[
+  g(x)^2h''(x)=a^2e^{-ax}-b^2e^{-bx}-(b-a)^2e^{-(a+b)x}.
+\]
+Multiplying by the positive factor $e^{(a+b)x}$, the sign of $h''(x)$ is the sign of
+\[
+  K(x)=a^2e^{bx}-b^2e^{ax}-s^2,
+  \qquad s=b-a.
+\]
+At $x=0$,
+\[
+  K(0)=a^2-b^2-s^2=-2\lambda s<0.
+\]
+If $a<0$, then $K'(x)=a^2b e^{bx}-b^2a e^{ax}>0$, so $K$ crosses zero at most once. If $a=0$, then $K<0$ everywhere. If $a>0$, then
+\[
+  K'(x)=ab\bigl(ae^{bx}-be^{ax}\bigr),
+\]
+and the bracket starts negative and crosses zero at most once; hence $K$ decreases and then increases, and since $K(0)<0$ it crosses zero at most once. Thus $h'$ decreases and then possibly increases once.
+
+It remains to exclude boundary coordinates. Since $h'(0)=s$, compute
+\[
+  h'(x)-s
+  =\frac{-\lambda e^{-(\lambda-s)x}+(\lambda+s)e^{-\lambda x}-s}
+  {1+e^{-(\lambda-s)x}-e^{-\lambda x}}.
+\]
+The denominator is positive. Multiplying the numerator by $e^{\lambda x}$, its sign is the sign of
+\[
+  q(x)=\lambda+s-\lambda e^{sx}-s e^{\lambda x}.
+\]
+Now $q(0)=0$ and
+\[
+  q'(x)=-\lambda s e^{sx}-s\lambda e^{\lambda x}<0.
+\]
+Thus $h'(x)<h'(0)$ for all $x>0$.  A boundary point is therefore improved by moving a small amount of mass from any positive coordinate to any zero coordinate.
+
+A global maximizer exists by compactness and, by the preceding paragraph, lies in the full interior.  Hence it is a local maximizer.  If $K<0$ on $(0,1)$, the degenerate case of Theorem \ref{thm:one-valley} gives uniformity.  Otherwise $h'$ decreases and then increases once, and the one-valley case gives a one-exceptional maximizer.  This proves the structural claim and the one-dimensional reduction.
+\end{proof}
+
+\subsection{The one-dimensional MGF phase diagram}
+
+The global MGF theorem reduces the phase diagram to a single scalar function.  Define the uniform value
+\[
+  H^{\rm unif}_{n,\lambda,s}=n h_{\lambda,s}(1/n)
+\]
+and the one-dimensional excess
+\[
+  \Delta_{n,s}(\lambda)
+  =\max_{0\le x\le1/n}\Bigl\{H_{n,\lambda,s}(x)-H^{\rm unif}_{n,\lambda,s}\Bigr\}.
+\]
+Then $\Delta_{n,s}(\lambda)\ge0$.  Uniform is a global maximizer if and only if $\Delta_{n,s}(\lambda)=0$, and a nonuniform one-heavy law is a strict global maximizer if and only if $\Delta_{n,s}(\lambda)>0$.
+
+\begin{proposition}[Elementary phase information]\label{prop:mgf-phase-info}
+Fix $n\ge2$ and $s>0$.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item At $\lambda=0$, all distributions tie and $\Delta_{n,s}(0)=0$.
+\item At $\lambda=s$, the uniform distribution is the unique global maximizer.
+\item For all sufficiently large $\lambda$, a nonuniform one-heavy law strictly beats uniform.
+\item If $s>\lambda_n^\star$, where $\lambda_n^\star$ is the Poissonized expected-mass transition from Theorem \ref{thm:true-poisson-critical}, then a nonuniform one-heavy law strictly beats uniform for all sufficiently small positive $\lambda$.
+\end{enumerate}
+Consequently, for every $s>\lambda_n^\star$, the MGF phase diagram in $\lambda$ has at least two nonuniform regions separated by a uniform point at $\lambda=s$. In particular, no general single-threshold theorem in $\lambda$ is possible for the positive MGF problem.
+\end{proposition}
+
+\begin{proof}
+At $\lambda=0$,
+\[
+  h_{0,s}(x)=\log(e^{sx})=sx,
+\]
+so $\sum_i h_{0,s}(p_i)=s$ for every distribution.
+
+At $\lambda=s$,
+\[
+  h_{s,s}(x)=\log(2-e^{-sx}).
+\]
+A direct differentiation gives
+\[
+  h_{s,s}''(x)=-\frac{2s^2e^{-sx}}{(2-e^{-sx})^2}<0.
+\]
+Thus $h_{s,s}$ is strictly concave, and Jensen's inequality gives the unique maximum at the uniform distribution.
+
+For large $\lambda$, evaluate the one-heavy curve at $x=1/\lambda$.  Then
+\[
+  h_{\lambda,s}(1/\lambda)
+  =\log\left(1+e^{-1}(e^{s/\lambda}-1)\right)
+  =\frac{s}{e\lambda}+O(\lambda^{-2}),
+\]
+while the heavy coordinate contributes only $O(e^{-c\lambda})$. Hence
+\[
+  H_{n,\lambda,s}(1/\lambda)
+  =\frac{(n-1)s}{e\lambda}+O(\lambda^{-2}).
+\]
+On the other hand,
+\[
+  H^{\rm unif}_{n,\lambda,s}
+  =n\log\left(1+e^{-\lambda/n}(e^{s/n}-1)\right)
+  =O(e^{-\lambda/n}).
+\]
+Thus the nonuniform value is larger for all sufficiently large $\lambda$.
+
+Finally, as $\lambda\downarrow0$,
+\[
+  h_{\lambda,s}(x)
+  =sx+\lambda\bigl(xe^{-sx}-x\bigr)+O(\lambda^2)
+\]
+uniformly for $x\in[0,1]$. Therefore, for a fixed one-heavy law,
+\[
+  H_{n,\lambda,s}(x)-H^{\rm unif}_{n,\lambda,s}
+  =\lambda\left(G^{\mathrm P}_{n,s}(x)-e^{-s/n}\right)+O(\lambda^2).
+\]
+If $s>\lambda_n^\star$, then by definition of the Poissonized expected-mass transition there is an $x<1/n$ with $G^{\mathrm P}_{n,s}(x)>e^{-s/n}$.  That same $x$ gives a strict MGF improvement for all sufficiently small positive $\lambda$.
+\end{proof}
+
+\begin{proposition}[Uniform local-stability boundary]\label{prop:mgf-spinodal}
+For fixed $n,\lambda,s$, the uniform point is a strict local maximum of the log-MGF on the simplex if
+\[
+  K_{n}(\lambda,s)<0,
+\]
+and a strict local minimum if $K_n(\lambda,s)>0$, where
+\[
+  K_n(\lambda,s)
+  =(\lambda-s)^2 e^{\lambda/n}-\lambda^2 e^{(\lambda-s)/n}-s^2.
+\]
+When $K_n(\lambda,s)=0$, the quadratic variation at the uniform point vanishes.
+\end{proposition}
+
+\begin{proof}
+The Hessian of $\sum_i h_{\lambda,s}(p_i)$ at the uniform point, restricted to the tangent space $\sum_i v_i=0$, is
+\[
+  h_{\lambda,s}''(1/n)\sum_i v_i^2.
+\]
+The computation in the proof of Theorem \ref{thm:poisson-mgf} shows that the sign of $h_{\lambda,s}''(1/n)$ is the sign of $K_n(\lambda,s)$.  The conclusion follows.
+\end{proof}
+
+\begin{problem}[Complete MGF phase diagram]
+For fixed $n$ and $s$, determine the number and location of the zeros of $\Delta_{n,s}(\lambda)$.  Proposition \ref{prop:mgf-phase-info} shows that for $s>\lambda_n^\star$ there are at least two phase boundaries in $\lambda$.  The remaining problem is to decide whether additional components can occur and to characterize the transition curves using the one-dimensional function $H_{n,\lambda,s}$ and the local-stability curve $K_n(\lambda,s)=0$.
+\end{problem}
+
+\section{\texorpdfstring{Missing $g$-mass and occupancy levels}{Missing g-mass and occupancy levels}}
+
+Let
+\[
+  M_{g,t}=\sum_i g(p_i)\ones\{N_i(t)=0\}.
+\]
+Then
+\[
+  \E M_{g,t}=\sum_i g(p_i)(1-p_i)^t.
+\]
+Thus the separable kernel is
+\[
+  f_{g,t}(x)=g(x)(1-x)^t.
+\]
+The finite-turn theorem immediately yields structural extremizer results whenever $f_{g,t}'$ has bounded turn complexity.
+
+\begin{corollary}[Power missing mass]\label{cor:power-g}
+Fix $\alpha>0$ and set
+\[
+  f_{\alpha,t}(x)=x^\alpha(1-x)^t.
+\]
+Every relative-interior local maximum of
+\[
+  \sum_i p_i^\alpha(1-p_i)^t
+\]
+has at most three positive coordinate values. Any value in a convex branch of $f_{\alpha,t}$ occurs with multiplicity at most one.
+\end{corollary}
+
+\begin{proof}
+The second derivative has the form
+\[
+  f_{\alpha,t}''(x)=x^{\alpha-2}(1-x)^{t-2}Q_{\alpha,t}(x),
+\]
+where $Q_{\alpha,t}$ is a quadratic polynomial. Hence $f_{\alpha,t}'$ has at most three monotonicity intervals. Apply Theorem \ref{thm:finite-turn}.
+\end{proof}
+
+For frequency-$r$ occupancy mass, define
+\[
+  M_t^{(r)}=\sum_i p_i\ones\{N_i(t)=r\}.
+\]
+Then
+\[
+  \E M_t^{(r)}=\binom{t}{r}\sum_i p_i^{r+1}(1-p_i)^{t-r}.
+\]
+
+\begin{corollary}[Frequency-$r$ active-level bound]\label{cor:frequency-r}
+For fixed $0\le r\le t$, every relative-interior local maximum of
+\[
+  \sum_i p_i^{r+1}(1-p_i)^{t-r}
+\]
+has at most three positive coordinate values. Values in convex branches occur with multiplicity at most one.
+\end{corollary}
+
+\begin{proof}
+Apply Corollary \ref{cor:power-g} with $\alpha=r+1$ and exponent $t-r$ on $(1-x)$.
+\end{proof}
+
+
+\section{Constrained and vector-separable objectives}\label{sec:vector-separable}
+
+The previous sections treat separable objectives of the form $\sum_i f(p_i)$.  Many natural variants are only weakly nonseparable: constraints introduce Lagrange multipliers, and risk or MSE objectives often have the form
+\[
+  \Psi\left(\sum_i f_1(p_i),\ldots,\sum_i f_M(p_i)\right).
+\]
+The same active-level mechanism survives.  The point is that, after freezing the dual variables and the gradient of $\Psi$, the local analysis is governed by a one-dimensional Lagrangian kernel.  Moreover, the nonseparable rank coupling in the Hessian vanishes on balanced perturbations inside a plateau.  This gives a rigorous constrained/vector-separable extension of the crossing plus structured-perturbation method.
+
+\subsection{A root-count convention}
+
+Let $\mathcal F$ be a finite family of real functions on an interval $I$.  We say that $\mathcal F$ has root-count at most $K$ on $I$ if every nonzero linear combination of functions in $\mathcal F$ has at most $K$ distinct zeros in $I$.  In particular, an extended Chebyshev system of $r$ functions has root-count at most $r-1$.
+
+The following theorem is stated for equality constraints on the relative interior of a fixed face.  Active inequality constraints may be included after replacing them by equalities, provided the usual KKT and second-order necessary conditions hold.  We do not attempt to select the optimal face here; boundary support selection is a separate problem.
+
+\begin{theorem}[Frozen-kernel active-level theorem]\label{thm:frozen-kernel}
+Let $A$ be a nonempty active set and let $p$ be a relative-interior local maximum on the face $\Delta_A$.  Let $f_1,\ldots,f_M,\psi_1,\ldots,\psi_J\in C^2(0,1)$, and let $\Psi\in C^2$ in a neighborhood of
+\[
+  S(p)=\left(S_1(p),\ldots,S_M(p)\right),
+  \qquad
+  S_l(p)=\sum_{i\in A} f_l(p_i).
+\]
+Consider the constrained vector-separable problem
+\[
+  \max_{p\in\Delta_A}
+  \Psi\bigl(S_1(p),\ldots,S_M(p)\bigr)
+\]
+subject to
+\[
+  C_j(p):=\sum_{i\in A}\psi_j(p_i)=c_j,
+  \qquad j=1,\ldots,J.
+\]
+Assume that $p$ satisfies the KKT conditions and the second-order necessary condition for this equality-constrained problem.  Put
+\[
+  \alpha_l=\partial_l\Psi(S(p)),
+\]
+and let $\lambda,\mu_1,\ldots,\mu_J$ be KKT multipliers.  Define the frozen Lagrangian kernel
+\[
+  \ell(x)=\sum_{l=1}^M \alpha_l f_l(x)-\lambda x-
+       \sum_{j=1}^J \mu_j\psi_j(x).
+\]
+Then the following hold.
+
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item \textup{Stationarity.} Every active coordinate satisfies
+\[
+  \ell'(p_i)=0,
+  \qquad i\in A.
+\]
+
+\item \textup{Level count.} Suppose $\ell'$ is not identically zero and the family
+\[
+  \mathcal F=
+  \{1,\psi_1',\ldots,\psi_J',f_1',\ldots,f_M'\}
+\]
+has root-count at most $K$ on $(0,1)$.  Then $p$ has at most $K$ distinct positive coordinate values.  In particular, if $\mathcal F$ is an extended Chebyshev system, then $p$ has at most $J+M$ distinct positive coordinate values.
+
+\item \textup{Plateau curvature test.} If a value $x$ occurs with multiplicity at least two among the active coordinates, then
+\[
+  \ell''(x)\le 0.
+\]
+Consequently, any active value with $\ell''(x)>0$ is a singleton.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The Lagrangian is
+\[
+  \mathcal L(p)=
+  \Psi(S(p))-\lambda\left(\sum_{i\in A}p_i-1\right)
+  -\sum_{j=1}^J\mu_j\left(C_j(p)-c_j\right).
+\]
+Differentiating gives
+\[
+  \frac{\partial \mathcal L}{\partial p_i}(p)=
+  \sum_{l=1}^M\alpha_l f_l'(p_i)-\lambda-
+  \sum_{j=1}^J\mu_j\psi_j'(p_i)=\ell'(p_i).
+\]
+The KKT stationarity equation gives (i).  Since all active values are zeros of the same function $\ell'$, the root-count hypothesis gives (ii).
+
+For (iii), suppose $p_a=p_b=x$.  More generally, let $P_x=\{i\in A:p_i=x\}$ be the plateau at level $x$, and choose a nonzero vector $v$ supported on $P_x$ with
+\[
+  \sum_{i\in P_x}v_i=0.
+\]
+Then $v$ is tangent to the simplex constraint.  It is also tangent to every moment constraint, because for each $j$,
+\[
+  D C_j(p)\cdot v
+  =\sum_{i\in P_x}\psi_j'(x)v_i
+  =\psi_j'(x)\sum_{i\in P_x}v_i=0.
+\]
+Thus $v$ is an admissible first-order direction for the second-order necessary condition.
+
+The Hessian of the Lagrangian has a diagonal frozen-kernel part plus the rank-$M$ coupling coming from $\Psi$:
+\[
+  v^T\nabla^2\mathcal L(p)v
+  =\sum_{i\in A}\left(\sum_{l=1}^M\alpha_l f_l''(p_i)-
+     \sum_{j=1}^J\mu_j\psi_j''(p_i)\right)v_i^2
+\]
+\[
+  \hspace{2cm}+
+  \sum_{l,k=1}^M \partial_{lk}\Psi(S(p))
+  \left(\sum_{i\in A}f_l'(p_i)v_i\right)
+  \left(\sum_{i\in A}f_k'(p_i)v_i\right).
+\]
+On the plateau $P_x$,
+\[
+  \sum_{i\in A}f_l'(p_i)v_i
+  =f_l'(x)\sum_{i\in P_x}v_i=0.
+\]
+So the nonseparable rank coupling vanishes.  The remaining diagonal part is
+\[
+  v^T\nabla^2\mathcal L(p)v=\ell''(x)\sum_{i\in P_x}v_i^2.
+\]
+Since $p$ is a local maximum and the second-order necessary condition applies, this quantity is nonpositive for every such $v$.  Hence $\ell''(x)\le0$.
+\end{proof}
+
+\begin{remark}[Automatic regularity in the saturated regime]
+The theorem is stated with KKT and second-order necessary conditions as hypotheses.  These are automatic under standard constraint qualifications.  In the constrained separable case below, if the subfamily $\{1,\psi_1',\ldots,\psi_J'\}$ is an extended Chebyshev system and the active coordinates assume at least $J+1$ distinct values, then the Jacobian of the equality constraints has full row rank by the usual generalized Vandermonde determinant.  When fewer than $J+1$ values occur, the desired level bound is already stronger than the Chebyshev bound.  Degenerate few-level boundary cases should be treated separately rather than hidden inside the theorem.
+\end{remark}
+
+\subsection{Constrained separable objectives}
+
+Taking $M=1$ and $\Psi(y)=y$ gives the constrained separable principle.
+
+\begin{corollary}[Constrained separable active-level principle]\label{cor:constrained-separable}
+Consider
+\[
+  \max \sum_{i\in A} f(p_i)
+\]
+on the relative interior of a face, subject to
+\[
+  \sum_{i\in A}p_i=1,
+  \qquad
+  \sum_{i\in A}\psi_j(p_i)=c_j,
+  \qquad j=1,\ldots,J.
+\]
+At any regular relative-interior local maximum, there are multipliers $\lambda,\mu_j$ such that the frozen kernel
+\[
+  \ell(x)=f(x)-\lambda x-
+  \sum_{j=1}^J\mu_j\psi_j(x)
+\]
+satisfies $\ell'(p_i)=0$ for every active coordinate.  If
+\[
+  \{1,\psi_1',\ldots,\psi_J',f'\}
+\]
+has root-count at most $K$, then the local maximum has at most $K$ positive coordinate values.  In particular, if this family is an extended Chebyshev system, then there are at most $J+1$ positive coordinate values.  Any repeated value $x$ must satisfy $\ell''(x)\le0$.
+\end{corollary}
+
+\subsection{Entropy-constrained missing mass}
+
+The entropy-constrained missing-mass problem studied by Berend, Kontorovich, and Zagdanski \cite{BKZ} has the form
+\[
+  \max \sum_i f_t(p_i),
+  \qquad f_t(x)=x(1-x)^t,
+\]
+with a constraint on
+\[
+  H(p)=-\sum_i p_i\log p_i.
+\]
+Zeros may genuinely occur in entropy-constrained problems, so the clean local statement is a statement on the relative interior of the active face.
+
+\begin{proposition}[Four-level entropy bound on a fixed face]\label{prop:entropy-four}
+Let $p$ be a regular relative-interior local maximum of the entropy-constrained missing-mass problem on a fixed face.  Then $p$ has at most four distinct positive coordinate values.  Moreover, if the entropy multiplier is written so that active values solve
+\[
+  f_t'(x)+\mu(1+\log x)=\lambda,
+\]
+then any repeated active value $x$ satisfies
+\[
+  f_t''(x)+\frac{\mu}{x}\le 0.
+\]
+\end{proposition}
+
+\begin{proof}
+The KKT equation has the displayed form, up to the sign convention for $\mu$.  Put
+\[
+  \phi(x)=f_t'(x)+\mu(1+\log x)-\lambda.
+\]
+Active values are zeros of $\phi$.  We show that $\phi$ has at most four zeros in $(0,1)$.
+
+Since
+\[
+  \phi'(x)=f_t''(x)+\frac{\mu}{x},
+\]
+zeros of $\phi'$ are zeros of
+\[
+  q_t(x)+\mu,
+  \qquad
+  q_t(x):=x f_t''(x).
+\]
+A direct computation gives
+\[
+  q_t'(x)=t(1-x)^{t-3}
+  \left[-t(t+1)x^2+4t x-2\right].
+\]
+The bracket is a quadratic polynomial.  Hence $q_t'$ has at most two zeros in $(0,1)$, so by Rolle's theorem the equation $q_t(x)+\mu=0$ has at most three zeros.  Thus $\phi'$ has at most three zeros.  Another application of Rolle's theorem implies that $\phi$ has at most four zeros.
+
+The repeated-value condition is Corollary \ref{cor:constrained-separable} applied to the frozen kernel
+\[
+  \ell(x)=f_t(x)-\lambda x+\mu x\log x
+\]
+with the corresponding sign convention, for which $\ell''(x)=f_t''(x)+\mu/x$.
+\end{proof}
+
+\begin{remark}
+Proposition \ref{prop:entropy-four} recovers the local atom-size complexity mechanism behind the entropy-constrained result of \cite{BKZ}: the entropy multiplier deforms the marginal curve, and the deformed scalar equation has bounded crossing number.  The proposition does not rederive the exact entropy-budget thresholds or global maximizer classification from \cite{BKZ}; those require additional interval analysis and boundary support control.
+\end{remark}
+
+\subsection{Vector-separable objectives}
+
+Without extra constraints, Theorem \ref{thm:frozen-kernel} gives the following especially transparent form.
+
+\begin{corollary}[Vector-separable active-level principle]\label{cor:vector-separable}
+Let
+\[
+  F(p)=\Psi\left(\sum_i f_1(p_i),\ldots,\sum_i f_M(p_i)\right),
+\]
+with $f_l\in C^2(0,1)$ and $\Psi\in C^2$.  Let $p$ be a relative-interior local maximum on a face, and assume that the frozen marginal
+\[
+  x\mapsto \sum_{l=1}^M \alpha_l f_l'(x)-\lambda,
+  \qquad
+  \alpha_l=\partial_l\Psi(S(p)),
+\]
+is not identically zero.  If the family $\{1,f_1',\ldots,f_M'\}$ has root-count at most $K$, then $p$ has at most $K$ positive coordinate values.  In particular, if this family is an extended Chebyshev system, then there are at most $M$ positive coordinate values.
+
+Define the frozen effective kernel
+\[
+  \ell_{\mathrm{eff}}(x)=\sum_{l=1}^M\alpha_l f_l(x)-\lambda x.
+\]
+Any repeated active value $x$ satisfies
+\[
+  \ell_{\mathrm{eff}}''(x)\le0.
+\]
+Thus every active value in a strictly convex branch of the frozen effective kernel is a singleton.
+\end{corollary}
+
+\begin{remark}[Why nonseparability disappears on plateaus]
+The Hessian of $F$ has a rank-$M$ nonseparable term involving $\nabla^2\Psi$.  On a balanced perturbation inside a plateau, $v$ satisfies $\sum v_i=0$, and hence
+\[
+  \sum_i f_l'(p_i)v_i=f_l'(x)\sum_i v_i=0.
+\]
+Therefore the rank-$M$ coupling vanishes.  The plateau second variation sees only the frozen separable kernel.  This is the vector-separable analogue of the convex-branch singleton lemma and is the main reason active-uniform structure persists beyond purely separable objectives.
+\end{remark}
+
+\subsection{Poissonized Good--Turing MSE and biased coordinate estimators}
+
+The vector-separable theorem explains why uniform-plus-exceptional distributions appear in variance and MSE problems.  In the Poissonized model with intensity $t$, the counts $N_i$ are independent with $N_i\sim\Pois(t p_i)$.  The missing-mass coordinate is
+\[
+  U_i=p_i\ones\{N_i=0\}.
+\]
+The Poissonized Good--Turing coordinate estimator is
+\[
+  \widehat U_i=\frac1t\ones\{N_i=1\}.
+\]
+It is unbiased coordinatewise, because
+\[
+  \E\widehat U_i=p_i e^{-t p_i}=\E U_i.
+\]
+Therefore the Poissonized Good--Turing MSE is separable:
+\[
+  \E(\widehat U-U)^2
+  =\sum_i \E(\widehat U_i-U_i)^2
+  =\sum_i p_i\left(p_i+\frac1t\right)e^{-t p_i}.
+\]
+This objective is covered directly by the finite-turn theorem.
+
+More generally, consider an independent-coordinate estimator with coordinate error
+\[
+  Z_i=T_i(N_i)-p_i\ones\{N_i=0\}.
+\]
+Suppose the rule is symmetric across coordinates, so that
+\[
+  e(x)=\E_x Z_i,
+  \qquad
+  v(x)=\operatorname{Var}_x(Z_i)
+\]
+depend only on $x=p_i$.  Independence gives
+\[
+  \operatorname{MSE}(p)
+  =\sum_i v(p_i)+\left(\sum_i e(p_i)\right)^2.
+\]
+This is vector-separable with
+\[
+  \Psi(A,B)=A+B^2,
+  \qquad
+  A=\sum_i v(p_i),
+  \quad
+  B=\sum_i e(p_i).
+\]
+At a regular relative-interior local maximum, the frozen kernel is
+\[
+  \ell_B(x)=v(x)+2B e(x)-\lambda x.
+\]
+Thus active values solve
+\[
+  v'(x)+2B e'(x)=\lambda,
+\]
+and repeated values must satisfy
+\[
+  v''(x)+2B e''(x)\le0.
+\]
+Consequently, whenever the family $\{1,v',e'\}$ has root-count at most $K$, every such local maximizer has at most $K$ positive coordinate values; if the frozen kernel has a one-valley shape, the maximizer is active-uniform with at most one exceptional coordinate.
+
+
+\subsection{Full-face KKT conditions and boundary support selection}\label{subsec:boundary-selection}
+
+The preceding theorem was stated on the relative interior of a fixed face.  For global problems on the full simplex one must also record the KKT inequalities associated with zero coordinates.  This gives a clean boundary support-selection rule.
+
+\begin{theorem}[Frozen-kernel support selection on the full simplex]\label{thm:full-face-kkt}
+Let $p$ be a local maximum of the constrained vector-separable problem of Theorem \ref{thm:frozen-kernel} on the full simplex $\Delta_{n-1}$, with nonnegativity constraints $p_i\ge0$.  Assume that the KKT conditions and the second-order necessary condition hold, and assume that the one-sided derivatives at zero used below exist.  Let
+\[
+  A=\{i:p_i>0\}
+\]
+be the active support.  With the same notation as in Theorem \ref{thm:frozen-kernel}, define
+\[
+  \ell(x)=\sum_{l=1}^M \alpha_l f_l(x)-\lambda x-
+       \sum_{j=1}^J \mu_j\psi_j(x).
+\]
+Then
+\[
+  \ell'(p_i)=0,\qquad i\in A,
+\]
+and every inactive coordinate satisfies the boundary inequality
+\[
+  \ell'_+(0)\le0.
+\]
+Moreover, the positive active values obey the same root-count and plateau-curvature conclusions as in Theorem \ref{thm:frozen-kernel}: if the corresponding derivative family has root-count at most $K$, then there are at most $K$ distinct positive active values, and any repeated active value $x$ satisfies $\ell''(x)\le0$.
+\end{theorem}
+
+\begin{proof}
+The KKT stationarity equations including the nonnegativity constraints may be written, with multipliers $\rho_i\ge0$, as
+\[
+  \ell'(p_i)+\rho_i=0,
+  \qquad
+  \rho_i p_i=0.
+\]
+Thus $\rho_i=0$ on the active support, giving $\ell'(p_i)=0$ for $i\in A$.  If $p_i=0$, then $\ell'_+(0)=-\rho_i\le0$.  The root-count conclusion applies to the positive roots of $\ell'$, and the plateau-curvature conclusion is exactly the balanced-plateau second-variation argument from Theorem \ref{thm:frozen-kernel}, applied inside the active support.
+\end{proof}
+
+\begin{corollary}[Unconstrained vector-separable boundary rule]\label{cor:unconstrained-boundary}
+For an unconstrained vector-separable objective
+\[
+  F(p)=\Psi\left(\sum_i f_1(p_i),\ldots,\sum_i f_M(p_i)\right)
+\]
+on the simplex, a regular local maximum with frozen coefficients $\alpha_l=\partial_l\Psi(S(p))$ and active marginal value $\lambda$ satisfies
+\[
+  \sum_{l=1}^M \alpha_l f_l'(p_i)=\lambda\quad(p_i>0),
+\]
+and any zero coordinate must satisfy
+\[
+  \sum_{l=1}^M \alpha_l f_l'(0+)\le \lambda.
+\]
+In particular, if the frozen marginal at zero is strictly larger than the active marginal value, then the maximum is full-support.
+\end{corollary}
+
+\subsection{Global envelope certificates}\label{subsec:global-envelope}
+
+The KKT/root-count theorem is necessary.  A separate dual-envelope certificate gives a useful sufficient condition for global optimality.  It is strongest when the outer map $\Psi$ is concave.
+
+\begin{theorem}[Concave tangent-envelope certificate]\label{thm:concave-envelope}
+Consider the constrained vector-separable problem in Theorem \ref{thm:frozen-kernel}, now on the full $n$-simplex, and assume that $\Psi$ is concave on the relevant range of $S$.  Let $p^\star$ be a feasible point and write
+\[
+  S^\star=S(p^\star),\qquad \alpha=\nabla\Psi(S^\star).
+\]
+Suppose there are multipliers $\lambda,\mu_1,\ldots,\mu_J$ such that
+\[
+  \ell(x)=\sum_{l=1}^M\alpha_l f_l(x)-\lambda x-
+       \sum_{j=1}^J\mu_j\psi_j(x)
+\]
+satisfies
+\[
+  \sum_{i=1}^n \ell(p_i)\le \sum_{i=1}^n \ell(p_i^\star)
+\]
+for every feasible $p$.  Then $p^\star$ is a global maximizer.  In particular, this holds if $\ell(x)\le \gamma$ for all $x\in[0,1]$ and $\ell(p_i^\star)=\gamma$ for every coordinate $i$.
+\end{theorem}
+
+\begin{proof}
+By concavity of $\Psi$,
+\[
+  \Psi(S(p))\le \Psi(S^\star)+\alpha\cdot(S(p)-S^\star).
+\]
+Since $p$ and $p^\star$ satisfy the same equality constraints,
+\[
+  \alpha\cdot(S(p)-S^\star)
+  =\sum_i \ell(p_i)-\sum_i \ell(p_i^\star).
+\]
+The assumed envelope inequality therefore gives $\Psi(S(p))\le\Psi(S^\star)$ for every feasible $p$.  The final assertion follows because $\ell(x)\le\gamma$ gives $\sum_i\ell(p_i)\le n\gamma$, while equality holds at $p^\star$.
+\end{proof}
+
+\begin{remark}
+The envelope theorem is a certification device, not a replacement for the KKT/root-count theorem.  For nonconcave $\Psi$, such as $\Psi(A,B)=A+B^2$ in biased MSE problems, the tangent inequality need not be an upper bound.  In those cases the frozen-kernel theorem remains a necessary structural reduction, and global optimality is decided by comparing the resulting finite-dimensional strata.
+\end{remark}
+
+\subsection{Phase reductions for constrained and vector-separable families}\label{subsec:phase-reductions}
+
+Fix $n$ and a parameter vector $\theta$.  Suppose that, for every regular local maximum in a family of constrained or vector-separable problems, the frozen derivative family has root-count at most $K$.  Then every regular global maximizer belongs to one of finitely many active-level strata.  A stratum is specified by
+\[
+  k\le n,
+  \qquad
+  r\le K,
+  \qquad
+  m_1+\cdots+m_r=k,
+\]
+where $k$ is the support size, $r$ is the number of positive levels, and $m_a$ are their multiplicities.  On this stratum the unknowns are the levels $x_a>0$ and the dual variables, and they satisfy
+\[
+  \sum_{a=1}^r m_a x_a=1,
+\]
+the active moment constraints, and the frozen KKT equations
+\[
+  \ell_\theta'(x_a)=0,
+  \qquad a=1,\ldots,r.
+\]
+Boundary support selection is imposed by
+\[
+  \ell_{\theta,+}'(0)\le0,
+\]
+and repeated levels must lie in concave branches,
+\[
+  \ell_\theta''(x_a)\le0
+  \quad\text{if }m_a\ge2.
+\]
+Thus an exact phase diagram is obtained by comparing finitely many stratum-value functions.  Phase transitions can occur only when two strata have equal objective value, a zero coordinate activates or deactivates, two levels collide, a root of the frozen KKT equation becomes multiple, or a second-order condition degenerates.  Without specifying the functions $f_l,\psi_j,\Psi$, no sharper universal phase diagram is possible.
+
+\subsection{Entropy-constrained boundary selection and phase reduction}\label{subsec:entropy-phase}
+
+For entropy-constrained missing mass, active values solve
+\[
+  f_t'(x)+\mu(1+\log x)=\lambda
+\]
+with the sign convention of Proposition \ref{prop:entropy-four}.  The full-face boundary condition from Theorem \ref{thm:full-face-kkt} is
+\[
+  \limsup_{x\downarrow0}\left(f_t'(x)+\mu(1+\log x)-\lambda\right)\le0.
+\]
+Since $f_t'(0+)=1$, this gives the following support rule.
+
+\begin{corollary}[Entropy boundary rule]\label{cor:entropy-boundary}
+At a regular KKT local maximum of the entropy-constrained missing-mass problem, with active equation
+\[
+  f_t'(x)+\mu(1+\log x)=\lambda,
+\]
+zero coordinates can occur only in the following cases:
+\[
+  \mu>0,
+  \quad\text{or}\quad
+  \mu=0\text{ and }\lambda\ge1.
+\]
+If $\mu<0$, then the maximizer is full-support on the ambient face.
+\end{corollary}
+
+\begin{proof}
+The one-sided frozen derivative at zero is
+\[
+  \lim_{x\downarrow0}\left(f_t'(x)+\mu(1+\log x)-\lambda\right).
+\]
+This limit is $-\infty$ if $\mu>0$, equals $1-\lambda$ if $\mu=0$, and is $+\infty$ if $\mu<0$.  The boundary KKT inequality requires the limsup to be nonpositive.
+\end{proof}
+
+Consequently, for fixed $n,t$ and entropy budget $h$, every regular global maximizer is contained in a finite union of four-level strata.  More explicitly, choose a support size $k$, a number of positive levels $r\le4$, and multiplicities $m_1+\cdots+m_r=k$.  The levels satisfy
+\[
+  \sum_{a=1}^r m_a x_a=1,
+  \qquad
+  -\sum_{a=1}^r m_a x_a\log x_a\le h,
+\]
+with equality if the entropy multiplier is nonzero, and
+\[
+  f_t'(x_a)+\mu(1+\log x_a)=\lambda,
+  \qquad a=1,\ldots,r.
+\]
+Together with the boundary rule and the plateau-curvature inequalities, this is a finite-dimensional phase reduction for the entropy-constrained problem.  It explains the finite atom-size complexity found in \cite{BKZ}, while leaving the exact entropy-budget thresholds to the resulting stratum comparison.
+
+\subsection{Variance and Good--Turing MSE phase reductions}\label{subsec:variance-mse-phase}
+
+We record two concrete consequences for Poissonized missing-mass risk functionals.
+
+\begin{lemma}[Exponential-polynomial root count]\label{lem:exp-poly-ect}
+Let $a_1,\ldots,a_L$ be distinct real numbers and let $d_l\ge0$.  The family
+\[
+  \{x^q e^{-a_l x}:1\le l\le L,\,0\le q\le d_l\}
+\]
+is an extended Chebyshev system on every compact interval.  In particular, every nonzero linear combination has at most
+\[
+  \sum_{l=1}^L(d_l+1)-1
+\]
+zeros, counted without multiplicity.
+\end{lemma}
+
+\begin{proof}
+This is the standard Chebyshev property of exponential polynomials.  One proof applies the operators $(D+a_l)^{d_l+1}$ successively; each application reduces the number of exponential-polynomial blocks while Rolle's theorem controls the number of zeros.  Induction gives the stated bound.
+\end{proof}
+
+\begin{proposition}[Poissonized Good--Turing MSE]\label{prop:poissonized-good-turing-mse}
+For the Poissonized Good--Turing estimator,
+\[
+  \E(\widehat U-U)^2=\sum_i m_t(p_i),
+  \qquad
+  m_t(x)=x\left(x+\frac1t\right)e^{-t x}.
+\]
+The derivative $m_t'$ decreases and then increases on $(0,1)$, and
+\[
+  m_t'(0+)>m_t'(x)\qquad(x>0).
+\]
+Therefore every global maximizer over the $n$-simplex is uniform or one-heavy, and the global MSE phase diagram reduces exactly to the one-dimensional curve
+\[
+  (n-1)m_t(x)+m_t(1-(n-1)x),
+  \qquad 0\le x\le \frac1n.
+\]
+\end{proposition}
+
+\begin{proof}
+A direct calculation gives
+\[
+  m_t'(x)=\frac{1+t x-t^2x^2}{t}e^{-t x},
+  \qquad
+  m_t''(x)=t x(t x-3)e^{-t x}.
+\]
+Thus $m_t'$ is strictly decreasing on $(0,3/t)$ and strictly increasing on $(3/t,1)$, with the degenerate interpretation if $3/t\ge1$.  Writing $y=t x$,
+\[
+  t m_t'(x)=(1+y-y^2)e^{-y}.
+\]
+This is strictly smaller than $1$ for every $y>0$: while $1+y-y^2$ is positive its derivative after multiplication by $e^{-y}$ is $y(y-3)e^{-y}<0$, and once it is nonpositive the claim is immediate.  Hence $m_t'(0+)>m_t'(x)$ for $x>0$.  The one-valley active-uniform theorem excludes boundary zeros and gives uniform or one-heavy global maximizers.
+\end{proof}
+
+
+
+\subsection{Complete Poissonized Good--Turing MSE phase diagram}\label{subsec:gt-mse-complete}
+
+The one-dimensional reduction in Proposition \ref{prop:poissonized-good-turing-mse} can be solved essentially explicitly after the natural scaling
+\[
+  z_i=t p_i .
+\]
+Put
+\[
+  \phi(z)=z(z+1)e^{-z},
+  \qquad
+  \rho=\frac{1+\sqrt5}{2}.
+\]
+Then
+\[
+  p_i\left(p_i+\frac1t\right)e^{-t p_i}
+  =\frac1{t^2}\phi(t p_i),
+\]
+and the maximization of the Poissonized Good--Turing MSE over the $n$-simplex is equivalent to
+\[
+  \max\left\{\sum_{i=1}^n \phi(z_i): z_i\ge0,\ \sum_i z_i=t\right\}.
+\]
+The prefactor $t^{-2}$ is irrelevant for the optimizer.
+
+\begin{theorem}[Poissonized Good--Turing MSE phase diagram]\label{thm:gt-mse-phase}
+For each $n\ge2$ there is a unique critical value $\Theta_n$ such that
+\[
+\begin{array}{ll}
+0<t\le \Theta_n: & \text{the uniform vector } z_i=t/n \text{ is globally optimal},\\[1mm]
+t>\Theta_n: & \text{the unique global maximizer, up to permutation, is one-heavy.}
+\end{array}
+\]
+For $n=2$ one has
+\[
+  \Theta_2=6.
+\]
+For $n\ge3$ the transition is first-order: at $t=\Theta_n$ the uniform vector and a distinct one-heavy vector tie.
+
+Let $\widehat\Theta_n$ be the surrogate root defined by
+\[
+  n\phi\left(\frac{\widehat\Theta_n}{n}\right)=(n-1)\phi(\rho).
+\]
+Then, for constants $C,c>0$,
+\[
+  0\le \widehat\Theta_n-\Theta_n\le C n^{3/2}e^{-c\sqrt n}.
+\]
+Consequently,
+\[
+  \Theta_n
+  =\rho n+\gamma\sqrt n+\beta+\frac{\chi}{\sqrt n}+O(n^{-1}),
+\]
+where
+\[
+  \gamma=\sqrt{2+\frac{4\sqrt5}{5}},
+  \qquad
+  \beta=\frac25+\frac{2\sqrt5}{15},
+\]
+\[
+  \chi=\frac{(40\sqrt2+31\sqrt{10})\sqrt{5+2\sqrt5}}{900}.
+\]
+Numerically,
+\[
+  \Theta_n
+  =1.6180339887\,n+1.9464979789\,\sqrt n
+   +0.6981423970+0.5286747319\,n^{-1/2}+O(n^{-1}).
+\]
+\end{theorem}
+
+The proof uses the following elementary branch description.  It is the exact analogue, for the kernel $\phi$, of the active one-heavy branch analysis used above for missing mass.
+
+\begin{lemma}[Stationary branch for the MSE kernel]\label{lem:gt-branch}
+Let
+\[
+  \phi(z)=z(z+1)e^{-z}.
+\]
+Then
+\[
+  \phi'(z)=(1+z-z^2)e^{-z},
+  \qquad
+  \phi''(z)=z(z-3)e^{-z}.
+\]
+Every nonuniform local maximum of $\sum_i\phi(z_i)$ under $\sum_i z_i=t$ is one-heavy,
+\[
+  z=(a,\ldots,a,b),\qquad \rho<a<3<b,
+\]
+and satisfies
+\[
+  \phi'(a)=\phi'(b).
+\]
+For each $a\in(\rho,3)$ there is a unique $b=b(a)>3$ satisfying this equation.  Define
+\[
+  T_n(a)=(n-1)a+b(a).
+\]
+For $n=2$, $T_2$ decreases from $+\infty$ to $6$ as $a$ increases from $\rho$ to $3$; the nonuniform branch is born continuously at $t=6$.  For $n\ge3$, $T_n$ has a unique fold $a_{f,n}\in(\rho,3)$.  The branch $a\in(\rho,a_{f,n})$ is the local-maximum branch, while $a\in(a_{f,n},3)$ is the local-minimum branch.
+\end{lemma}
+
+\begin{proof}
+The derivative $\phi'$ decreases on $(0,3)$ and increases on $(3,\infty)$.  Also $\phi'(z)=0$ exactly at $z=\rho$.  Thus a two-level nonuniform local maximum must have its repeated light value in $(\rho,3)$ and its singleton heavy value in $(3,\infty)$.
+
+For $z>\rho$ define
+\[
+  L(z)=\log(-\phi'(z))=\log(z^2-z-1)-z.
+\]
+Then
+\[
+  L'(z)=\frac{z(3-z)}{z^2-z-1},
+  \qquad
+  L''(z)=-\frac{2z^2-2z+3}{(z^2-z-1)^2}<0.
+\]
+Hence $L$ increases on $(\rho,3)$, decreases on $(3,\infty)$, and is strictly concave on $(\rho,\infty)$.  For each $a\in(\rho,3)$ there is therefore a unique $b(a)>3$ with $L(b(a))=L(a)$, equivalently $\phi'(b(a))=\phi'(a)$.
+
+Implicit differentiation gives
+\[
+  b'(a)=\frac{\phi''(a)}{\phi''(b(a))}<0,
+\]
+and hence
+\[
+  T_n'(a)=(n-1)+\frac{\phi''(a)}{\phi''(b(a))}.
+\]
+A direct differentiation of this last display, using $\phi'(a)=\phi'(b(a))$, shows that $T_n'$ is strictly increasing on $(\rho,3)$.  Indeed,
+\[
+  b''(a)=\frac{\phi'''(a)\phi''(b(a))^2-
+           \phi'''(b(a))\phi''(a)^2}{\phi''(b(a))^3},
+\]
+and, after substituting
+$(a^2-a-1)e^{-a}=(b^2-b-1)e^{-b}$, the numerator has positive sign for
+$\rho<a<3<b$.  Hence $b''(a)>0$ and $T_n''(a)=b''(a)>0$.  Furthermore,
+\[
+  T_n'(a)\to-\infty \quad(a\downarrow\rho),
+  \qquad
+  T_n'(a)\to n-2 \quad(a\uparrow3).
+\]
+This proves the fold statement.
+
+Finally, along a stationary one-heavy point with $t=T_n(a)$,
+\[
+  \frac{d^2}{da^2}\left[(n-1)\phi(a)+\phi(t-(n-1)a)\right]
+  =(n-1)\left(\phi''(a)+(n-1)\phi''(b)\right).
+\]
+Since $\phi''(b)>0$, this second derivative has the same sign as $T_n'(a)$.  Therefore the branch with $T_n'(a)<0$ consists of local maxima and the branch with $T_n'(a)>0$ consists of local minima.
+\end{proof}
+
+\begin{lemma}[Single active-branch crossing]\label{lem:gt-single-crossing}
+Let $D_n(a)$ be the excess of a stationary one-heavy point over the uniform value at the same total mass:
+\[
+  D_n(a)=(n-1)\phi(a)+\phi(b(a))
+       -n\phi\left(\frac{T_n(a)}{n}\right).
+\]
+On the local-maximum branch, $D_n$ is strictly increasing as a function of $t=T_n(a)$.  Moreover, for $n=2$ the branch starts at the uniform point $t=6$, while for $n\ge3$ the excess at the fold is nonpositive.  Hence the active branch crosses the uniform value exactly once.
+\end{lemma}
+
+\begin{proof}
+By the envelope theorem, along the stationary branch,
+\[
+  \frac{d}{dt}\left[(n-1)\phi(a(t))+\phi(b(t))\right]=\phi'(b(t))=\phi'(a(t)).
+\]
+The derivative of the uniform value is
+\[
+  \frac{d}{dt}\,n\phi(t/n)=\phi'(t/n).
+\]
+Since $a<t/n<b$, and since $\phi'$ decreases on $(0,3)$ and increases on $(3,\infty)$, one has
+\[
+  \phi'(a)>\phi'(t/n)
+\]
+on the local-maximum branch.  Thus $dD_n/dt>0$ there.
+
+For $n=2$ the branch limit as $a\uparrow3$ is the uniform point
+$(3,3)$, so the crossing is at $t=6$.  For $n\ge3$, the fold excess is nonpositive.  To see this without extra algebra, let $t_f$ denote the fold value.  For $t<t_f$ there is no nonuniform local-maximum branch.  If some nonuniform point beat the uniform value for such a $t$, then a global maximizer would be nonuniform; by the active-uniform theorem and the boundary-exclusion condition it would have to be a nonuniform one-heavy local maximum, a contradiction.  By continuity, the fold excess is therefore at most zero.
+
+Finally, as $a\downarrow\rho$ one has $b(a)\to\infty$, $T_n(a)\to\infty$, and
+\[
+  (n-1)\phi(a)+\phi(b(a))\to(n-1)\phi(\rho)>0,
+  \qquad
+  n\phi(T_n(a)/n)\to0.
+\]
+The strict monotonicity of $D_n$ along the active branch gives exactly one crossing.
+\end{proof}
+
+\begin{proof}[Proof of Theorem \ref{thm:gt-mse-phase}]
+The scaling reduction was already shown above.  The active-uniform theorem applied to $\phi$ gives that every global maximizer is uniform or one-heavy.  Lemmas \ref{lem:gt-branch} and \ref{lem:gt-single-crossing} give the global phase diagram and uniqueness of the transition.
+
+The surrogate value is obtained by keeping the $(n-1)$ light coordinates at the maximizer $\rho$ of $\phi$.  Thus $\widehat\Theta_n$ is defined by
+\[
+  n\phi(\widehat\Theta_n/n)=(n-1)\phi(\rho).
+\]
+At the surrogate root, evaluating the one-heavy curve at $a=\rho$ gives the uniform value plus the positive heavy contribution
+\[
+  \phi(\widehat\Theta_n-(n-1)\rho),
+\]
+so $\Theta_n\le\widehat\Theta_n$.  In the critical window this heavy coordinate is
+\[
+  \widehat\Theta_n-(n-1)\rho=\gamma\sqrt n+O(1),
+\]
+and hence the heavy contribution is $O(n e^{-c\sqrt n})$.  Since the derivative of
+$\log(n\phi(t/n))$ at the surrogate root is of order $n^{-3/2}$, the displacement between the true and surrogate crossings is at most $C n^{3/2}e^{-c\sqrt n}$.
+
+It remains to expand the surrogate root.  Write
+\[
+  u_n=\frac{\widehat\Theta_n}{n}=\rho+\frac{\gamma}{\sqrt n}
+       +\frac{\beta}{n}+\frac{\chi}{n^{3/2}}+O(n^{-2}).
+\]
+The defining equation is
+\[
+  \log\frac{\phi(u_n)}{\phi(\rho)}=\log\left(1-\frac1n\right).
+\]
+Expanding in powers of $n^{-1/2}$ and solving coefficient by coefficient gives
+\[
+  \gamma=\sqrt{2+\frac{4\sqrt5}{5}},
+  \qquad
+  \beta=\frac25+\frac{2\sqrt5}{15},
+\]
+\[
+  \chi=\frac{(40\sqrt2+31\sqrt{10})\sqrt{5+2\sqrt5}}{900}.
+\]
+Since the true threshold differs from $\widehat\Theta_n$ by an exponentially small amount times a polynomial, it has the same algebraic expansion.
+\end{proof}
+
+
+\begin{proposition}[Poissonized missing-mass variance]
+The Poissonized missing-mass variance is separable:
+\[
+  \operatorname{Var}(U_t)=\sum_i w_t(p_i),
+  \qquad
+  w_t(x)=x^2 e^{-t x}(1-e^{-t x}).
+\]
+Every regular relative-interior global maximizer has at most six positive coordinate values.  Any repeated value must lie in a concave branch of the frozen kernel $w_t(x)-\lambda x$.  Zero coordinates are selected by the boundary condition
+\[
+  w_t'(0+)-\lambda\le0.
+\]
+\end{proposition}
+
+\begin{proof}
+Independence under Poissonization gives the displayed variance formula.  The level equation is
+\[
+  w_t'(x)-\lambda=0.
+\]
+The function $w_t'(x)-\lambda$ belongs to the span of
+\[
+  1,
+  e^{-t x},x e^{-t x},x^2e^{-t x},
+  e^{-2t x},x e^{-2t x},x^2e^{-2t x}.
+\]
+By Lemma \ref{lem:exp-poly-ect}, this family has root-count at most six.  The frozen-kernel theorem gives the positive-level bound and the repeated-value condition.  The boundary condition is Corollary \ref{cor:unconstrained-boundary}.
+\end{proof}
+
+\begin{proposition}[Biased independent-coordinate estimators]
+For a symmetric independent-coordinate estimator with coordinate error $Z_i$ define
+\[
+  e(x)=\E_x Z_i,
+  \qquad
+  v(x)=\operatorname{Var}_x Z_i.
+\]
+Then
+\[
+  \operatorname{MSE}(p)=\sum_i v(p_i)+\left(\sum_i e(p_i)\right)^2.
+\]
+At a regular global maximizer, with $B=\sum_i e(p_i)$, positive active values solve
+\[
+  v'(x)+2B e'(x)=\lambda,
+\]
+zero coordinates satisfy
+\[
+  v'(0+)+2B e'(0+)\le \lambda,
+\]
+and any repeated active value satisfies
+\[
+  v''(x)+2B e''(x)\le0.
+\]
+If $\{1,v',e'\}$ has root-count at most $K$, then every regular global maximizer has at most $K$ positive coordinate values.  If the frozen derivative $v'(x)+2B e'(x)$ has a one-valley shape and the boundary inequality is strict in the excluding direction, then every global maximizer is active-uniform with at most one exceptional coordinate.
+\end{proposition}
+
+\begin{proof}
+The MSE decomposition is variance plus squared bias.  It is vector-separable with $\Psi(A,B)=A+B^2$.  Hence the frozen effective kernel is
+\[
+  \ell_B(x)=v(x)+2B e(x)-\lambda x.
+\]
+The conclusions are exactly Theorem \ref{thm:full-face-kkt} and Corollary \ref{cor:vector-separable} applied to this kernel.
+\end{proof}
+
+
+\begin{remark}[Connection with Kelly-type active support]
+The common mechanism is a frozen one-dimensional marginal equation.  In Kelly-type constrained wagering, dual variables determine a scalar threshold for active support.  In the constrained and vector-separable simplex problems above, dual variables and the gradient of $\Psi$ freeze a scalar kernel $\ell$.  Crossing controls the possible active levels, while balanced plateau perturbations rule out repeated convex levels.  This is the same structured-perturbation principle in a different coordinate system.
+\end{remark}
+
+
+\section{Metric missing mass}
+
+Berend and Kontorovich define, for a metric probability space $(X,P,d)$, the $\varepsilon$-missing mass
+\[
+  U_t(\varepsilon)=P(X\setminus S_\varepsilon),
+  \qquad S_\varepsilon=\bigcup_{j=1}^t B_\varepsilon(X_j),
+\]
+and prove the covering-number bound
+\[
+  \E U_t(\varepsilon)\le \frac{N(\varepsilon)}{et}.
+\]
+There is an exact profile identity. Let
+\[
+  b_\varepsilon(y)=P(B_\varepsilon(y)).
+\]
+Then
+\[
+  \E U_t(\varepsilon)=\int_X \bigl(1-b_\varepsilon(y)\bigr)^t\,dP(y).
+\]
+Indeed, $y$ is missing from the $\varepsilon$-envelope iff no sample falls in $B_\varepsilon(y)$.
+
+Therefore, for any $r\in[0,1]$,
+\[
+  \E U_t(\varepsilon)
+  \le P\{b_\varepsilon(Y)\le r\}+(1-r)^t.
+\]
+Optimizing over $r$ gives a small-ball profile bound. This can be much sharper than a pure covering-number bound, because it uses the distribution of local ball masses rather than only the cardinality of an $\varepsilon$-net.
+
+
+
+
+\section{Status, next steps, and target conjectures}
+
+
+\subsection{What is proved in this draft}
+
+\begin{enumerate}[label=\textbf{P\arabic*.}]
+\item The KKT level-count theorem for separable simplex objectives.
+\item The convex-branch singleton lemma: repeated coordinate values in convex branches are unstable.
+\item The degenerate and one-valley active-uniform theorem.
+\item A short proof of the Berend--Kontorovich local maximizer theorem.
+\item The finite-turn active-level theorem.
+\item Poissonized expected-missing-mass local and global extremizers are uniform or one-heavy.
+\item The true Poissonized expected-mass transition is exponentially close to its surrogate root and has the expansion in Theorem \ref{thm:true-poisson-critical}.
+\item Poissonized positive-MGF global extremizers are uniform or one-heavy, with the exact one-dimensional reduction in Theorem \ref{thm:poisson-mgf}.
+\item The one-dimensional positive-MGF phase diagram has the early/central/late structure described in Proposition \ref{prop:mgf-phase-info}, and the uniform local-stability boundary is given by Proposition \ref{prop:mgf-spinodal}.
+\item Power missing $g$-mass and frequency-$r$ occupancy objectives have at most three positive mass levels at relative-interior local maxima.
+\item The exact surrogate critical root $\widehat t_n$ has the expansion in Proposition \ref{prop:surrogate-expansion}.
+\item The global critical-window transfer theorem: in the critical window, the one-variable global comparison is exactly between the uniform endpoint and the active one-heavy branch on $I_t=[1/(t+1),1/t]$.
+\item The true active-branch crossing in the critical window is exponentially close to $\widehat t_n$, hence has the same full algebraic expansion.
+\item The strict integer transition is localized to the two candidates $m_n=\lfloor\widehat t_n\rfloor$ and $m_n+1$, where $m_n$ is computable by an exact integer comparison, with $B_n(m_n)>U_n(m_n)$ deciding whether to keep or drop the $+1$.
+\item The strict integer transition has a complete rounding classification: $\tau_>(n)=m_n$ only for $n=6$, and $\tau_>(n)=m_n+1$ for every other $n\ge2$. The proof uses the nonresonance estimate for $n\ge501$ and exact rational certificates for the finite complementary range; the small finite tables are isolated in Appendix \ref{app:finite-certificates}.
+\item The Poissonized critical surrogate has the expansion in Proposition \ref{prop:poisson-surrogate}.
+\item The constrained/vector-separable frozen-kernel theorem and its full-face version: active values solve one scalar KKT equation, inactive zeros satisfy a boundary marginal inequality, repeated values are possible only where the frozen kernel is concave, entropy-constrained missing mass has at most four positive mass levels at regular local maxima, and entropy, variance, Good--Turing MSE, and biased coordinate-estimator problems reduce to finite active-level strata.
+\item The Poissonized Good--Turing MSE phase diagram is solved completely: there is a unique threshold $\Theta_n$, uniform is globally optimal for $t\le\Theta_n$, one-heavy is uniquely optimal for $t>\Theta_n$, $\Theta_2=6$, and $\Theta_n$ has the golden-ratio expansion in Theorem \ref{thm:gt-mse-phase}.
+\item The metric small-ball identity and resulting profile bound.
+\end{enumerate}
+
+
+
+\subsection{What should be proved next}
+
+\begin{enumerate}[label=\textbf{N\arabic*.}]
+\item \textbf{Independent audit of the exact certificates.}  The rounding classification rests on nonresonance plus exact rational certificates.  The next practical step is to have an independent script or proof checker reproduce the finite certificate files in Appendix \ref{app:finite-certificates}.
+
+\item \textbf{Complete the one-dimensional MGF phase diagram.} Theorem \ref{thm:poisson-mgf} reduces the positive-MGF problem to the scalar excess $\Delta_{n,s}(\lambda)$.  The next goal is to determine the number and location of the zeros of this function, and to compare the value-transition curves with the local-stability curve $K_n(\lambda,s)=0$.
+
+\item \textbf{Complete additional constrained/vector-separable phase diagrams.} The Good--Turing MSE case is now solved.  The remaining task is to solve the resulting one- or finite-dimensional stratum comparisons for entropy budgets, variance, and biased estimator families.
+
+\item \textbf{Study fixed-$t$ tail extremizers.} For fixed threshold $a$, analyze
+\[
+  p\mapsto \Pp_p(U_t\ge a).
+\]
+The conjectural result is bounded level complexity of extremizers, not stochastic dominance by the uniform law.
+\end{enumerate}
+
+
+\subsection{Additional target conjectures}
+
+\begin{conjecture}[Global finite-turn extremizers]
+For broad classes of one-dimensional kernels $f$ with finite derivative-turn complexity, every global maximizer of $\sum_i f(p_i)$ over $\Delta_{n-1}$ has bounded active-level complexity, with repeated values only in concave branches and exceptional singleton values in convex branches.
+\end{conjecture}
+
+\begin{conjecture}[Poissonized transform phase diagram]
+For every fixed $n$ and $s$, the zeros of the one-dimensional excess $\Delta_{n,s}(\lambda)$ have bounded number. For $s>\lambda_n^\star$ there are at least two value transitions in $\lambda$; conjecturally these are the only transitions, while for $0<s<\lambda_n^\star$ there is a single late transition.
+\end{conjecture}
+
+\begin{conjecture}[Tail bounded-level extremizers]
+For fixed $n,t,a$, a maximizer of
+\[
+  \Pp_p(U_t\ge a)
+\]
+over the simplex may be chosen with bounded level complexity, possibly two-level or boundary-two-level. Full stochastic dominance by uniform is false; the correct objects are tail extremizers, call transforms, stop-loss order, or radial monotonicity.
+\end{conjecture}
+
+\begin{conjecture}[Active-uniform MDS analogy]
+The missing-mass active-uniform theorem is the separable instance of a broader active-uniform principle for coverage, storage, DNA/MDS, and Kelly-type constrained allocation problems: active coordinates equalize, while excess mass is absorbed by one or more reservoir coordinates.
+\end{conjecture}
+
+
+\appendix
+
+\section{Finite exact certificates}\label{app:finite-certificates}
+
+This appendix contains the finite exact certificates used in the rounding
+classification.  They are separated from the main proof because they are
+routine rational inequalities after the two-candidate theorem has reduced the
+question to the single sign \(B_n(m_n)-U_n(m_n)\).
+
+\subsection{Certified candidate signs for \(2\le n\le500\)}
+
+For fixed \(n\) and integer \(t\), the candidate comparison \(B_n(t)>U_n(t)\)
+can be certified by rational interval arithmetic.  Put \(N=n-1\) and
+\[
+  D_{n,t}(x)=f_t'(x)-f_t'(1-Nx),
+  \qquad
+  f_t'(x)=(1-x)^{t-1}(1-(t+1)x).
+\]
+On the active interval \(I_t=[1/(t+1),1/t]\), the active critical point, when
+present, is the unique zero of \(D_{n,t}\).  Exact rational bisection gives a
+bracket \([L,R]\) with \(D_{n,t}(L)\ge0\ge D_{n,t}(R)\).  A rational midpoint
+\(M\) gives the lower bound
+\[
+  B_n(t)\ge G_{n,t}(M).
+\]
+For an upper bound on the whole bracket, use that \(x(1-x)^t\) is decreasing on
+\(I_t\):
+\[
+  (n-1)x(1-x)^t\le (n-1)L(1-L)^t\qquad (x\in[L,R]).
+\]
+For the heavy term, writing \(y=Nx\) and \(h_t(y)=(1-y)y^t\),
+\[
+  h_t(y)\le \max_{y\in[NL,NR]}h_t(y),
+\]
+where the right-hand side is obtained exactly by checking the endpoints and the
+critical point \(y=t/(t+1)\) if it lies in the interval.  Hence
+\[
+  B_n(t)
+  \le
+  (n-1)L(1-L)^t+
+  \max_{y\in[NL,NR]}(1-y)y^t.
+\]
+All quantities in these bounds are rational numbers.  Thus the sign of
+\(B_n(t)-U_n(t)\) is certified whenever the rational lower bound exceeds
+\(U_n(t)\), or the rational upper bound is at most \(U_n(t)\).
+
+\begin{proposition}[Finite candidate certificate]\label{prop:finite-certificate-500}
+Exact rational interval arithmetic verifies the candidate sign
+\(B_n(m_n)-U_n(m_n)\) for every \(2\le n\le500\).  The sign is positive only for
+\(n=6\).  In addition, the same rational protocol verifies the full strict
+integer threshold for every \(2\le n\le200\), covering all values below the
+effective cutoff \(N_0=144\).
+\end{proposition}
+
+\begin{proof}[Certificate protocol]
+The script uses no floating point arithmetic in any certified comparison.  The
+asymptotic expansion for \(\widehat t_n\) is used only to obtain a starting
+guess for \(m_n\); the value of \(m_n\) is then adjusted until the exact integer
+inequalities
+\[
+  S_n(m_n)\le U_n(m_n),
+  \qquad
+  S_n(m_n+1)>U_n(m_n+1)
+\]
+are certified by cross-multiplication.  For each checked \(t\), exact rational
+bisection brackets the active critical point and compares the rational upper and
+lower bounds above with the rational uniform value.  The file
+\texttt{integer\_threshold\_verification\_small\_n.csv} records the certified
+values of \(m_n\), \(\tau_>(n)\), and the signs at \(m_n\) and \(m_n+1\) for
+\(2\le n\le200\).  The file
+\texttt{candidate\_drop\_verification\_n500.csv} records the certified candidate
+sign at \(m_n\) for \(2\le n\le500\).
+\end{proof}
+
+\subsection{Small-\(q\) no-drop certificates}
+
+The following elementary upper bound is useful for explaining the finite
+rounding data.  Write \(m_n=n+q\), and define
+\[
+  A_{n,q}=\frac{S_n(n+q)}{U_n(n+q)}
+  =
+  \frac{n-1}{n+q+1}
+  \left(\frac{n(n+q)}{(n+q+1)(n-1)}\right)^{n+q}
+\]
+and
+\[
+  C_{n,q}
+  =
+  \frac{q+1}{n+q}
+  \left(\frac{n}{n+q}\right)^{n+q}.
+\]
+For \(x\in I_{n+q}\), the light term is at most \(S_n(n+q)\), while the heavy
+term is at most
+\[
+  \left(1-\frac{n-1}{n+q}\right)
+  \left(\frac{n-1}{n+q}\right)^{n+q}.
+\]
+After normalization by \(U_n(n+q)\), this gives
+\[
+  \frac{B_n(n+q)}{U_n(n+q)}\le A_{n,q}+C_{n,q}.
+\]
+Therefore \(A_{n,q}+C_{n,q}\le1\) certifies that the candidate does not drop.
+
+For \(q\le8\), exact rational evaluation of \(1-A_{n,q}-C_{n,q}\) gives the
+following first safe values.  The margins displayed are decimal renderings of
+exact rational margins; the comparisons themselves are exact.
+
+\begin{center}
+\begin{tabular}{cclc}
+\toprule
+\(q\) & \(n\)-block with \(m_n=n+q\) & first safe \(n\) & margin at first safe \(n\) \\
+\midrule
+1 & 2--3   & 3  & 0.012356875 \\
+2 & 4--5   & 4  & 0.001166866 \\
+3 & 6--9   & 7  & 0.006275528 \\
+4 & 10--14 & 11 & 0.005213524 \\
+5 & 15--20 & 15 & 0.000458603 \\
+6 & 21--27 & 21 & 0.000770654 \\
+7 & 28--35 & 28 & 0.000702185 \\
+8 & 36--43 & 36 & 0.000571383 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Thus this crude no-drop criterion leaves only \(n=2,6,10\) among the
+\(q\le8\) cases.  These are decided directly:
+\[
+  B_2(3)=\frac{10}{81}<\frac18=U_2(3),
+\]
+\[
+  G_{6,9}\left(\frac1{10}\right)
+  =
+  5\cdot\frac1{10}\left(\frac9{10}\right)^9
+  +\frac12\left(\frac12\right)^9
+  >
+  \left(\frac56\right)^9=U_6(9),
+\]
+and, for \(n=10\), exact rational derivative signs bracket the active critical
+point by
+\[
+  \frac{17}{250}<x_\ast<\frac{341}{5000}.
+\]
+On this bracket the light term is decreasing and the heavy term is increasing,
+so
+\[
+  B_{10}(14)
+  \le
+  9\cdot \frac{17}{250}\left(1-\frac{17}{250}\right)^{14}
+  +\left(1-9\cdot\frac{341}{5000}\right)
+   \left(9\cdot\frac{341}{5000}\right)^{14}
+  <
+  \left(\frac9{10}\right)^{14}.
+\]
+Hence \(n=6\) is the only small-\(q\) drop.
+
+\subsection{Adversarial audit of the large-\(q\) rounding estimate}
+
+The large-\(n\) rounding classification used in the main text is Proposition
+\ref{prop:no-large-drop}, which follows from the nonresonance estimate for the
+surrogate root.  The proof does not rely on a uniform lower bound of the form
+\(-\Phi_n(n+q)\gg q^{-4}\) for every \(q\ge9\); such a bound is too strong near
+rare lattice resonances.  Instead, for \(n\ge501\) the nonresonance estimate
+gives
+\[
+  \widehat t_n-m_n\ge \frac{1}{100\sqrt n},
+\]
+while the left displacement of the true crossing is at most
+\(40n^{3/2}e^{-\sqrt n}\).  This proves no large-\(n\) drop.  The finite
+complement \(2\le n\le500\), including the finite \(q\ge9\) cases, is covered by
+Proposition \ref{prop:finite-certificate-500}.
+
+\begin{thebibliography}{99}
+
+\bibitem{BK}
+D. Berend and A. Kontorovich.
+\newblock The missing mass problem.
+\newblock \emph{Statistics and Probability Letters}, 82(6):1102--1110, 2012.
+\newblock arXiv:1111.2328.
+
+\bibitem{BKZ}
+D. Berend, A. Kontorovich, and G. Zagdanski.
+\newblock The expected missing mass under an entropy constraint.
+\newblock \emph{Entropy}, 19(7):315, 2017.
+
+\bibitem{CT}
+P. Chandra and A. Thangaraj.
+\newblock Missing $g$-mass: investigating the missing parts of distributions.
+\newblock arXiv:2110.01968; IEEE Transactions on Information Theory, 2024.
+
+\bibitem{FN}
+S. Favaro and Z. Naulet.
+\newblock Optimal estimation of high-order missing masses, and the rare-type match problem.
+\newblock arXiv:2306.14998, 2023/2024.
+
+\bibitem{BBO}
+A. Ben-Hamou, S. Boucheron, and M. I. Ohannessian.
+\newblock Concentration inequalities in the infinite urn scheme for occupancy counts and the missing mass.
+\newblock arXiv:1412.8652.
+
+\bibitem{Maurer}
+A. Maurer.
+\newblock Metric-space missing mass.
+\newblock arXiv:2206.02012.
+
+\bibitem{PMT}
+A. Pananjady, V. Muthukumar, and A. Thangaraj.
+\newblock Just wing it: optimal estimation of missing mass in a Markovian sequence.
+\newblock \emph{Journal of Machine Learning Research}, 25(312):1--43, 2024.
+
+\bibitem{Skorski}
+M. Skorski.
+\newblock On missing mass variance.
+\newblock Preprint, 2019.
+
+\end{thebibliography}
+
+\end{document}

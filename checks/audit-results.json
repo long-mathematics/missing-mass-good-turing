@@ -1,0 +1,233 @@
+{
+  "seed": 20261126,
+  "precision_digits": 70,
+  "versions": {
+    "sympy": "1.14.0",
+    "numpy": "2.5.5",
+    "scipy": "1.18.1",
+    "mpmath": "1.3.0"
+  },
+  "symbolic": {
+    "identities_passed": 34,
+    "appendix_k": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ]
+  },
+  "comparison_numeric": {
+    "cases": 900,
+    "hypothesis_satisfied": 175,
+    "max_relative_identity_residual": "2.466856858687253804029731622846796542391344772495242773788835903471213e-65",
+    "min_remainder_H": "0.000000009194534677155953466229900596136841935380063156488793528437628827016543",
+    "not_a_proof": true
+  },
+  "fixed_sample_mgf": {
+    "cases": 100,
+    "checks": [
+      "multinomial_vs_EGF",
+      "truncated_log_series",
+      "coefficient_positivity",
+      "frozen_directional_derivative"
+    ],
+    "max_relative_mgf_error": "9.041688572114294217719425282052266742242524351204420159558058675995638e-71"
+  },
+  "fixed_tails_exact": {
+    "rational_cases": 1968,
+    "denominator": 7,
+    "checks": [
+      "multinomial_vs_support_inclusion_exclusion",
+      "probability_one_iff_top_t_mass",
+      "nonsaturation",
+      "uniform_counterexample_9_25_vs_1_3"
+    ]
+  },
+  "phase_exploration": {
+    "rows": [
+      {
+        "n": 2,
+        "s": 0.05,
+        "sigma_global_concavity": 2.028470161573241,
+        "beta_numeric": 4.02842682581822,
+        "sigma_uniform_spinodal": 4.02842682581559
+      },
+      {
+        "n": 2,
+        "s": 0.3,
+        "sigma_global_concavity": 2.1733861104135284,
+        "beta_numeric": 4.171854605372427,
+        "sigma_uniform_spinodal": 4.171854605372062
+      },
+      {
+        "n": 2,
+        "s": 1,
+        "sigma_global_concavity": 2.6008361009249175,
+        "beta_numeric": 4.584645827393425,
+        "sigma_uniform_spinodal": 4.5846458273933415
+      },
+      {
+        "n": 2,
+        "s": 3,
+        "sigma_global_concavity": 3.97792946928191,
+        "beta_numeric": 5.8489652444908335,
+        "sigma_uniform_spinodal": 5.848965244490799
+      },
+      {
+        "n": 2,
+        "s": 8,
+        "sigma_global_concavity": 8.200325741756684,
+        "beta_numeric": 9.485145605515987,
+        "sigma_uniform_spinodal": 9.485145605516056
+      },
+      {
+        "n": 2,
+        "s": 16,
+        "sigma_global_concavity": 16.007578114070707,
+        "beta_numeric": 16.400651483510565,
+        "sigma_uniform_spinodal": 16.400651483513368
+      },
+      {
+        "n": 3,
+        "s": 0.05,
+        "sigma_global_concavity": 2.028470161573241,
+        "beta_numeric": 5.802476054769758,
+        "sigma_uniform_spinodal": 6.028412356591176
+      },
+      {
+        "n": 3,
+        "s": 0.3,
+        "sigma_global_concavity": 2.1733861104135284,
+        "beta_numeric": 5.9442398229048345,
+        "sigma_uniform_spinodal": 6.171339066167721
+      },
+      {
+        "n": 3,
+        "s": 1,
+        "sigma_global_concavity": 2.6008361009249175,
+        "beta_numeric": 6.349503290181063,
+        "sigma_uniform_spinodal": 6.579078038242856
+      },
+      {
+        "n": 3,
+        "s": 3,
+        "sigma_global_concavity": 3.97792946928191,
+        "beta_numeric": 7.572441972160297,
+        "sigma_uniform_spinodal": 7.802508302774752
+      },
+      {
+        "n": 3,
+        "s": 8,
+        "sigma_global_concavity": 8.200325741756684,
+        "beta_numeric": 11.007092698474331,
+        "sigma_uniform_spinodal": 11.201201865218206
+      },
+      {
+        "n": 3,
+        "s": 16,
+        "sigma_global_concavity": 16.007578114070707,
+        "beta_numeric": 17.390093770510884,
+        "sigma_uniform_spinodal": 17.492910026669897
+      },
+      {
+        "n": 5,
+        "s": 0.05,
+        "sigma_global_concavity": 2.028470161573241,
+        "beta_numeric": 8.758176495874752,
+        "sigma_uniform_spinodal": 10.028400772561733
+      },
+      {
+        "n": 5,
+        "s": 0.3,
+        "sigma_global_concavity": 2.1733861104135284,
+        "beta_numeric": 8.896727657078426,
+        "sigma_uniform_spinodal": 10.17092479448255
+      },
+      {
+        "n": 5,
+        "s": 1,
+        "sigma_global_concavity": 2.6008361009249175,
+        "beta_numeric": 9.290887205859908,
+        "sigma_uniform_spinodal": 10.57455870046126
+      },
+      {
+        "n": 5,
+        "s": 3,
+        "sigma_global_concavity": 3.97792946928191,
+        "beta_numeric": 10.466821976067546,
+        "sigma_uniform_spinodal": 11.76383279031511
+      },
+      {
+        "n": 5,
+        "s": 8,
+        "sigma_global_concavity": 8.200325741756684,
+        "beta_numeric": 13.711258889306178,
+        "sigma_uniform_spinodal": 14.954732121637658
+      },
+      {
+        "n": 5,
+        "s": 16,
+        "sigma_global_concavity": 16.007578114070707,
+        "beta_numeric": 19.657818652399122,
+        "sigma_uniform_spinodal": 20.635361313949755
+      },
+      {
+        "n": 10,
+        "s": 0.05,
+        "sigma_global_concavity": 2.028470161573241,
+        "beta_numeric": 15.217775449146572,
+        "sigma_uniform_spinodal": 20.028392079489254
+      },
+      {
+        "n": 10,
+        "s": 0.3,
+        "sigma_global_concavity": 2.1733861104135284,
+        "beta_numeric": 15.352438501122558,
+        "sigma_uniform_spinodal": 20.170613009542457
+      },
+      {
+        "n": 10,
+        "s": 1,
+        "sigma_global_concavity": 2.6008361009249175,
+        "beta_numeric": 15.733413306698022,
+        "sigma_uniform_spinodal": 20.571130220559017
+      },
+      {
+        "n": 10,
+        "s": 3,
+        "sigma_global_concavity": 3.97792946928191,
+        "beta_numeric": 16.853607968904253,
+        "sigma_uniform_spinodal": 21.733861104135283
+      },
+      {
+        "n": 10,
+        "s": 8,
+        "sigma_global_concavity": 8.200325741756684,
+        "beta_numeric": 19.855737514205803,
+        "sigma_uniform_spinodal": 24.75559374052846
+      },
+      {
+        "n": 10,
+        "s": 16,
+        "sigma_global_concavity": 16.007578114070707,
+        "beta_numeric": 25.218776064807937,
+        "sigma_uniform_spinodal": 29.909464243275316
+      }
+    ],
+    "factorized_excess_sign_checks": 504,
+    "not_a_proof": true,
+    "method": "40-node Gauss-Legendre evaluation of quadratic factor; 101-point grid plus bounded refinement; Brent root"
+  },
+  "full_simplex_search": {
+    "optimizer_runs": 240,
+    "max_advantage_over_one_heavy_envelope": 5.551115123125783e-17,
+    "not_a_proof": true
+  },
+  "elapsed_seconds": 3.1500606536865234
+}
