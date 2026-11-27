@@ -4,7 +4,9 @@ The primary manuscript is based on the exact original July 15, 2026 LaTeX file `
 
 The current `paper/main.tex` retains the original C1–C4 arguments and incorporates the supporting-statement corrections documented in `AUDIT.md`, standardized author metadata, and a fixed revision date. The author is Christopher D. Long.
 
-The current `good-turing/main.tex` is a new compact exposition written during the November audit from the recovered canonical order-r draft and an independent rederivation. It is not presented as the exact original manuscript. The risk formula, curvature classification, and structural proof were separately reviewed.
+The November 26 version of `good-turing/main.tex` was a compact exposition written during the audit from the recovered canonical order-r draft and an independent rederivation. It is not presented as the exact original manuscript. The risk formula, curvature classification, and structural proof were separately reviewed.
+
+The November 27 companion adds `good-turing/phase-transition.tex`. The historical phase statement comes from `thm:gt-mse-phase` in the archived active-uniform v13 source. The midpoint proof, uniform optimized-value bounds, leading displacement, additional algebraic coefficient, and higher-order results are derived in the new sections.
 
 The earlier active-uniform and fixed-count sources are archival research material. Their recovery does not validate all their claims. No raw conversations, account data, or private correspondence are part of this repository.
 

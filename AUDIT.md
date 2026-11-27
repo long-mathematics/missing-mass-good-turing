@@ -1,4 +1,4 @@
-# Proof audit — November 26, 2026
+# Proof audits — November 26–27, 2026
 
 The audit used the actual 2,152-line July 15 source recovered from the original chat download, not a reconstruction from summaries. The main C1–C4 proof remains intact after the corrections below. The canonical Poissonized Good–Turing companion is a new, shorter exposition based on a separately recovered draft and a direct independent derivation.
 
@@ -57,14 +57,29 @@ For the no-reentrance proof, an interior tie is handled by integrating a positiv
 
 Numerical phase values and optimizer comparisons are not interval certificates. They exercise alternative formulations and search for contradictions; the general conclusions rest on the analytic proofs. Results and method parameters are saved in `checks/`.
 
-## Historical Good–Turing claims not certified
+## Historical Good–Turing gaps identified on November 26
 
-The earlier active-uniform v13 manuscript claims a complete ordinary Poissonized risk phase diagram and a golden-ratio threshold expansion. Two steps require additional proof before this package can endorse them:
+The earlier active-uniform v13 manuscript claims a complete ordinary Poissonized risk phase diagram and a golden-ratio threshold expansion. The November 26 audit withheld these claims for two reasons.
 
 - The stationary-branch proof asserts that a substituted numerator for b'' is positive without giving a sign certificate. Strict concavity of log(-phi') alone does not supply that omitted inequality.
 - The surrogate-to-true exponential displacement argument evaluates one candidate but does not fully localize the optimal branch and control the optimized value throughout the comparison interval.
 
-These are proof-completeness findings, not counterexamples to the stated phase conclusions. They are not imported into either current manuscript. General fixed-count Good–Turing structure, arbitrary biased multi-frequency estimators, and exact minimax estimation remain outside the certified scope. Recovering a historical source labeled “certified” is not new independent validation.
+The November 27 revision supplies the missing arguments in [the companion's phase sections](good-turing/phase-transition.tex).
+
+## November 27 Good–Turing proof audit
+
+| Claim | Decisive check |
+|---|---|
+| Paired heavy coordinate, `gtp:pair` | Average the logarithmic marginal derivative across the two coordinates. Every denominator is positive. The midpoint derivative has absolute value below one and its second derivative is a strictly positive integral of a square. The chain rule gives positive heavy-coordinate curvature. |
+| Fold, stability and coexistence, `gtp:phase` | The branch slopes run from negative infinity to n−2. At the fold the scalar cubic is nonzero. Light-splitting directions have negative curvature, so the historical “local minimum” is a full-simplex saddle for n≥3. The excess strictly increases with intensity on both branches. Integration from the saddle to uniform gives a strictly negative fold excess. Uniform itself is a saddle at the upper endpoint for n≥3. |
+| Degenerate cases | A singleton alphabet has one feasible law. The binary transition coalesces at twice the inflection intensity, equal to 6 at order zero. At the higher-order boundary t = n times the kernel peak, a nonuniform candidate would have negative marginal, exclude all zeros, and force every coordinate above the peak, contradicting the total. |
+| Localization, `gtp:window` | Test the branch equation at the kernel peak plus 1/n. Its partner is below 2 log n for large n. This brackets the maximizing stationary point throughout the critical window and bounds the gain from optimizing the light coordinates by the square of the exponential tail times a polynomial. |
+| Displacement and expansion, `gtp:shift`, `gtp:gold` | The window contains both roots. The mean-value denominator is of order n to the power −1/2 throughout it. A first exponential bound permits evaluation at the upper surrogate root with exponentially small relative error. Analytic inversion supplies the algebraic remainder. The archived coefficients agree through order n to the power −1/2, and the companion includes the next coefficient and the leading exponential constant. |
+| Higher-order scope, `gtp:light` | Above the full-support peak the same positive denominators apply at every order. Below it, a rational inequality forces a light singleton for n=3 and r=10 on a right neighborhood of twice the peak. A general classification of the earlier phases remains open. |
+
+The full `make check` passed with the pinned dependencies. The [new checker](scripts/audit_good_turing_phase.py) verifies the ordinary Taylor identities through degree five and the rational bound for the higher-order example. It compares the integral certificate with direct implicit differentiation at 20 paired roots for occupancy orders 0, 1, 2, 6, and 10. An explicit quadratic parametrization of the ordinary pair independently yields the fold and global crossing for n = 3, 4, 10, 100, 1,000, and 10,000. For n = 3 these are 8.62088142129 and 8.66460008083. For n = 10,000 the displacement is approximately 1.30185 × 10⁻⁷⁹, about 1.03116 times its leading term. [Recorded phase checks](checks/good-turing-phase.json).
+
+The phase conclusions are analytic. The optimization concerns the canonical estimator with independent Poisson counts. General fixed-count extremizers, arbitrary biased estimators, and exact minimax estimation remain open here.
 
 ## Literature and release limits
 
@@ -72,4 +87,4 @@ Primary sources checked include Berend–Kontorovich, *The Missing Mass Problem*
 
 The Good–Turing companion additionally cites [Skorski's fixed-sample asymptotic MSE analysis](https://arxiv.org/abs/2104.07029), whose formula contains a negative squared coupling term and whose asymptotic extremizer is Dirac–uniform, and [Painsky's general-order convergence guarantees](https://www.jmlr.org/papers/v23/21-1528.html). The companion explicitly distinguishes its exact independent-Poisson risk from these antecedents.
 
-Both current PDFs compiled without LaTeX warnings after three passes. All 35 main-paper pages and all four companion pages were rendered and visually inspected; formulas, references, margins, and pagination were checked. The complete Python checks also passed in a second fresh CPython 3.13.18 environment using the pinned requirements.
+On November 26 both PDFs compiled without LaTeX warnings after three passes. All 35 main-paper pages and the four companion pages of that version were rendered and visually inspected. On November 27 both manuscripts were rebuilt and the revised nine-page companion was rendered for inspection. The complete Python checks also passed in a second fresh CPython 3.13.18 environment using the pinned requirements.
