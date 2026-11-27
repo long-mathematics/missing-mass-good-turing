@@ -1,0 +1,59 @@
+{
+  "symbolic_checks": [
+    "ordinary Taylor coefficients through degree five",
+    "equality of the two radical expressions for chi",
+    "rational upper bound for the higher-order light example"
+  ],
+  "midpoint_quadrature_pairs": 20,
+  "occupancy_orders_tested": [
+    0,
+    1,
+    2,
+    6,
+    10
+  ],
+  "ordinary_examples": [
+    {
+      "n": 3,
+      "fold": "8.62088142129",
+      "transition": "8.66460008083",
+      "displacement": "0.787943208437",
+      "ratio_to_leading_term": "10.1962010473"
+    },
+    {
+      "n": 4,
+      "fold": "10.8451300805",
+      "transition": "10.9838583667",
+      "displacement": "0.492550789774",
+      "ratio_to_leading_term": "6.97425995478"
+    },
+    {
+      "n": 10,
+      "fold": "22.1683493533",
+      "transition": "23.1644428439",
+      "displacement": "0.0836524779986",
+      "ratio_to_leading_term": "2.87840036132"
+    },
+    {
+      "n": 100,
+      "fold": "171.026822981",
+      "transition": "182.023162535",
+      "displacement": "2.048774029e-6",
+      "ratio_to_leading_term": "1.34418117452"
+    },
+    {
+      "n": 1000,
+      "fold": "1630.11536169",
+      "transition": "1680.30287519",
+      "displacement": "2.79185973239e-23",
+      "ratio_to_leading_term": "1.10088910891"
+    },
+    {
+      "n": 10000,
+      "fold": "16195.1340788",
+      "transition": "16375.6931494",
+      "displacement": "1.30185376087e-79",
+      "ratio_to_leading_term": "1.03115930811"
+    }
+  ]
+}

@@ -4,6 +4,7 @@ LATEX ?= pdflatex
 check:
 	$(PYTHON) scripts/audit.py
 	$(PYTHON) scripts/audit_good_turing.py
+	$(PYTHON) scripts/audit_good_turing_phase.py
 pdf:
 	cd paper && $(LATEX) -interaction=nonstopmode -halt-on-error main.tex > build-pass1.log
 	cd paper && $(LATEX) -interaction=nonstopmode -halt-on-error main.tex > build-pass2.log

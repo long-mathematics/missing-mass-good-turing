@@ -1,0 +1,313 @@
+\section{A convexity certificate from the marginal equation}
+Use the intensities $z_i=tp_i$ and abbreviate $f=\varphi_\theta$ and $b=b_\theta$. Thus
+\[
+ f(z)=z^\theta(z+\theta)e^{-z},\qquad
+ b=\frac{1+\sqrt{1+4\theta^2}}2,\qquad d=1-b.
+\]
+By Proposition~\ref{prop:risk}, it suffices to maximize $\sum_i f(z_i)$ at fixed
+$\sum_i z_i=t$. On $z>b$ the negative marginal is
+\[
+ g(z)=-f'(z)=e^{-z}z^{\theta-1}(z-b)(z-d).
+\]
+Let $\mathcal R$ consist of $b,d$ and $\theta-1$ copies of $0$, with all
+sums below counting multiplicity. Then
+\[
+ (\log g)'(z)=-1+\sum_{a\in\mathcal R}\frac1{z-a}.
+\]
+This derivative decreases strictly from $+\infty$ to $-1$. Write $c$ for
+its unique zero. For ordinary missing mass $b=\rho=(1+\sqrt5)/2$ and $c=3$.
+
+\begin{lemma}[Convexity of the paired coordinates]\label{gtp:pair}
+For every $b<x<c$ there is a unique $y(x)>c$ with $g(y)=g(x)$.
+The function $y$ is strictly decreasing and $y''(x)>0$ everywhere.
+Its derivative tends to $-\infty$ as $x\downarrow b$ and to $-1$ as
+$x\uparrow c$.
+\end{lemma}
+\begin{proof}
+Existence, uniqueness and monotonicity follow from the shape of $g$ and its
+zero limits at $b$ and infinity. Set $m=(x+y)/2$, $h=(y-x)/2$, and write
+$\langle v\rangle=\frac12\int_{-1}^1v(u)\,du$. Integrating
+$(\log g)'$ between the paired roots yields
+\begin{equation}\label{gtp:average}
+  1=\sum_{a\in\mathcal R}\left\langle (m-a+hu)^{-1}\right\rangle .
+\end{equation}
+At each $h>0$ the right side decreases from infinity to zero as $m$
+increases from $b+h$ to infinity. It defines a smooth $m(h)$ and extends
+smoothly to $m(0)=c$. Set $q_a=m-a+hu>0$ and
+$W=\sum_a\langle q_a^{-2}\rangle$. Differentiation gives
+\begin{equation}\label{gtp:certificate}
+ m'=-\frac{\sum_a\langle u q_a^{-2}\rangle}{W},\qquad
+ m''=\frac{2\sum_a\langle (m'+u)^2 q_a^{-3}\rangle}{W}>0 .
+\end{equation}
+The first formula gives $|m'|<1$ and $m'(0)=0$. Since
+$x=m-h$, $y=m+h$,
+\[
+ \frac{dy}{dx}=\frac{m'+1}{m'-1},\qquad
+ \frac{d^2y}{dx^2}=\frac{2m''}{(1-m')^3}>0 .
+\]
+At the other endpoint, $x\downarrow b$ implies $y\to\infty$, and
+$dy/dx=g'(x)/g'(y)\to-\infty$ since $g'(b)>0$ and $g'(y)\to0^-$.
+\end{proof}
+
+\section{The finite-alphabet transition}
+For $n\ge2$ let $k=n-1$. At a stationary pair write
+\[
+ T(x)=kx+y(x),\qquad
+ D(x)=k f(x)+f(y(x))-n f(T(x)/n).
+\]
+Intensities on the heavy-coordinate branch have $t=T(x)$.
+The case $n=1$ has only one feasible law.
+
+\begin{theorem}[Ordinary and higher-order late phases]\label{gtp:phase}
+For $\theta=1$ the following classification holds for all $t>0$.
+For $\theta>1$ it holds on $t\ge nb$. All uniqueness statements identify
+permutations.
+\begin{enumerate}
+\item If $n=2$, uniform is the unique global maximizer through
+$\Theta_{2,\theta}=2c$. Above $2c$ the unique maximizer is one-heavy and
+converges to $(c,c)$ at the transition. In particular $\Theta_{2,1}=6$.
+\item If $n\ge3$, there are unique $x_f\in(b,c)$ with $T'(x_f)=0$
+and $x_*\in(b,x_f)$ with $D(x_*)=0$. The three distinguished intensities obey
+\[
+ nb<t_f:=T(x_f)<\Theta_{n,\theta}:=T(x_*)<nc .
+\]
+Uniform is uniquely global below $\Theta_{n,\theta}$. Exactly uniform and
+the one-heavy law indexed by $x_*$ are global at equality. Above it the
+unique global law is the one-heavy solution on $b<x<x_f$.
+\item For $n\ge3$ a strict one-heavy local maximum exists exactly when $t>t_f$
+within the stated range. For $t_f<t<nc$ a second one-heavy stationary point is a saddle.
+At $t_f$ the fold itself is stationary with a nonzero cubic variation.
+Uniform is a strict local maximum below $nc$ in the stated range,
+a saddle at $nc$, and a strict local minimum above $nc$. For $n=2$ it
+is still a strict maximum at $2c$ and a strict local minimum above it.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+At a local maximum all positive coordinates have a common marginal.
+If $t\ge nb$ and the vector differs from $(b,\ldots,b)$, at least
+one coordinate exceeds $b$. The common marginal is then negative.
+Transferring mass to a zero increases the objective since $f'(0)\ge0$,
+so all coordinates are positive and exceed $b$. In particular, at $t=nb$
+only $(b,\ldots,b)$ can be a local maximum. For $\theta=1$,
+$f''(z)=z(z-3)e^{-z}$ and $f'(0)=1>f'(z)$ for all $z>0$. Thus zeros
+are excluded at every intensity and every two-root level is negative.
+In both cases Lemmas~\ref{lem:roots} and~\ref{lem:repeat} leave only
+uniform and the one-heavy pairs with $b<x<c<y$.
+
+Lemma~\ref{gtp:pair} gives $T''>0$, $T(b+)=\infty$, $T(c-)=nc$, and
+endpoint slopes $-\infty,n-2$. For $n=2$ the branch decreases throughout.
+For $n\ge3$ it has exactly one fold, and $t_f>nb$ since both paired values
+exceed $b$. At a stationary pair the scalar objective
+$J_t(v)=kf(v)+f(t-kv)$ satisfies
+\[
+ J_t''(x)=k f''(y)T'(x).
+\]
+The other $n-2$ tangent directions split the light coordinates and have
+strictly negative curvature $f''(x)$ and no Hessian cross term with the
+scalar direction. This proves the local maximum and saddle assertions for both open branches. At the fold,
+$J_t'''(x_f)=k f''(y)y''(x_f)>0$ by twice differentiating $f'(x)=f'(y)$.
+
+At uniform the quadratic form is $f''(t/n)\sum_i v_i^2$ on $\sum_i v_i=0$.
+In the stated range it changes sign at $nc$. There $f'''(c)=-g''(c)>0$.
+For $n\ge3$ the opposite tangent vectors $\pm(2,-1,-1,0,\ldots)$
+give cubic terms of opposite signs. For $n=2$ strict maximality at $2c$
+also follows from uniqueness of the global candidate.
+
+On either open stationary branch, differentiation and $f'(x)=f'(y)$ give
+\begin{equation}\label{gtp:excess}
+ D'(x)=T'(x)\bigl[f'(x)-f'(T(x)/n)\bigr].
+\end{equation}
+Since $x<T(x)/n<y$ and $g$ exceeds its common endpoint value in the
+interior, the bracket is strictly positive. For $n\ge3$, integrating
+on $(x_f,c)$ up to $D(c-)=0$ gives the strict inequality $D(x_f)<0$.
+On the maximum branch $D$ increases strictly with $t$ and tends to
+$k f(b)>0$ as $t\to\infty$. At $t=nc$ uniform is a saddle, so the
+maximum branch already beats it strictly. This proves the asserted
+crossing and the complete list of global ties. For $n=2$ the increasing
+excess starts at zero at $2c$, and is positive thereafter.
+\end{proof}
+
+For the ordinary binary transition, the half-gap $h=(y-x)/2$ satisfies
+$t=6+4h^2/9+O(h^4)$. Indeed $f'(m+h)=f'(m-h)$ gives
+$m-3=-f''''(3)h^2/(6f'''(3))+O(h^4)=2h^2/9+O(h^4)$.
+The expansion is even because \eqref{gtp:average} is even in $h$.
+
+\section{Localization and the threshold displacement}
+Fix $\theta$ throughout the limit $n\to\infty$ and set $p=\theta+1$. Write
+\[
+ M=f(b),\qquad \kappa=-f''(b)=b^{\theta-1}(2b-1)e^{-b},\qquad
+ \gamma=\sqrt{2M/\kappa},\qquad \beta=\frac{f'''(b)\gamma^2}{6\kappa}.
+\]
+Let $\widehat\Theta$ be the \emph{upper} root, with $\widehat\Theta>nb$,
+of $n f(\widehat\Theta/n)=kM$. Put $U(t)=n f(t/n)$ and $B=t-kb$.
+Here $B$ is the heavy coordinate if the lights are fixed at the kernel peak.
+
+\begin{lemma}[Uniform control of the optimized branch]\label{gtp:window}
+For any fixed $0<A<C$, uniformly on
+$t=nb+s\sqrt n$, $A\le s\le C$, the local maximum branch exists for all
+sufficiently large $n$. Its coordinates $(x,\ldots,x,y)$ and value $H(t)$
+satisfy
+\begin{align}
+ &b<x<b+1/n,\qquad B-1<y<B,\qquad x-b=O(B^p e^{-B}),\label{gtp:location}\\
+ &0\le H(t)-kM-f(B)=O\!\left(n B^{2p}e^{-2B}\right).\label{gtp:opt}
+\end{align}
+The constants may depend on $A,C,\theta$.
+\end{lemma}
+\begin{proof}
+Set $x_0=b+1/n$. We have $g(x_0)\sim\kappa/n$ and
+$g(2\log n)=O((\log n)^p/n^2)=o(1/n)$. On the decreasing side of $g$
+this implies $y(x_0)<2\log n$ for large $n$. Hence
+$T(x_0)=nb+O(\log n)<t$ across the window. Since $T(b+)=\infty$ and
+$T$ is strictly convex, its unique root of $T(x)=t$ in $(b,x_0)$ lies
+on the decreasing branch. Then $y=B-k(x-b)\in(B-1,B)$. Stationarity and
+$g'(b)=\kappa>0$ give
+$x-b=O(g(y))=O(B^p e^{-B})$.
+
+For $v=b$ the feasible objective is $kM+f(B)$ and $J_t'(b)>0$.
+The root just localized is the only stationary point of $J_t$ on $[b,x_0]$
+for large $n$ (throughout this interval $t-kv>c$). It is a strict
+maximum, proving the lower bound. For the upper bound, $f(x)\le M$ and
+\[
+ 0\le f(y)-f(B)\le (B-y)\sup_{B-1\le z\le B}|f'(z)|
+        =O(nB^{2p}e^{-2B}).
+\]
+This bounds the improvement after optimizing all light coordinates.
+\end{proof}
+
+\begin{theorem}[Sharp displacement]\label{gtp:shift}
+For every fixed occupancy order, as $n\to\infty$,
+\begin{equation}\label{gtp:shifteq}
+ \widehat\Theta-\Theta_{n,\theta}
+ =\frac{\gamma^{\theta}e^{-(b+\beta)}}{\kappa}\,
+ n^{(\theta+2)/2} e^{-\gamma\sqrt n}
+ \bigl(1+O(n^{-1/2})\bigr).
+\end{equation}
+\end{theorem}
+\begin{proof}
+If $s$ stays in a fixed compact subset of $(0,\infty)$, Taylor expansion gives
+$U(nb+s\sqrt n)=nM-\kappa s^2/2+O(n^{-1/2})$.
+Choose $0<A<\gamma<C$. By Lemma~\ref{gtp:window}, $H-U$ is negative at
+$s=A$ and positive at $s=C$ for all large $n$. The unique true transition
+and the upper surrogate root both lie in this interval.
+At the surrogate root the test vector with light intensity $b$ beats
+uniform strictly, hence $\Theta:=\Theta_{n,\theta}<\widehat\Theta$.
+
+At the true tie, \eqref{gtp:opt} gives, with $B_*=\Theta-kb$,
+\[
+ U(\Theta)-U(\widehat\Theta)
+ = f(B_*)+O(nB_*^{2p}e^{-2B_*}).
+\]
+Throughout the window, $-U'(t)=-f'(t/n)\asymp n^{-1/2}$. Thus
+$0<\widehat\Theta-\Theta=O(n^{(p+1)/2}e^{-A\sqrt n})$.
+In particular, replacing $B_*$ by $\widehat B=\widehat\Theta-kb$ in
+$f(B_*)$ incurs an exponentially small relative error, because
+$(\log f)'$ stays bounded there. The relative error from the preceding
+remainder is likewise exponentially small. The same replacements in the
+mean-value derivative between the two roots have exponentially small
+relative error since $U''=O(1/n)$. Consequently
+\[
+ \widehat\Theta-\Theta
+ =\frac{f(\widehat B)}{-f'(\widehat\Theta/n)}
+   \bigl(1+O(e^{-a\sqrt n})\bigr)
+\]
+for some $a>0$.
+
+For completeness, $M-f(b+h)=h^2 V(h)$ with $V$ analytic and
+$V(0)=\kappa/2$. The upper root satisfies
+$h\sqrt{V(h)/M}=n^{-1/2}$, which has an analytic local inverse.
+Matching the quadratic and cubic terms gives
+$\widehat\Theta=nb+\gamma\sqrt n+\beta+O(n^{-1/2})$.
+Thus $\widehat B=\gamma\sqrt n+b+\beta+O(n^{-1/2})$ and
+$-f'(\widehat\Theta/n)=\kappa\gamma n^{-1/2}(1+O(n^{-1/2}))$.
+Substitution yields \eqref{gtp:shifteq}.
+\end{proof}
+
+\begin{corollary}[Golden-ratio expansion]\label{gtp:gold}
+For ordinary missing mass let $q=\sqrt5$ and write $\Theta_n=\Theta_{n,1}$.
+Then
+\begin{align*}
+ \Theta_n&=\rho n+\gamma\sqrt n+\beta+\frac{\chi}{\sqrt n}
+             +\frac{\delta}{n}+O(n^{-3/2}),\\
+ \gamma&=\sqrt{2+4q/5},\qquad \beta=\frac25+\frac{2q}{15},\\
+ \chi&=\gamma\left(\frac{31}{180}+\frac{2q}{45}\right),\qquad
+ \delta=\frac{605+251q}{3375}.
+\end{align*}
+Moreover $\widehat\Theta-\Theta_n
+ =(\gamma e^{-\beta}/\sqrt5)n^{3/2} e^{-\gamma\sqrt n}
+ (1+O(n^{-1/2}))$. The upper surrogate root and the true transition
+share every algebraic coefficient.
+\end{corollary}
+\begin{proof}
+With $s=n^{-1/2}$ and $h=\widehat\Theta/n-\rho$, the defining equation
+is $f(\rho+h)=(1-s^2)M$. The Taylor coefficients of $e^\rho f(\rho+h)$
+in degrees $0,1,\ldots,5$ are
+\[
+ 2+q,\quad 0,\quad -q/2,\quad(q-1)/3,\quad(2-q)/8,\quad(q-3)/30 .
+\]
+Substitute $h=\gamma s+\beta s^2+\chi s^3+\delta s^4+O(s^5)$.
+Degree two gives $q\gamma^2/2=2+q$. In degrees $3,4,5$ the new unknown
+has coefficient $-q\gamma$, so coefficient matching successively gives
+the values displayed. The analytic inverse in Theorem~\ref{gtp:shift}
+justifies the remainder and the expansion to arbitrary order.
+Equation~\eqref{gtp:shifteq} and $\kappa=q e^{-\rho}$ finish the proof.
+\end{proof}
+
+The fold occurs on a smaller scale. For fixed $\theta$, its location is
+\begin{equation}\label{gtp:foldsize}
+ t_f=nb+\log n+(\theta+1)\log\log n+1-b-\log\kappa+o(1).
+\end{equation}
+Indeed $y'(x_f)=-k$ forces $x_f\to b$, $y_f=y(x_f)\to\infty$.
+Since $g'(x_f)=-k g'(y_f)$ and $-g'(y)\sim g(y)\sim y^{\theta+1}e^{-y}$,
+we have $k y_f^{\theta+1}e^{-y_f}\to\kappa$ and $k(x_f-b)\to1$.
+Taking logs first gives $y_f\sim\log n$, then
+$y_f=\log n+(\theta+1)\log\log n-\log\kappa+o(1)$.
+Adding $kx_f$ proves \eqref{gtp:foldsize}.
+
+\section{Why the early higher-order phases differ}
+For $\theta>1$, $(\log f')'$ on $(0,b)$ is also
+$-1+\sum_{a\in\mathcal R}(z-a)^{-1}$. It decreases from $+\infty$ to
+$-\infty$. Write $c_-$ for its unique zero. Thus $f$ is strictly convex
+on $(0,c_-)$ and strictly concave on $(c_-,b)$. For $0<t\le c_-$
+strict convexity and $f(0)=0$ imply that merging any two positive
+coordinates strictly raises the sum. Thus the point mass is uniquely
+optimal up to permutation. Near $t=nb$ the unique maximizer
+is uniform, also on the left. Indeed uniqueness at $nb$ and compactness
+force all maximizers to approach $(b,\ldots,b)$ as $t\to nb$. Strict concavity on
+a common neighborhood then gives uniformity by Jensen's inequality.
+
+\begin{proposition}[A forced singleton light atom]\label{gtp:light}
+For $n=3$, $\theta=11$ (occupancy order $r=10$), every global maximizer
+has one light and two equal larger coordinates for all $t$ in a right
+neighborhood of $2b$. For each fixed $n\ge3$ the corresponding assertion
+holds just above $(n-1)b$ for all sufficiently large $\theta$.
+\end{proposition}
+\begin{proof}
+For $k=n-1$ and $kb<t<nb$, a boundary maximum is impossible. Its active
+marginal would be nonnegative because $f'(0)=0$, forcing every active
+coordinate to be at most $b$, for a total at most $kb$. A full-support
+nonuniform maximum in this interval has positive marginal. A zero level
+would give all $b$, and a negative level would put every coordinate above
+$b$. Thus its two values straddle $c_-$ and its smaller convex coordinate
+can occur only once.
+
+It suffices that $n f(kb/n)<k f(b)$. At $t=kb$ the feasible law of
+intensities $(b,\ldots,b,0)$ then beats uniform, and the strict inequality
+persists just to the right using $(b,\ldots,b,t-kb)$. For $n=3,\theta=11$,
+we have $11<b<12$ and $e<11/4$. In particular
+\[
+ \frac{3f(2b/3)}{2f(b)}
+ =\frac32\left(\frac23\right)^{11}
+   \frac{2b/3+11}{b+11}e^{b/3}
+ <\frac54\left(\frac23\right)^{11}\left(\frac{11}{4}\right)^4<1.
+\]
+In general $b=\theta+O(1)$ as $\theta\to\infty$, and the log of the ratio
+$n f(kb/n)/(k f(b))$ is
+$\theta[\log(1-1/n)+1/n]+O_n(1)\to-\infty$.
+\end{proof}
+
+For positive marginal levels the pole at $b$ gives a negative denominator
+in \eqref{gtp:average}, so the numerator in \eqref{gtp:certificate} loses
+its positive-integral sign. A complete classification below $nb$ would
+also have to compare different support sizes. Proposition~\ref{gtp:light}
+shows that any such classification must allow genuinely optimal light
+exceptions.

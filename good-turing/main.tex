@@ -2,7 +2,7 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,amsthm,mathtools,microtype}
 \usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
-\hypersetup{pdftitle={Canonical Poissonized Good--Turing Risk: One-Exceptional Extremizers},pdfauthor={Christopher D. Long}}
+\hypersetup{pdftitle={Canonical Poissonized Good--Turing Risk: Extremizers and Phase Transitions},pdfauthor={Christopher D. Long}}
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{proposition}[theorem]{Proposition}
@@ -10,12 +10,12 @@
 \theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
 \newcommand{\E}{\mathbb E}
 \newcommand{\one}{\mathbf1}
-\title{Canonical Poissonized Good--Turing Risk:\\One-Exceptional Extremizers}
+\title{Canonical Poissonized Good--Turing Risk:\\Extremizers and Phase Transitions}
 \author{Christopher D. Long}
-\date{November 26, 2026}
+\date{November 27, 2026}
 \begin{document}\maketitle
 \begin{abstract}
-For a fixed finite alphabet, we characterize the coordinate structure of distributions maximizing the squared risk of the canonical unbiased Poissonized Good--Turing estimator of an occupancy mass. Every maximizer is uniform on its positive support or has one exceptional positive coordinate and all other positive coordinates equal. The exceptional coordinate is heavy for ordinary missing-mass estimation, whereas higher occupancy orders permit both orientations in the structural reduction. The proof uses an exact separable risk formula, a cubic curvature calculation, and mass-preserving perturbations. This is a structural reduction, not a complete phase diagram or a minimax-estimation theorem.
+For a fixed finite alphabet, we characterize the coordinate structure of distributions maximizing the squared risk of the canonical unbiased Poissonized Good--Turing estimator of an occupancy mass. Every maximizer is uniform on its positive support or has one exceptional positive coordinate and all other positive coordinates equal. For ordinary missing mass, a positive integral proves convexity of the stationary one-heavy branch and yields the complete phase diagram. The transition is continuous for two symbols. For larger alphabets uniform and a distinct one-heavy law tie strictly between the fold and the loss of uniform stability. We obtain the golden-ratio expansion of the transition and the leading exponentially small displacement from the surrogate root. The late transition extends to every occupancy order, and an explicit earlier higher-order phase forces a singleton light coordinate.
 \end{abstract}
 
 \section{Model and exact risk}
@@ -31,7 +31,7 @@ The estimator is canonical in the sense that its coordinate expectation equals t
 \]
 This is the Poissonized version of the occupancy identity underlying Good--Turing estimation \cite{Good}. Our optimization fixes this estimator and maximizes its risk over the sampling law; it does not optimize over estimators.
 
-Closely related worst-case risk questions have been studied in the fixed-sample model. Skorski \cite[Theorems 2--3]{Skorski} gives an asymptotic mean-squared-error formula with a negative squared coupling term and a Dirac--uniform asymptotic extremizer under an alphabet bound. Painsky \cite{Painsky} obtains worst-case mean-squared-error bounds and convergence guarantees for occupancy probabilities at general orders, including simultaneous guarantees. Here the observations are independent Poisson counts and the intensity is known: the exact risk is separable, with no squared coupling term. The contribution proved below is an exact finite-alphabet structural reduction for this particular risk at every occupancy order. It is not a replacement for fixed-sample risk analysis or a claim of exhaustive priority.
+Closely related worst-case risk questions have been studied in the fixed-sample model. Skorski \cite[Theorems 2--3]{Skorski} gives an asymptotic mean-squared-error formula with a negative squared coupling term and a Dirac--uniform asymptotic extremizer under an alphabet bound. Painsky \cite{Painsky} obtains worst-case mean-squared-error bounds and convergence guarantees for occupancy probabilities at general orders, including simultaneous guarantees. Here the observations are independent Poisson counts and the intensity is known: the exact risk is separable, with no squared coupling term. The structural reduction below holds at every occupancy order. We then derive the ordinary phase diagram and the higher-order late transition from the exact Poissonized risk. It is not a replacement for fixed-sample risk analysis or a claim of exhaustive priority.
 
 \begin{proposition}[Separable squared risk]\label{prop:risk}
 Put \(\theta=r+1\) and
@@ -147,12 +147,14 @@ Every vector in the displayed families is feasible, including endpoint cases wit
 For \(\theta>1\), \(\varphi_\theta'(0)=0\). If the common active marginal is negative, adding mass to a zero coordinate improves the objective to first order. Hence any boundary maximizer must have nonnegative active marginal. This is a necessary condition, not a global classification of the active support.
 \end{remark}
 
+\input{phase-transition}
+
 \section{What this establishes and what remains}
-The theorem gives the exact candidate family for the canonical unbiased Poissonized risk at every order. It does not show uniqueness of the scalar optimizer, identify all support transitions, or prove the complete ordinary-risk threshold expansion reported in an earlier working manuscript. That older phase argument requires a fully written convexity certificate for its stationary branch and quantitative localization before an exponentially small surrogate-to-true threshold estimate can be asserted.
+Theorem~\ref{gtp:phase} classifies all ordinary-risk global maximizers and the competing local maxima. For higher-order risk it gives the complete late transition for $t\ge nb_\theta$. Proposition~\ref{gtp:light} shows that an earlier interval can force a singleton light atom. The sequence of support and shape transitions below $nb_\theta$ for general $r\ge1$ remains open.
 
 Fixed sample size introduces dependence between occupancy indicators. Biased estimators and arbitrary combinations of frequency counts may also introduce a squared-bias coupling. The separable calculation above does not apply to those settings without further work. In particular, this note makes no claim that fixed-count Good--Turing risk is always maximized by a one-heavy law, or that Good--Turing is an exact minimax estimator.
 
-The accompanying checks verify the risk identity independently from Poisson event probabilities, the curvature polynomial symbolically, its positive-root counts exactly for a finite set of orders, and the candidate-family reduction against independent full-simplex optimization. Finite computation supplements the proofs and does not replace them.
+The accompanying checks compare the risk with direct Poisson event probabilities, verify the Taylor coefficients symbolically, and compute ordinary folds and crossings from an independent parametrization. The phase theorems and asymptotic error estimates follow from the analytic arguments above.
 
 \begin{thebibliography}{9}
 \bibitem{Good} I.~J. Good.
